@@ -1,0 +1,11 @@
+{
+    "name":"Chef",
+    "description":"You start knowing how many pairs of evil players there are.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "nightOrder":{
+        "first":4,
+        "rest":null
+    },
+    "tokens":[]
+}

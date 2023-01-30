@@ -1,0 +1,11 @@
+{
+    "name":"Scarlet Woman",
+    "description":"If there are 5 or more players alive & the Demon dies, you become the Demon. (Travellers don't count)",
+    "alignment":"EVIL",
+    "class":"MIN",
+    "nightOrder":{
+        "first":null,
+        "rest":2
+    },
+    "tokens":["scarlet_woman_demon"]
+}

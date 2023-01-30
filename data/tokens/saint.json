@@ -1,0 +1,11 @@
+{
+    "name":"Saint",
+    "description":"If you die by execution, your team loses.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "nightOrder":{
+        "first":null,
+        "rest":null
+    },
+    "tokens":[]
+}

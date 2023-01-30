@@ -1,0 +1,11 @@
+{
+    "name":"Investigator",
+    "description":"You start knowing that 1 of 2 players is a particular Minion.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "nightOrder":{
+        "first":3,
+        "rest":null
+    },
+    "tokens":["investigator_minion", "investigator_wrong"]
+}

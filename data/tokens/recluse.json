@@ -1,0 +1,11 @@
+{
+    "name":"Recluse",
+    "description":"You might register as evil & as a Minion or Demon, even if dead.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "nightOrder":{
+        "first":null,
+        "rest":null
+    },
+    "tokens":[]
+}

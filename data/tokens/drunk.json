@@ -1,0 +1,11 @@
+{
+    "name":"Drunk",
+    "description":"You do not know you are the Drunk. You think you are a Townsfolk character, but you are not.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "nightOrder":{
+        "first":null,
+        "rest":null
+    },
+    "tokens":["drunk_drunk"]
+}

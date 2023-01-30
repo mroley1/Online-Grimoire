@@ -1,0 +1,11 @@
+{
+    "name":"Virgin",
+    "description":"The 1st time you are nominated, if the nominator is a Townsfolk, they are executed immediately.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "nightOrder":{
+        "first":null,
+        "rest":null
+    },
+    "tokens":["vigin_no_ability"]
+}

@@ -1,0 +1,11 @@
+{
+    "name":"Soldier",
+    "description":"You are safe from the Demon.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "nightOrder":{
+        "first":null,
+        "rest":null
+    },
+    "tokens":[]
+}

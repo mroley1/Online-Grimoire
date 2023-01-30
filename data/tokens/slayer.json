@@ -1,0 +1,11 @@
+{
+    "name":"Slayer",
+    "description":"Once per game, during the day, publicly choose a player: if they are the Demon, they die.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "nightOrder":{
+        "first":null,
+        "rest":null
+    },
+    "tokens":["slayer_no_ability"]
+}

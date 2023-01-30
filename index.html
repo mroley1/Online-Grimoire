@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <script src="main.js"></script>
+        <link href="main.css" rel="stylesheet">
+        <link href="menu.css" rel="stylesheet">
+    </head>
+    <body onload="javascript:main()">
+
+        <div onclick="javascript:hideInfo()" id="dragZone" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%;">
+            <div id="pip_layer"></div>
+            <div id="token_layer"></div>
+        </div>
+        
+        <div id="visibility_toggle" onclick="javascript:visibility_toggle()" class="bottom_buttons" style="background-image: url(assets/visibility.png); right: 10px; background-color: rgb(66, 66, 66);"></div>
+        <div id="move_toggle" onclick="javascript:move_toggle()" class="bottom_buttons" style="background-image: url(assets/move.png); right: 120px; background-color: rgb(66, 66, 66);"></div>
+        
+        <div id="info_box" style="position: absolute; left: 0px; bottom: 0px; width: 100%; height: 250px; background-image: url('assets/vines.png'); display: none;">
+            <div id="info_body" style="width: calc(100% - 270px); position: absolute; left: 0px; bottom: 0px; height: 220px; margin: 15px;">
+                <div id="info_title" style="height: 100px; width: 400px; position: absolute; top: 0px; right: 0px; color:darkgrey; font-size: 50pt;">Chef</div>
+                <div id="info_desc" style="height: 150px; width: 400px; position: absolute; top: 100px; right: 0px; color:darkgrey; font-size: 20pt;">You start knowing how many pairs of evil players there are.</div>
+                <div id="info_token_landing" style="height: 220px; width: calc(100% - 420px); position: absolute; top: 0px; left: 0px; text-align: right;"></div>
+                <div id="delete_button" style="height: 70px; width: 180px; position: absolute; top: 110px; right: 420px; text-align: center; background-color:crimson; border-radius: 30px; font-size: 26pt; cursor: pointer;">
+                    <span style="top: 15px; position: relative;">Remove</span>
+                </div>
+            </div>
+            <div id="info_img" style="width: 250px; position: absolute; right: 0px; bottom: 0px; height: 250px; background-image: url(assets/roles/trouble_brewing/drunk_token.png); background-repeat: no-repeat; background-position: center; background-size: contain;"></div>
+        </div>
+
+        <div id="menu_main" class="menu_main" style="transform: translateX(-270px);">
+            <div class="menu_left">
+                <div class="menu_title"></div>
+            </div>
+            <div class="menu_body">
+                <form autocomplete="off" id="menu_landing">
+                    <span style="color: white;">script:</span>
+                    <select id="script_options" onchange="javascript:script_change()">
+                    </select><br><br>
+                    <div id="TOWN"></div><br>
+                    <div id="OUT"></div><br>
+                    <div id="MIN"></div><br>
+                    <div id="DEM"></div>
+                </form>
+            
+            </div>
+            <div id="menu_toggle" class="menu_toggle" onclick="javascript:toggle()" style="background-image: url('assets/right-arrow-icon.png'); rotate: 0deg;"></div>
+        </div>
+    </body>
+    <script src="menu.js"></script>
+    <script src="draggable.js"></script>
+    <script src="draggable.js"></script>
+</html>

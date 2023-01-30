@@ -1,0 +1,11 @@
+{
+    "name":"Fortune Teller",
+    "description":"Each night, choose 2 players: you learn if either is a Demon. There is a good player that registers as a Demon to you.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "nightOrder":{
+        "first":6,
+        "rest":6
+    },
+    "tokens":["fortune_teller_red_herring"]
+}

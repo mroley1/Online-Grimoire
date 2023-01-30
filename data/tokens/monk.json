@@ -1,0 +1,11 @@
+{
+    "name":"Monk",
+    "description":"Each night*, choose a player (not yourself): they are safe from the Demon tonight.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "nightOrder":{
+        "first":null,
+        "rest":1
+    },
+    "tokens":["monk_protected"]
+}

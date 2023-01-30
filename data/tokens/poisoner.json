@@ -1,0 +1,11 @@
+{
+    "name":"Poisoner",
+    "description":"Each night, choose a player: they are poisoned tonight and tomorrow day.",
+    "alignment":"EVIL",
+    "class":"MIN",
+    "nightOrder":{
+        "first":0,
+        "rest":0
+    },
+    "tokens":["poisoner_poisoned"]
+}
