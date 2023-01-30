@@ -1,4 +1,3 @@
-
 body {background-image: url('assets/background-img.jpg');}
 html, body {overscroll-behavior: none;}
 .role_token {height: 150px; width: 150px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px;}

@@ -126,7 +126,6 @@ function spawnReminder(id) {
     }
   
     function setTranslate(xPos, yPos, el) {
-      //el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
       el.style.left =  xPos + "px"
       el.style.top =  yPos + "px"
     }
@@ -139,8 +138,4 @@ function remove_token(name) {
   rm.parentNode.removeChild(rm);
   document.getElementById(name).checked = false;
   hideInfo()
-}
-
-function main() {
-    //document.getElementsByClassName("menu_body")[0].mouseOver = test
 }

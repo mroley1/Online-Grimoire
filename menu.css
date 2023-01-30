@@ -1,6 +1,3 @@
-
-
-
 .menu_main         {position: absolute; top: 0px; left: 0px; height: 100%; width: 300px; background-image: url('assets/background-img2.webp'); opacity: 0.4; transition: opacity linear 0.1s, transform ease-in-out 0.2s; }
 .menu_main:hover   {opacity: 0.6;}
 .menu_left         {position: absolute; left: 0px; top: 0px; width: 270px; height: 100%; border-right: 1px solid white; overflow: hidden;}
