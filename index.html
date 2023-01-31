@@ -4,11 +4,15 @@
         <link href="main.css" rel="stylesheet">
         <link href="menu.css" rel="stylesheet">
     </head>
-    <body onload="javascript:main()">
+    <body>
 
-        <div onclick="javascript:hideInfo()" id="dragZone" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%;">
+        <div onclick="javascript:neutralClick()" id="dragZone" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%;">
             <div id="pip_layer"></div>
-            <div id="token_layer"></div>
+            <div id="token_layer">
+                <!--<div onclick="javascript:infoCall('empath')" class="role_token drag" id="empath_token" style="background-image: url(&quot;assets/roles/empath_token.png&quot;); left: 485px; top: calc(50% - 75px);">
+                    <span class="token_text">Name</span>
+                </div>-->
+            </div>
         </div>
         
         <div id="visibility_toggle" onclick="javascript:visibility_toggle()" class="bottom_buttons" style="background-image: url(assets/visibility.png); right: 10px; background-color: rgb(66, 66, 66);"></div>
@@ -16,12 +20,14 @@
         
         <div id="info_box" style="position: absolute; left: 0px; bottom: 0px; width: 100%; height: 250px; background-image: url('assets/vines.png'); display: none;">
             <div id="info_body" style="width: calc(100% - 270px); position: absolute; left: 0px; bottom: 0px; height: 220px; margin: 15px;">
-                <div id="info_title" style="height: 100px; width: 400px; position: absolute; top: 0px; right: 0px; color:darkgrey; font-size: 50pt;"></div>
-                <div id="info_desc" style="height: 150px; width: 400px; position: absolute; top: 100px; right: 0px; color:darkgrey; font-size: 20pt;">Y</div>
-                <div id="info_token_landing" style="height: 220px; width: calc(100% - 420px); position: absolute; top: 0px; left: 0px; text-align: right;"></div>
-                <div id="delete_button" style="height: 70px; width: 180px; position: absolute; top: 110px; right: 420px; text-align: center; background-color:crimson; border-radius: 30px; font-size: 26pt; cursor: pointer;">
-                    <span style="top: 15px; position: relative;">Remove</span>
+                <div id="info_title" style="height: 100px; width: 430px; position: absolute; top: 0px; right: 0px; color:rgb(211, 211, 211); font-size: 50pt;"></div>
+                <div id="info_desc" style="height: 150px; width: 430px; position: absolute; top: 80px; right: 0px; color:darkgrey; font-size: 20pt;"></div>
+                <input autocomplete="off" onchange="javascript:nameIn()" type="text" id="info_name_feild" class="info_name_feild">
+                <div id="info_token_landing" style="height: 220px; width: calc(100% - 550px); position: absolute; top: 0px; left: 100px; text-align: right;"></div>
+                <div id="delete_button" style="height: 100%; width: 70px; position: absolute; top: 10px; left: 10px; text-align: center; background-color:crimson; border-radius: 30px; font-size: 26pt; cursor: pointer;">
+                    <div style="left: 0px; position: relative; transform:rotate(-90deg) translateX(-115px);">Remove</div>
                 </div>
+
             </div>
             <div id="info_img" style="width: 250px; position: absolute; right: 0px; bottom: 0px; height: 250px; background-repeat: no-repeat; background-position: center; background-size: contain;"></div>
         </div>
@@ -42,10 +48,7 @@
                 </form>
             
             </div>
-            <div id="menu_toggle" class="menu_toggle" onclick="javascript:toggle()" style="background-image: url('assets/right-arrow-icon.png'); rotate: 0deg;"></div>
+            <div id="menu_toggle" class="menu_toggle" onclick="javascript:toggle_menu()" style="background-image: url('assets/right-arrow-icon.png'); rotate: 0deg;"></div>
         </div>
     </body>
-    <script src="menu.js"></script>
-    <script src="draggable.js"></script>
-    <script src="draggable.js"></script>
 </html>
