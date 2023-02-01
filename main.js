@@ -284,7 +284,7 @@ function clear_night_order() {
   document.getElementById("night_order_tab_landing").innerHTML = ""
 }
 async function populate_night_order(night) {
-  order = await get_JSON("nightsheet.json")
+  var order = await get_JSON("nightsheet.json")
   order = order[night]
   tokens = document.getElementById("token_layer").children
   var inPlay = new Array(tokens.length)
@@ -294,10 +294,18 @@ async function populate_night_order(night) {
   for (i = 0;i<order.length;i++) {
     for (j = 0; j<inPlay.length; j++) {
       if (order[i] == inPlay[j]) {
-        console.log(inPlay[j])
+        gen_night_order_tab(inPlay[j])
       }
     }
   }
+}
+async function gen_night_order_tab(id) {
+  var data = await get_JSON("tokens/"+id+".json");
+  div = document.createElement("div");
+  div.classList = "night_order_tab";
+  div.innerHTML = data.name;//do this by picture
+  document.getElementById("night_order_tab_landing").appendChild(div);
+  console.log(id);
 }
 
 load_scripts()
