@@ -1,5 +1,5 @@
-{
-	"firstnight": [
+[
+	{"firstnight": [
 		"philosopher",
 		"alchemist",
 		"poppy_grower",
@@ -53,8 +53,8 @@
 		"mathematician",
 		"DAWN",
 		"leviathan"
-	],
-	"othernight": [
+	]},
+	{"othernight": [
 		"DUSK",
 		"philosopher",		
 		"poppy_grower",
@@ -128,5 +128,5 @@
 		"mathematician",
 		"DAWN",
 		"leviathan"
-	]
-}
+	]}
+]

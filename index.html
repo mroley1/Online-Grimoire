@@ -27,7 +27,6 @@
                 <div id="delete_button" style="height: 100%; width: 70px; position: absolute; top: 10px; left: 10px; text-align: center; background-color:crimson; border-radius: 30px; font-size: 26pt; cursor: pointer;">
                     <div style="left: 0px; position: relative; transform:rotate(-90deg) translateX(-115px);">Remove</div>
                 </div>
-
             </div>
             <div id="info_img" style="width: 250px; position: absolute; right: 0px; bottom: 0px; height: 250px; background-repeat: no-repeat; background-position: center; background-size: contain;"></div>
         </div>
@@ -46,9 +45,18 @@
                     <div id="MIN"></div><br>
                     <div id="DEM"></div>
                 </form>
-            
             </div>
             <div id="menu_toggle" class="menu_toggle" onclick="javascript:toggle_menu()" style="background-image: url('assets/right-arrow-icon.png'); rotate: 0deg;"></div>
+        </div>
+
+        <div style="position: absolute; top: 0px; right: 0px; width: 200px; height: 45px; display: inline-block;">
+            <div id="first_night" class="night_select" style="left: 0px;" onclick="javascript:toggle_night_order('firstnight')">first</div>
+            <div id="other_night" class="night_select" style="right: 0px;" onclick="javascript:toggle_night_order('othernight')">other</div>
+        </div>
+        <div id="night_order_tab_landing" style="position: absolute; width: 90px; right: 0px; top: 45px; word-wrap: normal; text-align: right;">
+            <div class="night_order_tab"></div>
+            <div class="night_order_tab"></div>
+            <div class="night_order_tab"></div>
         </div>
     </body>
 </html>

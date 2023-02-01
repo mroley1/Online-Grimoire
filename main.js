@@ -197,8 +197,6 @@ function dragInit() {
   const dragSpots = document.getElementsByClassName("drag");
   for (var i = 0; i < dragSpots.length; i++) {
     var container = dragSpots[i];
-    //console.log()
-
 
     container.addEventListener("touchstart", dragStart, false);
     container.addEventListener("touchend", dragEnd, false);
@@ -257,6 +255,48 @@ function neutralClick() {
   hideInfo()
   if (document.getElementById("menu_toggle").style.rotate == "180deg"){
     toggle_menu()
+  }
+}
+
+function toggle_night_order(night) {
+  first = document.getElementById("first_night")
+  other = document.getElementById("other_night")
+  clear_night_order()
+  if (night == "firstnight" && first.style.color == "rgb(244, 244, 244)") {
+    first.style.color = ""
+    return;
+  } else if (night == "othernight" && other.style.color == "rgb(244, 244, 244)") {
+    other.style.color = ""
+    return;
+  } else {
+    if (night == "firstnight") {
+      first.style.color = "#f4f4f4"
+      other.style.color = ""
+    }
+    if (night == "othernight") {
+      other.style.color = "#f4f4f4"
+      first.style.color = ""
+    }
+    populate_night_order(night)
+  }
+}
+function clear_night_order() {
+  document.getElementById("night_order_tab_landing").innerHTML = ""
+}
+async function populate_night_order(night) {
+  order = await get_JSON("nightsheet.json")
+  order = order[night]
+  tokens = document.getElementById("token_layer").children
+  var inPlay = new Array(tokens.length)
+  for (i = 0; i<inPlay.length;i++) {
+    inPlay[i] = tokens[i].id.substring(0, tokens[i].id.length-6)
+  }
+  for (i = 0;i<order.length;i++) {
+    for (j = 0; j<inPlay.length; j++) {
+      if (order[i] == inPlay[j]) {
+        console.log(inPlay[j])
+      }
+    }
   }
 }
 
