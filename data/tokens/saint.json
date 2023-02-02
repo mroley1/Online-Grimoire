@@ -1,4 +1,5 @@
 {
+    "id": "saint",
     "name":"Saint",
     "description":"If you die by execution, your team loses.",
     "alignment":"GOOD",

@@ -1,4 +1,5 @@
 {
+    "id": "poisoner",
     "name":"Poisoner",
     "description":"Each night, choose a player: they are poisoned tonight and tomorrow day.",
     "alignment":"EVIL",

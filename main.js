@@ -5,12 +5,14 @@ async function get_JSON(path) {
 // corner toggles
 function visibility_toggle() {
     var self = document.getElementById("visibility_toggle")
-    if (self.style.backgroundColor!="red") {
-        self.style.backgroundColor = "red";
+    self.style.backgroundImage = "url(assets/visibility.png)"
+    if (self.style.backgroundColor!="lightblue") {
+        self.style.backgroundColor = "lightblue";
         document.getElementById("pip_layer").style.display = "none"
         document.getElementById("token_layer").style.display = "none"
     } else {
         self.style.backgroundColor = "rgb(66, 66, 66)";
+        self.style.backgroundImage = "url(assets/visibility_off.png)"
         document.getElementById("pip_layer").style.display = "inherit"
         document.getElementById("token_layer").style.display = "inherit"
     }
@@ -135,49 +137,56 @@ async function populate_script(x){
       var br = document.createElement("br");
       document.getElementById(landing).appendChild(br);
   }
-  function options(tokenNames) {
-      tokenNames.forEach(async function(tokenName){
-          tokenJSON = await get_JSON("tokens/"+tokenName+".json");
+  function options(type, tokenNames) {
+      tokenNames.forEach(async function(tokenJSON){
+        if (tokenJSON.class == type) {
           var landing = document.getElementById(tokenJSON["class"])
           var input = document.createElement("input");
           input.type = "checkbox";
-          input.id = tokenName;
-          input.setAttribute("onclick", "javascript:cast_change('"+ tokenName+"')");
+          input.id = tokenJSON["id"];
+          input.setAttribute("onclick", "javascript:cast_change('"+ tokenJSON["id"] +"')");
           landing.appendChild(input);
           landing.insertAdjacentHTML("beforeend", "&nbsp;");
           var label = document.createElement("label");
-          label.setAttribute("for", tokenName);
+          label.setAttribute("for", tokenJSON["id"]);
           label.classList = "menu_list";
           label.title = tokenJSON["description"];
           label.innerHTML = tokenJSON["name"];
           landing.appendChild(label);
           var br = document.createElement("br");
           landing.appendChild(br);
+        }
       })
   }
   function clear(div) {
       document.getElementById(div).innerHTML = ""
   }
+  scriptTokens = [script.length-1];
+  for (i = 1; i < script.length; i++) {
+    scriptTokens[i-1] = await get_JSON("tokens/"+script[i].id+".json")
+  }
+  console.log(scriptTokens);
   clear("TOWN")
   header("Town","TOWN")
-  options(script["townsfolk"])
+  options("TOWN", scriptTokens)
   clear("OUT")
   header("Outsiders", "OUT")
-  options(script["outsiders"])
+  options("OUT", scriptTokens)
   clear("MIN")
   header("Minions", "MIN")
-  options(script["minions"])
+  options("MIN", scriptTokens)
   clear("DEM")
   header("Demons", "DEM")
-  options(script["demons"])
+  options("DEM", scriptTokens)
 }
 async function load_scripts(){
   var scripts = await get_JSON("scripts/scripts.json")
-  scripts.forEach(element => {
-      option = document.createElement("option");
-      optionText = document.createTextNode(element["name"]);
-      option.appendChild(optionText);
-      document.getElementById("script_options").appendChild(option);
+  scripts.forEach(async element => {
+    var script = await get_JSON("scripts/"+element["file"]+".json")
+    option = document.createElement("option");
+    optionText = document.createTextNode(element["file"]);
+    option.appendChild(optionText);
+    document.getElementById("script_options").appendChild(option);
   });
   populate_script(0)
   

@@ -1,0 +1,8 @@
+{
+    "id": "devils_advotate",
+    "name":"Devil's Advocate",
+    "description":"Each night, choose a living player (different to last night): if executed tomorrow, they don't die.",
+    "alignment":"EVIL",
+    "class":"MIN",
+    "tokens":["devils_advocate_survives_execution"]
+}

@@ -1,0 +1,8 @@
+{
+    "id": "minstrel",
+    "name":"Minstrel",
+    "description":"When a Minion dies by execution, all other players (except Travellers) are drunk until dusk tomorrow.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["everyone_drunk"]
+}

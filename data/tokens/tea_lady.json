@@ -1,0 +1,8 @@
+{
+    "id": "tea_lady",
+    "name":"Tea Lady",
+    "description":"If both your alive neighbors are good, they can't die.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["tea_lady_can_not_die"]
+}

@@ -1,0 +1,8 @@
+{
+    "id": "assassin",
+    "name":"Assassin",
+    "description":"Once per game, at night*, choose a player: they die, even if for some reason they could not.",
+    "alignment":"EVIL",
+    "class":"MIN",
+    "tokens":["assassin_dead", "assassin_no_ability"]
+}

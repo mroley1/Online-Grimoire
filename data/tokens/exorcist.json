@@ -1,0 +1,8 @@
+{
+    "id": "exorcist",
+    "name":"Exorcist",
+    "description":"Each night*, choose a player (different to last night): the Demon, if chosen, learns who you are then doesn't wake tonight.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["exorcist_chosen"]
+}

@@ -1,0 +1,8 @@
+{
+    "id": "professor",
+    "name":"Professor",
+    "description":"Once per game, at night*, choose a dead player: if they are a Townsfolk, they are resurrected.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["professor_alive", "professor_no_ability"]
+}

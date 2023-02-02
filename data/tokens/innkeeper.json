@@ -1,0 +1,8 @@
+{
+    "id": "innkeeper",
+    "name":"Innkeeper",
+    "description":"Each night*, choose 2 players: they can't die tonight, but 1 is drunk until dusk.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["innkeeper_protected", "innkeeper_drunk"]
+}

@@ -1,0 +1,8 @@
+{
+    "id": "gambler",
+    "name":"Gambler",
+    "description":"Each night*, choose a player & guess their character: if you guess wrong, you die.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["gambler_dead"]
+}

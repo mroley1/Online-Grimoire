@@ -1,0 +1,8 @@
+{
+    "id": "fool",
+    "name":"Fool",
+    "description":"The first time you die, you don't.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["fool_no_ability"]
+}

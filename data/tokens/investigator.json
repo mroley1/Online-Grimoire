@@ -1,4 +1,5 @@
 {
+    "id": "investigator",
     "name":"Investigator",
     "description":"You start knowing that 1 of 2 players is a particular Minion.",
     "alignment":"GOOD",

@@ -1,4 +1,5 @@
 {
+    "id": "spy",
     "name":"Spy",
     "description":"The Spy might appear to be a good character, but is actually evil. They also see the Grimoire, so they know the characters (and status) of all players.",
     "alignment":"EVIL",

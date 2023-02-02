@@ -1,4 +1,5 @@
 {
+    "id": "virgin",
     "name":"Virgin",
     "description":"The 1st time you are nominated, if the nominator is a Townsfolk, they are executed immediately.",
     "alignment":"GOOD",
@@ -7,5 +8,5 @@
         "first":null,
         "rest":null
     },
-    "tokens":["vigin_no_ability"]
+    "tokens":["virgin_no_ability"]
 }

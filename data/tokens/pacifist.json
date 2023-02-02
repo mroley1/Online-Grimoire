@@ -1,0 +1,8 @@
+{
+    "id": "pacifist",
+    "name":"Pacifist",
+    "description":"Executed good players might not die.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":[]
+}

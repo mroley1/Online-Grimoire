@@ -1,4 +1,5 @@
 {
+    "id": "empath",
     "name":"Empath",
     "description":"Each night, you learn how many of your 2 alive neighbours are evil.",
     "alignment":"GOOD",

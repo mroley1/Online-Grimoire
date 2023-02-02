@@ -1,4 +1,5 @@
 {
+    "id": "butler",
     "name":"Butler",
     "description":"Each night, choose a player (not yourself): tomorrow, you may only vote if they are voting too.",
     "alignment":"GOOD",

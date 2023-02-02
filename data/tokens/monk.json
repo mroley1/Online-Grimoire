@@ -1,4 +1,5 @@
 {
+    "id": "monk",
     "name":"Monk",
     "description":"Each night*, choose a player (not yourself): they are safe from the Demon tonight.",
     "alignment":"GOOD",

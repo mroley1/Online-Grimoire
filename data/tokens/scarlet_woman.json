@@ -1,4 +1,5 @@
 {
+    "id": "scarlet_woman",
     "name":"Scarlet Woman",
     "description":"If there are 5 or more players alive & the Demon dies, you become the Demon. (Travellers don't count)",
     "alignment":"EVIL",

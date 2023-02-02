@@ -1,0 +1,8 @@
+{
+    "id": "pukka",
+    "name":"Pukka",
+    "description":"Each night, choose a player: they are poisoned. The previously poisoned player dies then becomes healthy.",
+    "alignment":"EVIL",
+    "class":"DEM",
+    "tokens":["pukka_poisoned", "pukka_dead"]
+}

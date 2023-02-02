@@ -1,0 +1,8 @@
+{
+    "id": "tinker",
+    "name":"Tinker",
+    "description":"You might die at any time.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":["tinker_dead"]
+}

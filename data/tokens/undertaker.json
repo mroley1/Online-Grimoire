@@ -1,4 +1,5 @@
 {
+    "id": "undertaker",
     "name":"Undertaker",
     "description":"Each night*, you learn which character died by execution today.",
     "alignment":"GOOD",

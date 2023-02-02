@@ -1,0 +1,8 @@
+{
+    "id": "courtier",
+    "name":"Courtier",
+    "description":"Once per game, at night, choose a character: they are drunk for 3 nights & 3 days.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["courtier_drunk_1", "courtier_drunk_2", "courtier_drunk_3", "courtier_no_ability"]
+}
