@@ -1,10 +1,15 @@
-.menu_main         {position: absolute; top: 0px; left: 0px; height: 100%; width: 300px; background-image: url('assets/background-img2.webp'); opacity: 0.4; transition: opacity linear 0.1s, transform ease-in-out 0.2s; }
-.menu_main:hover   {opacity: 0.6;}
-.menu_left         {position: absolute; left: 0px; top: 0px; width: 270px; height: 100%; border-right: 1px solid white; overflow: hidden;}
+.toggle_menu       {position: absolute; top: 5px; left: 5px; width: 70px; height: 70px; opacity: 0.4; transition: opacity linear 0.1s; background-color: lightslategrey; cursor: pointer; border-radius: 10px; background-image: url("assets/menu_open.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
+.toggle_menu:hover {opacity: 0.6;}
+.close_menu        {position: absolute; top: 5px; right: 5px; width: 55px; height: 55px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
+.close_menu:hover  {opacity: 0.6;}
+.menu_main         {position: absolute; top: 0px; left: 0px; height: 100%; width: 300px; background-image: url('assets/background-img2.webp');transition: transform ease-in-out 0.2s;}
+.menu_left         {position: absolute; left: 0px; top: 0px; width: 300px; height: 100%; border-right: 1px solid white; overflow: hidden;}
 .menu_toggle       {position: absolute; right: 0px; top: 0px; width: 30px; height: 100%; background-position: center; background-size: contain; background-repeat: no-repeat; cursor: pointer;}
-.menu_title        {position: fixed; width: 250px; height: 70px; opacity: 1; background-image: url('assets/botc_logo.png'); background-position: center; background-repeat: no-repeat; background-size: contain; margin: 10px;}
-.menu_body         {position: fixed; width: 250px; height: calc(100% - 110px); padding: 10px; top: 90px; overflow-y: scroll; display: block; font-size: 25px;}
-.menu_list         {font-size: 20px; color: white; cursor: pointer;}
-
-
+.menu_title        {position: fixed; width: 280px; height: 70px; opacity: 1; background-image: url('assets/botc_logo.png'); background-position: center; background-repeat: no-repeat; background-size: contain; margin: 10px;}
+.menu_body         {position: fixed; width: 280px; height: calc(100% - 110px); padding: 10px; top: 90px; overflow-y: scroll; display: block; font-size: 25px;}
+.menu_list         {position: absolute; font-size: 20px; color: white; cursor: pointer;}
+.menu_list_div     {position: relative; cursor: pointer; font-size: 20px; width: 100%;}
+.menu_token_count  {position: absolute; right: 10px; height: 20px; color: white;}
+.menu_header       {width: 233px; text-align: center; font-size: 40pt; text-shadow: 0 0 3px rgb(255, 255, 255)}
+.menu_ratio        {width: 100%; text-align: center; color: white; font-size: 15pt;}
 

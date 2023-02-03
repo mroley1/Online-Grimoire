@@ -31,22 +31,26 @@
             <div id="info_img" style="width: 250px; position: absolute; right: 0px; bottom: 0px; height: 250px; background-repeat: no-repeat; background-position: center; background-size: contain;"></div>
         </div>
 
-        <div id="menu_main" class="menu_main" style="transform: translateX(-270px);">
+        <div class="toggle_menu" onclick="javascript:open_menu()"></div>
+
+        <div id="menu_main" class="menu_main" style="transform: translateX(-300px);">
             <div class="menu_left">
                 <div class="menu_title"></div>
             </div>
             <div class="menu_body">
-                <form autocomplete="off" id="menu_landing">
-                    <span style="color: white;">script:</span>
-                    <select id="script_options" onchange="javascript:script_change()">
-                    </select><br><br>
-                    <div id="TOWN"></div><br>
-                    <div id="OUT"></div><br>
-                    <div id="MIN"></div><br>
-                    <div id="DEM"></div>
-                </form>
+                <span style="color: white;">script:</span>
+                <select id="script_options" onchange="javascript:script_change()"></select>
+                <br>
+                <span style="color: white;"># of players:</span>
+                <input type="number" min="5" max="18" value="5" style="width: 50px;" id="player_count" onchange="javascript:player_count_change()"></input>
+                <br>
+                <div id="TOWN"></div><br>
+                <div id="OUT"></div><br>
+                <div id="MIN"></div><br>
+                <div id="DEM"></div>
             </div>
-            <div id="menu_toggle" class="menu_toggle" onclick="javascript:toggle_menu()" style="background-image: url('assets/right-arrow-icon.png'); rotate: 0deg;"></div>
+            <div class="close_menu" onclick="javascript:close_menu()"></div>
+            <!--<div id="menu_toggle" class="menu_toggle" onclick="javascript:toggle_menu()" style="background-image: url('assets/right-arrow-icon.png'); rotate: 0deg;"></div>-->
         </div>
 
         <div style="position: absolute; top: 0px; right: 0px; width: 200px; height: 45px; display: inline-block;">

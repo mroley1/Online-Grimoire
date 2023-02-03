@@ -1,7 +1,16 @@
+
+class board {
+  inPlay = [];
+  townIn = 0;
+  outIn = 0;
+  minIn = 0;
+  demIn = 0;
+}
+var BOARD = new board;
+
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
-
 // corner toggles
 function visibility_toggle() {
     var self = document.getElementById("visibility_toggle")
@@ -113,48 +122,49 @@ function script_change() {
 }
 
 //menu functions
-function toggle_menu() {
-  var el0 = document.getElementById("menu_toggle")
-  var el1 = document.getElementById("menu_main")
-  if (el0.style.rotate == "180deg") {
-      el0.style.rotate = "0deg";
-      el1.style.transform = "translateX(-270px)";
-      el1.style.opacity = "";
-  } else {
-      el0.style.rotate = "180deg";
-      el1.style.transform = "translateX(0px)";
-      el1.style.opacity = "1";
-  }
+function open_menu() {
+  document.getElementById("menu_main").style.transform = "translateX(0px)";
+}
+function close_menu() {
+  document.getElementById("menu_main").style.transform = "translateX(-300px)";
 }
 async function populate_script(x){
   var script_names = await get_JSON("scripts/scripts.json")
   var script = await get_JSON("scripts/"+script_names[x]["file"]+".json")
-  function header(text,landing) {
-      var span = document.createElement(span);
-      span.style = "color: white;";
-      span.innerHTML = text;
-      document.getElementById(landing).appendChild(span);
-      var br = document.createElement("br");
-      document.getElementById(landing).appendChild(br);
+  function header(text, landing_name, color) {
+      var div = document.createElement("div");
+      div.innerHTML = text;
+      div.style.color = color;
+      div.classList = "menu_header"
+      landing = document.getElementById(landing_name)
+      landing.appendChild(div);
+      var ratio = document.createElement("div");
+      ratio.classList = "menu_ratio";
+      ratio.innerHTML = "0/0";
+      ratio.id = "ratio_" + landing_name
+      landing.appendChild(ratio);
+      landing.insertAdjacentHTML("beforeend", "<hr>");
   }
   function options(type, tokenNames) {
+      var landing = document.getElementById(type)
       tokenNames.forEach(async function(tokenJSON){
         if (tokenJSON.class == type) {
-          var landing = document.getElementById(tokenJSON["class"])
-          var input = document.createElement("input");
-          input.type = "checkbox";
-          input.id = tokenJSON["id"];
-          input.setAttribute("onclick", "javascript:cast_change('"+ tokenJSON["id"] +"')");
-          landing.appendChild(input);
-          landing.insertAdjacentHTML("beforeend", "&nbsp;");
+          var outer_div = document.createElement("div");
+          outer_div.classList = "menu_list_div";
+          outer_div.title = tokenJSON["description"];
+          outer_div.setAttribute("onclick", "javascript:cast_change('"+ tokenJSON["id"] +"')");
           var label = document.createElement("label");
-          label.setAttribute("for", tokenJSON["id"]);
           label.classList = "menu_list";
-          label.title = tokenJSON["description"];
           label.innerHTML = tokenJSON["name"];
-          landing.appendChild(label);
-          var br = document.createElement("br");
-          landing.appendChild(br);
+          outer_div.appendChild(label);
+          var count_div = document.createElement("div");
+          count_div.classList = "menu_token_count";
+          count_div.innerHTML = 0;
+          outer_div.appendChild(count_div);
+          outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
+          var hr = document.createElement("hr");
+          outer_div.appendChild(hr);
+          landing.appendChild(outer_div)
         }
       })
   }
@@ -167,16 +177,16 @@ async function populate_script(x){
   }
   console.log(scriptTokens);
   clear("TOWN")
-  header("Town","TOWN")
+  header("Town","TOWN", "#0033cc")
   options("TOWN", scriptTokens)
   clear("OUT")
-  header("Outsiders", "OUT")
+  header("Outsiders", "OUT", "#1a53ff")
   options("OUT", scriptTokens)
   clear("MIN")
-  header("Minions", "MIN")
+  header("Minions", "MIN", "#b30000")
   options("MIN", scriptTokens)
   clear("DEM")
-  header("Demons", "DEM")
+  header("Demons", "DEM", "#e60000")
   options("DEM", scriptTokens)
 }
 async function load_scripts(){
@@ -188,7 +198,7 @@ async function load_scripts(){
     option.appendChild(optionText);
     document.getElementById("script_options").appendChild(option);
   });
-  populate_script(0)
+  populate_script(0) ////////////// turn this back
   
 }
 function cast_change(id) {
@@ -198,6 +208,15 @@ function cast_change(id) {
   } else {
       remove_token(id)
   }
+}
+function player_count_change() {
+  number = document.getElementById("player_count").value;
+  number = parseInt(number)-5;
+  var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
+  document.getElementById("ratio_TOWN").innerHTML = BOARD.townIn + "/" + table[number][0];
+  document.getElementById("ratio_OUT").innerHTML = BOARD.outIn + "/" + table[number][1];
+  document.getElementById("ratio_MIN").innerHTML = BOARD.minIn + "/" + table[number][2];
+  document.getElementById("ratio_DEM").innerHTML = BOARD.demIn + "/" + table[number][3];
 }
 
 //drag functions
@@ -262,11 +281,10 @@ function setTranslate(xPos, yPos, el) {
 //if you click on black space
 function neutralClick() {
   hideInfo()
-  if (document.getElementById("menu_toggle").style.rotate == "180deg"){
-    toggle_menu()
-  }
+  close_menu()
 }
 
+//night order
 function toggle_night_order(night) {
   first = document.getElementById("first_night")
   other = document.getElementById("other_night")
