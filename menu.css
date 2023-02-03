@@ -10,6 +10,6 @@
 .menu_list         {position: absolute; font-size: 20px; color: white; cursor: pointer;}
 .menu_list_div     {position: relative; cursor: pointer; font-size: 20px; width: 100%;}
 .menu_token_count  {position: absolute; right: 10px; height: 20px; color: white;}
-.menu_header       {width: 233px; text-align: center; font-size: 40pt; text-shadow: 0 0 3px rgb(255, 255, 255)}
+.menu_header       {width: 263px; text-align: center; font-size: 40pt; text-shadow: 0 0 3px rgb(255, 255, 255)}
 .menu_ratio        {width: 100%; text-align: center; color: white; font-size: 15pt;}
 

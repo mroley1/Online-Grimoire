@@ -12,3 +12,5 @@ html, body {overscroll-behavior: none;}
 .info_name_feild {height: 40px; width: 430px; position: absolute; top: 180px; right: 0px; color:black; font-size: 20pt; background-color: #afafaf;}
 .night_order_tab {width: 90px; height: 90px; display: inline-block; background-color: aqua;}
 .night_select {width: 96px; height: 41px; position: absolute; text-align: center; font-family: PiratesBay; font-size: 30pt; border: black 2px solid; background-image: url("assets/vines.png"); color: #afafaf; cursor: pointer;}
+.trashcan {position: absolute; bottom: 5px; left: 5px; width: 70px; height: 70px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; border-radius: 10px; background-image: url("assets/delete.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
+.trashcan:hover {opacity: 0.7;}

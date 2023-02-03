@@ -37,7 +37,8 @@ function move_toggle() {
 }
 
 //info functions
-async function infoCall(id) {
+async function infoCall(id, uid) {
+  console.log(id, uid)
     document.getElementById("info_img").style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
     var roleJSON = await get_JSON("tokens/"+id+".json")
     document.getElementById("info_title").innerHTML = roleJSON["name"];
@@ -48,66 +49,69 @@ async function infoCall(id) {
         div.className = "info_tokens";
         TokenId = roleJSON["tokens"][i]
         div.style.backgroundImage = "url('assets/reminders/"+TokenId+".png')";
-        div.id = "info_"+roleJSON["tokens"][i];
+        div.id = "info_"+roleJSON["tokens"][i]+"_"+uid;
         div.style.cursor = "pointer";
-        if (document.getElementById(TokenId)!=undefined){
+        if (document.getElementById(TokenId+"_"+uid)!=undefined){
           div.style.opacity = 0.7;
-          div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"')")
+          div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"', "+ uid +")")
         } else {
-          div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"')")
+          div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"', "+ uid +")")
           
         }
         document.getElementById("info_token_landing").appendChild(div);
     }
-    document.getElementById("info_name_feild").value = document.getElementById(id+"_name").innerHTML
-    document.getElementById("info_name_feild").setAttribute("onchange", "javascript:nameIn('"+ id +"')")
-    document.getElementById("delete_button").setAttribute("onclick", "javascript:remove_token('"+ id +"')")
+    document.getElementById("info_name_feild").value = document.getElementById(id+"_name_" + uid).innerHTML
+    document.getElementById("info_name_feild").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")")
+    document.getElementById("delete_button").setAttribute("onclick", "javascript:remove_token('"+ id +"', "+ uid +")")
     document.getElementById("info_box").style.display = "inherit";
 }
-function spawnReminder(id) {
+function spawnReminder(id, uid) {
     var div = document.createElement("div");
     div.classList = "reminder drag";
     div.style = "background-image: url('assets/reminders/"+id+".png'); left: "+(parseInt(window.visualViewport.width/2)-37)+"; top: calc(50% - 37.5px)";
-    div.id = id;
+    div.id = id + "_" + uid;
     document.getElementById("pip_layer").appendChild(div);
-    var reminder = document.getElementById("info_"+id)
+    var reminder = document.getElementById("info_"+id+"_"+uid)
     reminder.style.opacity = 0.7;
-    reminder.setAttribute("onclick", "javascript:recall_reminder_button('"+ id +"')")
+    reminder.setAttribute("onclick", "javascript:recall_reminder_button('"+ id +"', "+ uid +")")
     dragInit();
 }
-function recall_reminder_button(id) {
-  var reminder = document.getElementById("info_"+id)
+function recall_reminder_button(id, uid) {
+  var reminder = document.getElementById("info_"+id+"_"+uid)
   reminder.style.opacity = 1;
-  reminder.setAttribute("onclick", "javascript:spawnReminder('"+ id +"')")
-  rm = document.getElementById(id);
+  reminder.setAttribute("onclick", "javascript:spawnReminder('"+ id +"', "+ uid +")")
+  rm = document.getElementById(id+"_"+uid);
   rm.parentNode.removeChild(rm);
 }
 function hideInfo() {
     document.getElementById("info_box").style.display = "none";
 }
-function nameIn(id) {
-  document.getElementById(id+"_name").innerHTML = document.getElementById("info_name_feild").value;
+function nameIn(id, uid) {
+  document.getElementById(id+"_name_"+uid).innerHTML = document.getElementById("info_name_feild").value;
 }
 
 //token functions
 function spawnToken(id) {
+  var time = new Date();
+  var uid = time.getMilliseconds()
   var div = document.createElement("div");
-  div.setAttribute("onclick", "javascript:infoCall('"+ id +"')");
+  div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
   div.classList = "role_token drag";
   div.style = "background-image: url('assets/roles/"+id+"_token.png'); left: "+(parseInt(window.visualViewport.width/2)-75)+"px; top: calc(50% - 75px)";
-  div.id = id+"_token";
+  div.id = id+"_token_"+uid;
   var name = document.createElement("span")
   name.classList = "token_text"
-  name.id = id+"_name";
+  name.id = id+"_name_"+uid;
   div.appendChild(name);
   document.getElementById("token_layer").appendChild(div);
+  document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1
+  player_count_change()
   dragInit();
 }
-function remove_token(id) {
+function remove_token(id, uid) {
   var tokens = document.getElementById("info_token_landing").children
-  rm = document.getElementById(id+"_token")
+  rm = document.getElementById(id+"_token_"+uid)
   rm.parentNode.removeChild(rm);
-  document.getElementById(id).checked = false;
   for (i = 0; i < tokens.length; i++) {
     if (tokens[i].style.opacity == 0.7) {
       tid = tokens[i].id.substring(5,tokens[i].id.length)
@@ -115,6 +119,8 @@ function remove_token(id) {
       rm.parentNode.removeChild(rm);
     }
   }
+  document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)-1
+  player_count_change()
   hideInfo()
 }
 function script_change() {
@@ -127,6 +133,18 @@ function open_menu() {
 }
 function close_menu() {
   document.getElementById("menu_main").style.transform = "translateX(-300px)";
+}
+async function load_scripts(){
+  var scripts = await get_JSON("scripts/scripts.json")
+  scripts.forEach(async element => {
+    var script = await get_JSON("scripts/"+element["file"]+".json")
+    option = document.createElement("option");
+    optionText = document.createTextNode(element["file"]);
+    option.appendChild(optionText);
+    document.getElementById("script_options").appendChild(option);
+  });
+  populate_script(0) ////////////// turn this back
+  
 }
 async function populate_script(x){
   var script_names = await get_JSON("scripts/scripts.json")
@@ -152,7 +170,7 @@ async function populate_script(x){
           var outer_div = document.createElement("div");
           outer_div.classList = "menu_list_div";
           outer_div.title = tokenJSON["description"];
-          outer_div.setAttribute("onclick", "javascript:cast_change('"+ tokenJSON["id"] +"')");
+          outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"')");
           var label = document.createElement("label");
           label.classList = "menu_list";
           label.innerHTML = tokenJSON["name"];
@@ -160,6 +178,7 @@ async function populate_script(x){
           var count_div = document.createElement("div");
           count_div.classList = "menu_token_count";
           count_div.innerHTML = 0;
+          count_div.id = tokenJSON["id"] + "_count";
           outer_div.appendChild(count_div);
           outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
           var hr = document.createElement("hr");
@@ -188,35 +207,36 @@ async function populate_script(x){
   clear("DEM")
   header("Demons", "DEM", "#e60000")
   options("DEM", scriptTokens)
-}
-async function load_scripts(){
-  var scripts = await get_JSON("scripts/scripts.json")
-  scripts.forEach(async element => {
-    var script = await get_JSON("scripts/"+element["file"]+".json")
-    option = document.createElement("option");
-    optionText = document.createTextNode(element["file"]);
-    option.appendChild(optionText);
-    document.getElementById("script_options").appendChild(option);
-  });
-  populate_script(0) ////////////// turn this back
-  
-}
-function cast_change(id) {
-  var check = document.getElementById(id)
-  if (check.checked) {
-      spawnToken(id)
-  } else {
-      remove_token(id)
-  }
+  player_count_change()
 }
 function player_count_change() {
   number = document.getElementById("player_count").value;
   number = parseInt(number)-5;
   var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
-  document.getElementById("ratio_TOWN").innerHTML = BOARD.townIn + "/" + table[number][0];
-  document.getElementById("ratio_OUT").innerHTML = BOARD.outIn + "/" + table[number][1];
-  document.getElementById("ratio_MIN").innerHTML = BOARD.minIn + "/" + table[number][2];
-  document.getElementById("ratio_DEM").innerHTML = BOARD.demIn + "/" + table[number][3];
+  var town_count = 0
+  var town = document.getElementById("TOWN").getElementsByClassName("menu_token_count")
+  for (i = 0; i < town.length; i++) {
+    town_count = town_count + parseInt(town[i].innerHTML)
+  }
+  document.getElementById("ratio_TOWN").innerHTML = town_count + "/" + table[number][0];
+  var out_count = 0
+  var out = document.getElementById("OUT").getElementsByClassName("menu_token_count")
+  for (i = 0; i < out.length; i++) {
+    out_count = out_count + parseInt(out[i].innerHTML)
+  }
+  document.getElementById("ratio_OUT").innerHTML = out_count + "/" + table[number][1];
+  var min_count = 0
+  var min = document.getElementById("MIN").getElementsByClassName("menu_token_count")
+  for (i = 0; i < min.length; i++) {
+    min_count = min_count + parseInt(min[i].innerHTML)
+  }
+  document.getElementById("ratio_MIN").innerHTML = min_count + "/" + table[number][2];
+  var dem_count = 0
+  var dem = document.getElementById("DEM").getElementsByClassName("menu_token_count")
+  for (i = 0; i < dem.length; i++) {
+    dem_count = dem_count + parseInt(dem[i].innerHTML)
+  }
+  document.getElementById("ratio_DEM").innerHTML = dem_count + "/" + table[number][3];
 }
 
 //drag functions
@@ -316,7 +336,7 @@ async function populate_night_order(night) {
   tokens = document.getElementById("token_layer").children
   var inPlay = new Array(tokens.length)
   for (i = 0; i<inPlay.length;i++) {
-    inPlay[i] = tokens[i].id.substring(0, tokens[i].id.length-6)
+    inPlay[i] = tokens[i].id.substring(0, tokens[i].id.length-10)
   }
   for (i = 0;i<order.length;i++) {
     for (j = 0; j<inPlay.length; j++) {
