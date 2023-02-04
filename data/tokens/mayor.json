@@ -4,9 +4,7 @@
     "description":"If only 3 players live & no execution occurs, your team wins. If you die at night, another player might die instead.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "nightOrder":{
-        "first":null,
-        "rest":null
-    },
-    "tokens":[]
+    "tokens":[],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

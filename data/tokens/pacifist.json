@@ -4,5 +4,7 @@
     "description":"Executed good players might not die.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "tokens":[]
+    "tokens":[],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

@@ -1,0 +1,10 @@
+{
+    "id": "mutant",
+    "name":"Mutant",
+    "description":"If you are “mad” about being an Outsider, you might be executed.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":[],
+    "first_night_desc":"",
+    "second_night_dec":""
+}

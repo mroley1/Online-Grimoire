@@ -4,5 +4,7 @@
     "description":"You start knowing which Outsiders are in play. If 1 died today, choose a player tonight: they die. [-1 or +1 Outsider]",
     "alignment":"EVIL",
     "class":"MIN",
-    "tokens":["godfather_died_today", "godfather_dead"]
+    "tokens":["godfather_died_today", "godfather_dead"],
+    "first_night_desc":"Show each of the Outsider tokens in play.",
+    "second_night_dec":"If an Outsider died today: The Godfather points to a player. That player dies."
 }

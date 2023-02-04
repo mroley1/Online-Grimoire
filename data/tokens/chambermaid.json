@@ -4,5 +4,7 @@
     "description":"Each night, choose 2 alive players (not yourself): you learn how many woke tonight due to their ability.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "tokens":[]
+    "tokens":[],
+    "first_night_desc":"The Chambermaid points to two players. Show the number signal (0, 1, 2, …) for how many of those players wake tonight for their ability.",
+    "second_night_dec":"The Chambermaid points to two players. Show the number signal (0, 1, 2, …) for how many of those players wake tonight for their ability."
 }

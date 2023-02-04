@@ -1,0 +1,10 @@
+{
+    "id": "klutz",
+    "name":"Klutz",
+    "description":"When you learn that you died, publicly choose 1 alive player: if they are evil, your team loses.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":[""],
+    "first_night_desc":"",
+    "second_night_dec":""
+}

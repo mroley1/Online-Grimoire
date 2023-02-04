@@ -1,0 +1,10 @@
+{
+    "id": "flowergirl",
+    "name":"Flowergirm",
+    "description":"Each night*, you learn if a Demon voted today.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["flowergirl_demon_voted", "flowergirl_demon_not_voted"],
+    "first_night_desc":"",
+    "second_night_dec":"Nod 'yes' or shake head 'no' for whether the Demon voted today. Place the 'Demon not voted' marker (remove 'Demon voted', if any)."
+}

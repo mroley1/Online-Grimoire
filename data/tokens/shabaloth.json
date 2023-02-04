@@ -4,5 +4,7 @@
     "description":"Each night*, choose 2 players: they die. A dead player you chose last night might be regurgitated.",
     "alignment":"EVIL",
     "class":"DEM",
-    "tokens":["shabaloth_dead", "shabaloth_alive"]
+    "tokens":["shabaloth_dead", "shabaloth_alive"],
+    "first_night_desc":"",
+    "second_night_dec":"One player that the Shabaloth chose the previous night might be resurrected. The Shabaloth points to two players. Those players die."
 }

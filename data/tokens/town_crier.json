@@ -1,0 +1,10 @@
+{
+    "id": "town_crier",
+    "name":"Town Crier",
+    "description":"Each night*, you learn if a Minion nominated today.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["town_crier_minions_not_nominated", "town_crier_minion_nominated"],
+    "first_night_desc":"",
+    "second_night_dec":"Nod 'yes' or shake head 'no' for whether a Minion nominated today. Place the 'Minion not nominated' marker (remove 'Minion nominated', if any)."
+}

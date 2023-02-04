@@ -4,9 +4,7 @@
     "description":"Each night*, choose a player (not yourself): they are safe from the Demon tonight.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "nightOrder":{
-        "first":null,
-        "rest":1
-    },
-    "tokens":["monk_protected"]
+    "tokens":["monk_protected"],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

@@ -1,0 +1,10 @@
+{
+    "id": "evil_twin",
+    "name":"Evil Twin",
+    "description":"You & an opposing player know each other. If the good player is executed, evil wins. Good can't win if you both live.",
+    "alignment":"EVIL",
+    "class":"MIN",
+    "tokens":["evil_twin_twin"],
+    "first_night_desc":"Wake the Evil Twin and their twin. Confirm that they have acknowledged each other. Point to the Evil Twin. Show their Evil Twin token to the twin player. Point to the twin. Show their character token to the Evil Twin player.",
+    "second_night_dec":""
+}

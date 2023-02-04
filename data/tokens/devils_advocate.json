@@ -4,5 +4,7 @@
     "description":"Each night, choose a living player (different to last night): if executed tomorrow, they don't die.",
     "alignment":"EVIL",
     "class":"MIN",
-    "tokens":["devils_advocate_survives_execution"]
+    "tokens":["devils_advocate_survives_execution"],
+    "first_night_desc":"The Devil's Advocate points to a living player. That player survives execution tomorrow.",
+    "second_night_dec":"The Devil’s Advocate points to a living player, different from the previous night. That player survives execution tomorrow."
 }

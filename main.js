@@ -1,30 +1,76 @@
 
-class board {
-  inPlay = [];
-  townIn = 0;
-  outIn = 0;
-  minIn = 0;
-  demIn = 0;
-}
-var BOARD = new board;
+var UID_LENGTH = 13
 
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 // corner toggles
-function visibility_toggle() {
+function visibility_toggle() { 
     var self = document.getElementById("visibility_toggle")
     self.style.backgroundImage = "url(assets/visibility.png)"
-    if (self.style.backgroundColor!="lightblue") {
+    if (self.style.backgroundColor!="lightblue") { 
+      //hide
         self.style.backgroundColor = "lightblue";
+        document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
         document.getElementById("pip_layer").style.display = "none"
-        document.getElementById("token_layer").style.display = "none"
-    } else {
+        tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
+        for (i = 0; i < tokens.length; i++) {
+          var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
+          var uid = tokens[i].getAttribute("uid");
+          document.getElementById(id+"_"+uid+"_death").style.display = "none";
+          switch (tokens[i].getAttribute("viability")) {
+          case "alive":
+            tokens[i].style.backgroundImage = "url(assets/token.png)"
+            break;
+          case "dead_vote":
+            tokens[i].style.backgroundImage = "url(assets/death.png)"
+            document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
+            break;
+          case "dead":
+            tokens[i].style.backgroundImage = "url(assets/death.png)"
+            break;
+          default: tokens[i].setAttribute("viability", "alive");
+          }
+          tokens[i].setAttribute("onclick", "javascript:deathCycle('"+ id + "', " + uid +")");
+        }
+    } else { 
+      //show
         self.style.backgroundColor = "rgb(66, 66, 66)";
         self.style.backgroundImage = "url(assets/visibility_off.png)"
         document.getElementById("pip_layer").style.display = "inherit"
-        document.getElementById("token_layer").style.display = "inherit"
+        tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
+        for (i = 0; i < tokens.length; i++) {
+          var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
+          var uid = tokens[i].getAttribute("uid");
+          tokens[i].style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
+          document.getElementById(id+"_"+uid+"_vote").style.display = "none";
+          if (tokens[i].getAttribute("viability")=="dead_vote" || tokens[i].getAttribute("viability")=="dead") {
+            document.getElementById(id+"_"+uid+"_death").style.display = "inherit"
+          } else {
+            document.getElementById(id+"_"+uid+"_death").style.display = "none"
+          }
+          tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
+        }
     }
+}
+function deathCycle(id, uid) {
+  let token = document.getElementById(id+"_token_"+uid);
+  switch (token.getAttribute("viability")) {
+  case "alive": //toDeadVote
+    token.setAttribute("viability", "dead_vote");
+    token.style.backgroundImage = "url(assets/death.png)"
+    document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
+    break;
+  case "dead_vote": //toDead
+    token.setAttribute("viability", "dead");
+    document.getElementById(id + "_" + uid + "_vote").style.display = "none";
+    break;
+  case "dead": // toAlive
+    token.setAttribute("viability", "alive");
+    token.style.backgroundImage = "url(assets/token.png)"
+    break;
+  default: token.setAttribute("viability", "alive");
+  }
 }
 
 function move_toggle() {
@@ -38,7 +84,6 @@ function move_toggle() {
 
 //info functions
 async function infoCall(id, uid) {
-  console.log(id, uid)
     document.getElementById("info_img").style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
     var roleJSON = await get_JSON("tokens/"+id+".json")
     document.getElementById("info_title").innerHTML = roleJSON["name"];
@@ -56,7 +101,6 @@ async function infoCall(id, uid) {
           div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"', "+ uid +")")
         } else {
           div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"', "+ uid +")")
-          
         }
         document.getElementById("info_token_landing").appendChild(div);
     }
@@ -93,12 +137,26 @@ function nameIn(id, uid) {
 //token functions
 function spawnToken(id) {
   var time = new Date();
-  var uid = time.getMilliseconds()
+  var uid = time.getTime()
   var div = document.createElement("div");
   div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
   div.classList = "role_token drag";
   div.style = "background-image: url('assets/roles/"+id+"_token.png'); left: "+(parseInt(window.visualViewport.width/2)-75)+"px; top: calc(50% - 75px)";
   div.id = id+"_token_"+uid;
+  div.setAttribute("viability", "alive");
+  div.setAttribute("uid", uid);
+  var death = document.createElement("img");
+  death.src = "assets/shroud.png";
+  death.classList = "token_death";
+  death.id = id + "_" + uid + "_death";
+  death.style.display = "none" // none
+  div.appendChild(death);
+  var vote = document.createElement("img");
+  vote.src = "assets/vote.png";
+  vote.classList = "token_vote";
+  vote.id = id + "_" + uid + "_vote";
+  vote.style.display = "none" // none
+  div.appendChild(vote);
   var name = document.createElement("span")
   name.classList = "token_text"
   name.id = id+"_name_"+uid;
@@ -194,7 +252,6 @@ async function populate_script(x){
   for (i = 1; i < script.length; i++) {
     scriptTokens[i-1] = await get_JSON("tokens/"+script[i].id+".json")
   }
-  console.log(scriptTokens);
   clear("TOWN")
   header("Town","TOWN", "#0033cc")
   options("TOWN", scriptTokens)
@@ -336,7 +393,7 @@ async function populate_night_order(night) {
   tokens = document.getElementById("token_layer").children
   var inPlay = new Array(tokens.length)
   for (i = 0; i<inPlay.length;i++) {
-    inPlay[i] = tokens[i].id.substring(0, tokens[i].id.length-10)
+    inPlay[i] = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH))
   }
   for (i = 0;i<order.length;i++) {
     for (j = 0; j<inPlay.length; j++) {
@@ -352,7 +409,6 @@ async function gen_night_order_tab(id) {
   div.classList = "night_order_tab";
   div.innerHTML = data.name;//do this by picture
   document.getElementById("night_order_tab_landing").appendChild(div);
-  console.log(id);
 }
 
 load_scripts()

@@ -4,5 +4,7 @@
     "description":"You might die at any time.",
     "alignment":"GOOD",
     "class":"OUT",
-    "tokens":["tinker_dead"]
+    "tokens":["tinker_dead"],
+    "first_night_desc":"",
+    "second_night_dec":"The Tinker might die."
 }

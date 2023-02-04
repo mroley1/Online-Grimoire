@@ -4,9 +4,7 @@
     "description":"There are extra Outsiders in play. [+2 Outsiders]",
     "alignment":"EVIL",
     "class":"MIN",
-    "nightOrder":{
-        "first":null,
-        "rest":null
-    },
-    "tokens":[]
+    "tokens":[],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

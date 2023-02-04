@@ -4,9 +4,7 @@
     "description":"If you die by execution, your team loses.",
     "alignment":"GOOD",
     "class":"OUT",
-    "nightOrder":{
-        "first":null,
-        "rest":null
-    },
-    "tokens":[]
+    "tokens":[],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

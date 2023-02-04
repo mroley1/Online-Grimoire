@@ -4,5 +4,7 @@
     "description":"Each night, the 1st player to choose you with their ability is drunk until dusk. You become their alignment.",
     "alignment":"GOOD",
     "class":"OUT",
-    "tokens":["goon_drunk"]
+    "tokens":["goon_drunk"],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

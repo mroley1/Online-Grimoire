@@ -4,5 +4,7 @@
     "description":"The first time you die, you don't.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "tokens":["fool_no_ability"]
+    "tokens":["fool_no_ability"],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

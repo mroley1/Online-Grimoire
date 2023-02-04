@@ -4,9 +4,7 @@
     "description":"You are safe from the Demon.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "nightOrder":{
-        "first":null,
-        "rest":null
-    },
-    "tokens":[]
+    "tokens":[],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

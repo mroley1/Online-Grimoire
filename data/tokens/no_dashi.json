@@ -1,0 +1,10 @@
+{
+    "id": "no_dasi",
+    "name":"No Dashi",
+    "description":"Each night*, choose a player: they die. Your 2 Townsfolk neighbours are poisoned.",
+    "alignment":"EVIL",
+    "class":"DEM",
+    "tokens":["no_dasi_dead", "no_dasi_poisoned"],
+    "first_night_desc":"",
+    "second_night_dec":"The No Dashii points to a player. That player dies."
+}

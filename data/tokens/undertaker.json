@@ -4,9 +4,7 @@
     "description":"Each night*, you learn which character died by execution today.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "nightOrder":{
-        "first":null,
-        "rest":8
-    },
-    "tokens":["undertaker_executed"]
+    "tokens":["undertaker_executed"],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

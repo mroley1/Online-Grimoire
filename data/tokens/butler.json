@@ -4,9 +4,7 @@
     "description":"Each night, choose a player (not yourself): tomorrow, you may only vote if they are voting too.",
     "alignment":"GOOD",
     "class":"OUT",
-    "nightOrder":{
-        "first":7,
-        "rest":7
-    },
-    "tokens":["butler_master"]
+    "tokens":["butler_master"],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

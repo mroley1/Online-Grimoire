@@ -4,5 +4,7 @@
     "description":"Each day, you may make a public statement. Tonight, if it was true, a player dies.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "tokens":["gossip_dead"]
+    "tokens":["gossip_dead"],
+    "first_night_desc":"",
+    "second_night_dec":"If the Gossip's public statement was true: Choose a player not protected from dying tonight. That player dies."
 }

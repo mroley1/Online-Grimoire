@@ -4,9 +4,7 @@
     "description":"Each night*, choose a player: they die. If you kill yourself this way, a Minion becomes the Imp.",
     "alignment":"EVIL",
     "class":"DEM",
-    "nightOrder":{
-        "first":null,
-        "rest":3
-    },
-    "tokens":["imp_dead"]
+    "tokens":["imp_dead"],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

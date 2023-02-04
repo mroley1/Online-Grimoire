@@ -1,0 +1,10 @@
+{
+    "id": "barber",
+    "name":"Barber",
+    "description":"If you died today or tonight, the Demon may choose 2 players (not another Demon) to swap characters.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":["barber_haircuts_tonight"],
+    "first_night_desc":"",
+    "second_night_dec":"If the Barber died today: Wake the Demon. Show the 'This character selected you' card, then Barber token. The Demon either shows a 'no' head signal, or points to 2 players. If they chose players: Swap the character tokens. Wake each player. Show 'You are', then their new character token."
+}

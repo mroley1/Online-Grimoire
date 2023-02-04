@@ -1,0 +1,10 @@
+{
+    "id": "mathematician",
+    "name":"Mathematician",
+    "description":"Each night, you learn how many players' abilities worked abnormally (since dawn) due to another character's ability.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["mathematician_abnormal"],
+    "first_night_desc":"Show the hand signal for the number (0, 1, 2, etc.) of players whose ability malfunctioned due to other abilities.",
+    "second_night_dec":"Show the hand signal for the number (0, 1, 2, etc.) of players whose ability malfunctioned due to other abilities."
+}

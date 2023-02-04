@@ -1,0 +1,10 @@
+{
+    "id": "fang_gu",
+    "name":"Fang Gu",
+    "description":"Each night*, choose a player: they die. The 1st Outsider this kills becomes an evil Fang Gu & you die instead. [+1 Outsider]",
+    "alignment":"EVIL",
+    "class":"DEM",
+    "tokens":["fang_gu_dead", "fang_gu_once"],
+    "first_night_desc":"",
+    "second_night_dec":"The Fang Gu points to a player. That player dies. Or, if that player was an Outsider and there are no other Fang Gu in play: The Fang Gu dies instead of the chosen player. The chosen player is now an evil Fang Gu. Wake the new Fang Gu. Show the 'You are' card, then the Fang Gu token. Show the 'You are' card, then the thumb-down 'evil' hand sign."
+}

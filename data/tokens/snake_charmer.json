@@ -1,0 +1,10 @@
+{
+    "id": "snake_charmer",
+    "name":"Snake Charmer",
+    "description":"Each night, choose an alive player: a chosen Demon swaps characters & alignments with you & is then poisoned.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["snake_charmer_poisoned"],
+    "first_night_desc":"The Snake Charmer points to a player. If that player is the Demon: swap the Demon and Snake Charmer character and alignments. Wake each player to inform them of their new role and alignment. The new Snake Charmer is poisoned.",
+    "second_night_dec":"The Snake Charmer points to a player. If that player is the Demon: swap the Demon and Snake Charmer character and alignments. Wake each player to inform them of their new role and alignment. The new Snake Charmer is poisoned."
+}

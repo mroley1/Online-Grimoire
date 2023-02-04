@@ -4,5 +4,7 @@
     "description":"If both your alive neighbors are good, they can't die.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "tokens":["tea_lady_can_not_die"]
+    "tokens":["tea_lady_can_not_die"],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

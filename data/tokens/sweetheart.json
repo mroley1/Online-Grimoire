@@ -1,0 +1,10 @@
+{
+    "id": "sweetheart",
+    "name":"Sweetheart",
+    "description":"When you die, 1 player is drunk from now on.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":["sweetheart_drunk"],
+    "first_night_desc":"",
+    "second_night_dec":"Choose a player that is drunk."
+}

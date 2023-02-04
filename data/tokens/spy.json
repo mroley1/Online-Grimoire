@@ -4,9 +4,7 @@
     "description":"The Spy might appear to be a good character, but is actually evil. They also see the Grimoire, so they know the characters (and status) of all players.",
     "alignment":"EVIL",
     "class":"MIN",
-    "nightOrder":{
-        "first":8,
-        "rest":9
-    },
-    "tokens":[]
+    "tokens":[],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

@@ -4,5 +4,7 @@
     "description":"Each night*, choose a player (different to last night): the Demon, if chosen, learns who you are then doesn't wake tonight.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "tokens":["exorcist_chosen"]
+    "tokens":["exorcist_chosen"],
+    "first_night_desc":"",
+    "second_night_dec":"The Exorcist points to a player, different from the previous night. If that player is the Demon: Wake the Demon. Show the Exorcist token. Point to the Exorcist. The Demon does not act tonight."
 }

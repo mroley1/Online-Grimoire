@@ -4,9 +4,7 @@
     "description":"You start knowing that 1 of 2 players is a particular Townsfolk.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "nightOrder":{
-        "first":1,
-        "rest":null
-    },
-    "tokens":["washerwoman_townsfolk", "washerwoman_wrong"]
+    "tokens":["washerwoman_townsfolk", "washerwoman_wrong"],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

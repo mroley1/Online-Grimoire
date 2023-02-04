@@ -4,5 +4,7 @@
     "description":"If the Demon dies by execution (ending the game), play for 1 more day. If a player is then executed, their team loses.",
     "alignment":"EVIL",
     "class":"MIN",
-    "tokens":[]
+    "tokens":[],
+    "first_night_desc":"",
+    "second_night_dec":""
 }

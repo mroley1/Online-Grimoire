@@ -4,5 +4,7 @@
     "description":"Once per game, at night*, choose a player: they die, even if for some reason they could not.",
     "alignment":"EVIL",
     "class":"MIN",
-    "tokens":["assassin_dead", "assassin_no_ability"]
+    "tokens":["assassin_dead", "assassin_no_ability"],
+    "first_night_desc":"",
+    "second_night_dec":"If the Assassin has not yet used their ability: The Assassin either shows the 'no' head signal, or points to a player. That player dies."
 }
