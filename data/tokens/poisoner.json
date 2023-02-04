@@ -6,5 +6,8 @@
     "class":"MIN",
     "tokens":["poisoner_poisoned"],
     "first_night_desc":"",
-    "second_night_dec":""
+    "second_night_dec":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

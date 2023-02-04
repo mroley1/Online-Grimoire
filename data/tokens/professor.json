@@ -6,5 +6,8 @@
     "class":"TOWN",
     "tokens":["professor_alive", "professor_no_ability"],
     "first_night_desc":"",
-    "second_night_dec":"If the Professor has not used their ability: The Professor either shakes their head no, or points to a player. If that player is a Townsfolk, they are now alive."
+    "second_night_dec":"If the Professor has not used their ability: The Professor either shakes their head no, or points to a player. If that player is a Townsfolk, they are now alive.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

@@ -6,5 +6,8 @@
     "class":"MIN",
     "tokens":[],
     "first_night_desc":"",
-    "second_night_dec":"The Pit-Hag points to a player and a character on the sheet. If this character is not in play, wake that player and show them the 'You are' card and the relevant character token. If the character is in play, nothing happens."
+    "second_night_dec":"The Pit-Hag points to a player and a character on the sheet. If this character is not in play, wake that player and show them the 'You are' card and the relevant character token. If the character is in play, nothing happens.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

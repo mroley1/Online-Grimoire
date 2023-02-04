@@ -6,5 +6,8 @@
     "class":"TOWN",
     "tokens":["seamstress_no_ability"],
     "first_night_desc":"The Seamstress either shows a 'no' head signal, or points to two other players. If the Seamstress chose players , nod 'yes' or shake 'no' for whether they are of same alignment.",
-    "second_night_dec":"If the Seamstress has not yet used their ability: the Seamstress either shows a 'no' head signal, or points to two other players. If the Seamstress chose players , nod 'yes' or shake 'no' for whether they are of same alignment."
+    "second_night_dec":"If the Seamstress has not yet used their ability: the Seamstress either shows a 'no' head signal, or points to two other players. If the Seamstress chose players , nod 'yes' or shake 'no' for whether they are of same alignment.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

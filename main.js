@@ -4,6 +4,7 @@ var UID_LENGTH = 13
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
+
 // corner toggles
 function visibility_toggle() { 
     var self = document.getElementById("visibility_toggle")
@@ -72,7 +73,6 @@ function deathCycle(id, uid) {
   default: token.setAttribute("viability", "alive");
   }
 }
-
 function move_toggle() {
     var self = document.getElementById("move_toggle")
     if (self.style.backgroundColor == "green") {
@@ -81,6 +81,7 @@ function move_toggle() {
         self.style.backgroundColor = "green";
     }
 }
+
 
 //info functions
 async function infoCall(id, uid) {
@@ -134,6 +135,7 @@ function nameIn(id, uid) {
   document.getElementById(id+"_name_"+uid).innerHTML = document.getElementById("info_name_feild").value;
 }
 
+
 //token functions
 function spawnToken(id) {
   var time = new Date();
@@ -184,6 +186,7 @@ function remove_token(id, uid) {
 function script_change() {
   populate_script(document.getElementById("script_options").options.selectedIndex)
 }
+
 
 //menu functions
 function open_menu() {
@@ -296,6 +299,7 @@ function player_count_change() {
   document.getElementById("ratio_DEM").innerHTML = dem_count + "/" + table[number][3];
 }
 
+
 //drag functions
 var active;
 function dragInit() {
@@ -312,7 +316,6 @@ function dragInit() {
     container.addEventListener("mousemove", drag, false);
   }
 }
-
 function dragStart(e) {
   if (document.getElementById("move_toggle").style.backgroundColor!="green" && e.target.classList.contains("role_token")){return}
   var pos = getComputedStyle(e.target)
@@ -328,11 +331,9 @@ function dragStart(e) {
   }
   
 }
-
 function dragEnd(e) {
   active = false;
 }
-
 function drag(e) {
   if (active) {
   
@@ -349,17 +350,18 @@ function drag(e) {
     setTranslate(currentX, currentY, e.target);
   }
 }
-
 function setTranslate(xPos, yPos, el) {
   el.style.left =  xPos + "px"
   el.style.top =  yPos + "px"
 }
+
 
 //if you click on black space
 function neutralClick() {
   hideInfo()
   close_menu()
 }
+
 
 //night order
 function toggle_night_order(night) {
@@ -391,23 +393,45 @@ async function populate_night_order(night) {
   var order = await get_JSON("nightsheet.json")
   order = order[night]
   tokens = document.getElementById("token_layer").children
-  var inPlay = new Array(tokens.length)
-  for (i = 0; i<inPlay.length;i++) {
-    inPlay[i] = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH))
+  var inPlay = new Set()
+  for (i = 0; i<tokens.length;i++) {
+    var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
+    inPlay.add(id)
   }
   for (i = 0;i<order.length;i++) {
-    for (j = 0; j<inPlay.length; j++) {
-      if (order[i] == inPlay[j]) {
-        gen_night_order_tab(inPlay[j])
-      }
+    if (inPlay.has(order[i])) {
+      gen_night_order_tab_role(await get_JSON("tokens/"+order[i]+".json"))
+    }
+    if (order[i].toUpperCase() == order[i]) {
+      gen_night_order_tab_info(order[i])
     }
   }
 }
-async function gen_night_order_tab(id) {
-  var data = await get_JSON("tokens/"+id+".json");
+function gen_night_order_tab_role(token_JSON) {
+  var color;
+  switch (token_JSON.class) {
+    case "TOWN":color = "#0033cc";break;
+    case "OUT":color = "#0086b3";break;
+    case "MIN":color = "#e62e00";break;
+    case "DEM":color = "#cc0000";break;
+  }
   div = document.createElement("div");
   div.classList = "night_order_tab";
-  div.innerHTML = data.name;//do this by picture
+  div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , "+color+")";
+  img = document.createElement("img");
+  img.classList = "night_order_img";
+  img.src = "assets/icons/"+token_JSON.id+".png"
+  div.appendChild(img);
+  document.getElementById("night_order_tab_landing").appendChild(div);
+}
+function gen_night_order_tab_info(info) {
+  div = document.createElement("div");
+  div.classList = "night_order_tab";
+  img = document.createElement("img");
+  img.classList = "night_order_img";
+  img.src = "assets/"+info+".png"
+  div.appendChild(img);
+  div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , #999999)";
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
 

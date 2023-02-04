@@ -6,5 +6,8 @@
     "class":"TOWN",
     "tokens":["sailor_drunk"],
     "first_night_desc":"The Sailor points to a living player. Either the Sailor, or the chosen player, is drunk.",
-    "second_night_dec":"The previously drunk player is no longer drunk. The Sailor points to a living player. Either the Sailor, or the chosen player, is drunk."
+    "second_night_dec":"The previously drunk player is no longer drunk. The Sailor points to a living player. Either the Sailor, or the chosen player, is drunk.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

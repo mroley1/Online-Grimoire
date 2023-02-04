@@ -6,5 +6,8 @@
     "class":"DEM",
     "tokens":["po_dead", "po_3_attacks"],
     "first_night_desc":"",
-    "second_night_dec":"If the Po chose no-one the previous night: The Po points to three players. Otherwise: The Po either shows the 'no' head signal , or points to a player. Chosen players die."
+    "second_night_dec":"If the Po chose no-one the previous night: The Po points to three players. Otherwise: The Po either shows the 'no' head signal , or points to a player. Chosen players die.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

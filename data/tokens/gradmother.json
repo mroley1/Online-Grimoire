@@ -6,5 +6,8 @@
     "class":"TOWN",
     "tokens":["grandmother_grandchild"],
     "first_night_desc":"Show the marked character token. Point to the marked player.",
-    "second_night_dec":"If the Grandmother’s grandchild was killed by the Demon tonight: The Grandmother dies."
+    "second_night_dec":"If the Grandmother's grandchild was killed by the Demon tonight: The Grandmother dies.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

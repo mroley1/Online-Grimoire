@@ -6,5 +6,8 @@
     "class":"MIN",
     "tokens":["devils_advocate_survives_execution"],
     "first_night_desc":"The Devil's Advocate points to a living player. That player survives execution tomorrow.",
-    "second_night_dec":"The Devil’s Advocate points to a living player, different from the previous night. That player survives execution tomorrow."
+    "second_night_dec":"The Devil's Advocate points to a living player, different from the previous night. That player survives execution tomorrow.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

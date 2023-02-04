@@ -6,5 +6,8 @@
     "class":"OUT",
     "tokens":["drunk_drunk"],
     "first_night_desc":"",
-    "second_night_dec":""
+    "second_night_dec":"",
+    "change_makeup":[],
+    "hide_token":true,
+    "hide_face":true
 }

@@ -6,5 +6,8 @@
     "class":"MIN",
     "tokens":["evil_twin_twin"],
     "first_night_desc":"Wake the Evil Twin and their twin. Confirm that they have acknowledged each other. Point to the Evil Twin. Show their Evil Twin token to the twin player. Point to the twin. Show their character token to the Evil Twin player.",
-    "second_night_dec":""
+    "second_night_dec":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }

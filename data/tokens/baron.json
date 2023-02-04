@@ -6,5 +6,8 @@
     "class":"MIN",
     "tokens":[],
     "first_night_desc":"",
-    "second_night_dec":""
+    "second_night_dec":"",
+    "change_makeup":[{"OUT":2}],
+    "hide_token":false,
+    "hide_face":true
 }

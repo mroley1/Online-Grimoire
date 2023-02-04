@@ -6,5 +6,8 @@
     "class":"DEM",
     "tokens":["vigormortis_dead", "vigormortis_has_ability", "vigormortis_poisoned"],
     "first_night_desc":"",
-    "second_night_dec":"The Vigormortis points to a player. That player dies. If a Minion, they keep their ability and one of their Townsfolk neighbours is poisoned."
+    "second_night_dec":"The Vigormortis points to a player. That player dies. If a Minion, they keep their ability and one of their Townsfolk neighbours is poisoned.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
 }
