@@ -6,7 +6,7 @@
     "class":"DEM",
     "tokens":["shabaloth_dead", "shabaloth_alive"],
     "first_night_desc":"",
-    "second_night_dec":"One player that the Shabaloth chose the previous night might be resurrected. The Shabaloth points to two players. Those players die.",
+    "other_night_desc":"One player that the Shabaloth chose the previous night might be resurrected. The Shabaloth points to two players. Those players die.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

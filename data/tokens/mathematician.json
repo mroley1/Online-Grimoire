@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":["mathematician_abnormal"],
     "first_night_desc":"Show the hand signal for the number (0, 1, 2, etc.) of players whose ability malfunctioned due to other abilities.",
-    "second_night_dec":"Show the hand signal for the number (0, 1, 2, etc.) of players whose ability malfunctioned due to other abilities.",
+    "other_night_desc":"Show the hand signal for the number (0, 1, 2, etc.) of players whose ability malfunctioned due to other abilities.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":[],
     "first_night_desc":"",
-    "second_night_dec":"If the Sage was killed by a Demon: Point to two players, one of which is that Demon.",
+    "other_night_desc":"If the Sage was killed by a Demon: Point to two players, one of which is that Demon.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

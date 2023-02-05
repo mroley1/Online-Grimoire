@@ -6,7 +6,7 @@
     "class":"DEM",
     "tokens":["pukka_poisoned", "pukka_dead"],
     "first_night_desc":"The Pukka points to a player. That player is poisoned.",
-    "second_night_dec":"The Pukka points to a player. That player is poisoned. The previously poisoned player dies.",
+    "other_night_desc":"The Pukka points to a player. That player is poisoned. The previously poisoned player dies.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

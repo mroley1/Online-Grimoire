@@ -363,7 +363,7 @@ function neutralClick() {
 }
 
 
-//night order
+//night order and jinx
 function toggle_night_order(night) {
   first = document.getElementById("first_night")
   other = document.getElementById("other_night")
@@ -396,18 +396,18 @@ async function populate_night_order(night) {
   var inPlay = new Set()
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-    inPlay.add(id)
+    if (tokens[i].getAttribute("viability")=="alive"){inPlay.add(id)}
   }
   for (i = 0;i<order.length;i++) {
     if (inPlay.has(order[i])) {
-      gen_night_order_tab_role(await get_JSON("tokens/"+order[i]+".json"))
+      gen_night_order_tab_role(await get_JSON("tokens/"+order[i]+".json"), night)
     }
     if (order[i].toUpperCase() == order[i]) {
       gen_night_order_tab_info(order[i])
     }
   }
 }
-function gen_night_order_tab_role(token_JSON) {
+function gen_night_order_tab_role(token_JSON, night) {
   var color;
   switch (token_JSON.class) {
     case "TOWN":color = "#0033cc";break;
@@ -420,7 +420,8 @@ function gen_night_order_tab_role(token_JSON) {
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , "+color+")";
   img = document.createElement("img");
   img.classList = "night_order_img";
-  img.src = "assets/icons/"+token_JSON.id+".png"
+  img.src = "assets/icons/"+token_JSON.id+".png";
+  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON[night.substring(0,5)+"_night_desc"]+"')");
   div.appendChild(img);
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
@@ -432,7 +433,10 @@ function gen_night_order_tab_info(info) {
   img.src = "assets/"+info+".png"
   div.appendChild(img);
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , #999999)";
+  div.setAttribute("onclick", "javascript:expand_night_order_tab("+info+")");
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
+function expand_night_order_tab(text) {}
+function toggle_jinx() {}
 
 load_scripts()

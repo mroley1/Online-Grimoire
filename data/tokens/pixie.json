@@ -1,0 +1,13 @@
+{
+    "id": "pixie",
+    "name":"Pixie",
+    "description":"You start knowing 1 in-play Townsfolk. If you were mad that you were this character, you gain their ability when they die.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["pixie_mad", "pixie_has_ability"],
+    "first_night_desc":"Show the Pixie 1 in-play Townsfolk character token.",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

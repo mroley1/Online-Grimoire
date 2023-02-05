@@ -6,7 +6,7 @@
     "class":"OUT",
     "tokens":["sweetheart_drunk"],
     "first_night_desc":"",
-    "second_night_dec":"Choose a player that is drunk.",
+    "other_night_desc":"Choose a player that is drunk.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

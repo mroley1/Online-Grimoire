@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":[],
     "first_night_desc":"The Chambermaid points to two players. Show the number signal (0, 1, 2, …) for how many of those players wake tonight for their ability.",
-    "second_night_dec":"The Chambermaid points to two players. Show the number signal (0, 1, 2, …) for how many of those players wake tonight for their ability.",
+    "other_night_desc":"The Chambermaid points to two players. Show the number signal (0, 1, 2, …) for how many of those players wake tonight for their ability.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

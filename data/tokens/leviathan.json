@@ -1,0 +1,13 @@
+{
+    "id": "leviathan",
+    "name":"Leviathan",
+    "description":"If more than 1 good player is executed, you win. All players know you are in play. After day 5, evil wins.",
+    "alignment":"EVIL",
+    "class":"DEM",
+    "tokens":["leviathan_day_1", "leviathan_day_2", "leviathan_day_3", "leviathan_day_4", "leviathan_day_5", "leviathan_good_player_executed"],
+    "first_night_desc":"Place the Leviathan 'Day 1' marker. Announce 'The Leviathan is in play; this is Day 1.'",
+    "other_night_desc":"Change the Leviathan Day reminder for the next day.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

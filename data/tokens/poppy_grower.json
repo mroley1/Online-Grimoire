@@ -1,0 +1,13 @@
+{
+    "id": "poppy_grower",
+    "name":"Poppy Grower",
+    "description":"Minions & Demons do not know each other. If you die, they learn who each other are that night.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["poppy_grower_evil_wakes"],
+    "first_night_desc":"Do not inform the Demon/Minions who each other are",
+    "other_night_desc":"If the Poppy Grower has died, show the Minions/Demon who each other are.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

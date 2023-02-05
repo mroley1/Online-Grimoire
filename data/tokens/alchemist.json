@@ -1,0 +1,13 @@
+{
+    "id": "alchemist",
+    "name":"Alchemist",
+    "description":"You have a not-in-play Minion ability.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["is_the_alchemist"],
+    "first_night_desc":"Show the Alchemist a not-in-play Minion token",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

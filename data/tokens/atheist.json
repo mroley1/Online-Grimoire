@@ -1,0 +1,13 @@
+{
+    "id": "atheist",
+    "name":"Atheist",
+    "description":"The Storyteller can break the game rules & if executed, good wins, even if you are dead. [No evil characters]",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[{"DEM":0},{"MIN":0}],
+    "hide_token":false,
+    "hide_face":true
+}

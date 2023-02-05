@@ -1,0 +1,13 @@
+{
+    "id": "snitch",
+    "name":"Snitch",
+    "description":"Minions start knowing 3 not-in-play characters.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":[],
+    "first_night_desc":"After Minion info wake each Minion and show them three not-in-play character tokens. These may be the same or different to each other and the ones shown to the Demon.",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":["innkeeper_protected", "innkeeper_drunk"],
     "first_night_desc":"",
-    "second_night_dec":"The previously protected and drunk players lose those markers. The Innkeeper points to two players. Those players are protected. One is drunk.",
+    "other_night_desc":"The previously protected and drunk players lose those markers. The Innkeeper points to two players. Those players are protected. One is drunk.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

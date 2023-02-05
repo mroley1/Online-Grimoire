@@ -6,7 +6,7 @@
     "class":"MIN",
     "tokens":["assassin_dead", "assassin_no_ability"],
     "first_night_desc":"",
-    "second_night_dec":"If the Assassin has not yet used their ability: The Assassin either shows the 'no' head signal, or points to a player. That player dies.",
+    "other_night_desc":"If the Assassin has not yet used their ability: The Assassin either shows the 'no' head signal, or points to a player. That player dies.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

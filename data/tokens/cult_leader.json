@@ -1,0 +1,13 @@
+{
+    "id": "cult_leader",
+    "name":"Cult Leader",
+    "description":"Each night, you become the alignment of an alive neighbour. If all good players choose to join your cult, your team wins.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

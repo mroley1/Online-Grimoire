@@ -1,0 +1,13 @@
+{
+    "id": "puzzlemaster",
+    "name":"Puzzlemaster",
+    "description":"1 player is drunk, even if you die. If you guess (once) who it is, learn the Demon player, but guess wrong & get false info.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":["puzzlemaster_drunk", "puzzlemaster_guess_used"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

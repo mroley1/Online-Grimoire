@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":["gossip_dead"],
     "first_night_desc":"",
-    "second_night_dec":"If the Gossip's public statement was true: Choose a player not protected from dying tonight. That player dies.",
+    "other_night_desc":"If the Gossip's public statement was true: Choose a player not protected from dying tonight. That player dies.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

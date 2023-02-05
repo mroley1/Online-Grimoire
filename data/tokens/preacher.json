@@ -1,0 +1,13 @@
+{
+    "id": "preacher",
+    "name":"Preacher",
+    "description":"Each night, choose a player: a Minion, if chosen, learns this. All chosen Minions have no ability.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["preacher_at_a_sermon"],
+    "first_night_desc":"The Preacher chooses a player. If a Minion is chosen, wake the Minion and show the 'This character selected you' card and then the Preacher token.",
+    "other_night_desc":"The Preacher chooses a player. If a Minion is chosen, wake the Minion and show the 'This character selected you' card and then the Preacher token.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

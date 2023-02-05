@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":["exorcist_chosen"],
     "first_night_desc":"",
-    "second_night_dec":"The Exorcist points to a player, different from the previous night. If that player is the Demon: Wake the Demon. Show the Exorcist token. Point to the Exorcist. The Demon does not act tonight.",
+    "other_night_desc":"The Exorcist points to a player, different from the previous night. If that player is the Demon: Wake the Demon. Show the Exorcist token. Point to the Exorcist. The Demon does not act tonight.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

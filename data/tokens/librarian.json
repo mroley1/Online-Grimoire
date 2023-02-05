@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":["librarian_outsider", "librarian_wrong"],
     "first_night_desc":"",
-    "second_night_dec":"",
+    "other_night_desc":"",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

@@ -6,7 +6,7 @@
     "class":"OUT",
     "tokens":["moonchild_dead"],
     "first_night_desc":"",
-    "second_night_dec":"If the Moonchild used their ability to target a player today: If that player is good, they die.",
+    "other_night_desc":"If the Moonchild used their ability to target a player today: If that player is good, they die.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

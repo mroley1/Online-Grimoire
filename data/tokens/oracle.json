@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":[],
     "first_night_desc":"",
-    "second_night_dec":"Show the hand signal for the number (0, 1, 2, etc.) of dead evil players.",
+    "other_night_desc":"Show the hand signal for the number (0, 1, 2, etc.) of dead evil players.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

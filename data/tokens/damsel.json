@@ -1,0 +1,13 @@
+{
+    "id": "damsel",
+    "name":"Damsel",
+    "description":"All Minions know you are in play. If a Minion publicly guesses you (once), your team loses.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":["damsel_guess_used"],
+    "first_night_desc":"Wake all the Minions, show them the 'This character selected you' card and the Damsel token.",
+    "other_night_desc":"If selected by the Huntsman, wake the Damsel, show 'You are' card and a not-in-play Townsfolk token.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

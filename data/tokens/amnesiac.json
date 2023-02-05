@@ -1,0 +1,13 @@
+{
+    "id": "amnesiac",
+    "name":"Amnesiac",
+    "description":"You do not know what your ability is. Each day, privately guess what it is: you learn how accurate you are.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["amnesiac_question_mark"],
+    "first_night_desc":"Decide the Amnesiac's entire ability. If the Amnesiac's ability causes them to wake tonight: Wake the Amnesiac and run their ability.",
+    "other_night_desc":"If the Amnesiac's ability causes them to wake tonight: Wake the Amnesiac and run their ability.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

@@ -1,0 +1,13 @@
+{
+    "id": "widow",
+    "name":"Widow",
+    "description":"On your 1st night, look at the Grimoire and choose a player: they are poisoned. 1 good player knows a Widow is in play.",
+    "alignment":"EVIL",
+    "class":"MIN",
+    "tokens":["widow_poisoned", "widow_knows"],
+    "first_night_desc":"Show the Grimoire to the Widow for as long as they need. The Widow points to a player. That player is poisoned. Wake a good player. Show the 'These characters are in play' card, then the Widow character token.",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

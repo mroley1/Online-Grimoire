@@ -1,0 +1,13 @@
+{
+    "id": "magician",
+    "name":"Magician",
+    "description":"The Demon thinks you are a Minion. Minions think you are a Demon.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

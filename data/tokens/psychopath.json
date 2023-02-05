@@ -1,0 +1,13 @@
+{
+    "id": "psychopath",
+    "name":"Psychopath",
+    "description":"Each day, before nominations, you may publicly choose a player: they die. If executed, you only die if you lose roshambo.",
+    "alignment":"EVIL",
+    "class":"MIN",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

@@ -6,7 +6,7 @@
     "class":"DEM",
     "tokens":["vortox_dead"],
     "first_night_desc":"",
-    "second_night_dec":"The Vortox points to a player. That player dies.",
+    "other_night_desc":"The Vortox points to a player. That player dies.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

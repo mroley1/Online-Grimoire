@@ -1,0 +1,13 @@
+{
+    "id": "noble",
+    "name":"Noble",
+    "description":"You start knowing 3 players, 1 and only 1 of which is evil.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["noble_seen"],
+    "first_night_desc":"Point to 3 players including one evil player, in no particular order.",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

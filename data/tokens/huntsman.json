@@ -1,0 +1,13 @@
+{
+    "id": "huntsman",
+    "name":"Huntsman",
+    "description":"Once per game, at night, choose a living player: the Damsel, if chosen, becomes a not-in-play Townsfolk. [+the Damsel]",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["huntsman_no_ability"],
+    "first_night_desc":"The Huntsman shakes their head 'no' or points to a player. If they point to the Damsel, wake that player, show the 'You are' card and a not-in-play character token.",
+    "other_night_desc":"The Huntsman shakes their head 'no' or points to a player. If they point to the Damsel, wake that player, show the 'You are' card and a not-in-play character token.",
+    "change_makeup":[{"REQ":"damsel"}],
+    "hide_token":false,
+    "hide_face":true
+}

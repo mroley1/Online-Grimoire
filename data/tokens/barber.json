@@ -6,7 +6,7 @@
     "class":"OUT",
     "tokens":["barber_haircuts_tonight"],
     "first_night_desc":"",
-    "second_night_dec":"If the Barber died today: Wake the Demon. Show the 'This character selected you' card, then Barber token. The Demon either shows a 'no' head signal, or points to 2 players. If they chose players: Swap the character tokens. Wake each player. Show 'You are', then their new character token.",
+    "other_night_desc":"If the Barber died today: Wake the Demon. Show the 'This character selected you' card, then Barber token. The Demon either shows a 'no' head signal, or points to 2 players. If they chose players: Swap the character tokens. Wake each player. Show 'You are', then their new character token.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

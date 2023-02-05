@@ -4,9 +4,9 @@
     "description":"On your 1st day, publicly guess up to 5 players' characters. That night, you learn how many you got correct.",
     "alignment":"GOOD",
     "class":"TOWN",
-    "tokens":["juggler_correct"],
+    "tokens":["juggler_correct_1", "juggler_correct_2", "juggler_correct_3", "juggler_correct_4", "juggler_correct_5"],
     "first_night_desc":"",
-    "second_night_dec":"If today was the Juggler's first day: Show the hand signal for the number (0, 1, 2, etc.) of 'Correct' markers. Remove markers.",
+    "other_night_desc":"If today was the Juggler's first day: Show the hand signal for the number (0, 1, 2, etc.) of 'Correct' markers. Remove markers.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

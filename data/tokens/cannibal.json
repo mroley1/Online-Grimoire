@@ -1,0 +1,13 @@
+{
+    "id": "cannibal",
+    "name":"Cannibal",
+    "description":"You have the ability of the recently killed executee. If they are evil, you are poisoned until a good player dies by execution.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["cannibal_poisoned", "cannibal_died_today"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

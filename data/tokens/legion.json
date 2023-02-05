@@ -1,0 +1,13 @@
+{
+    "id": "legion",
+    "name":"Legion",
+    "description":"Each night*, a player might die. Executions fail if only evil voted. You register as a Minion too. [Most players are Legion]",
+    "alignment":"EVIL",
+    "class":"DEM",
+    "tokens":["legion_dead", "legion_about_to_die"],
+    "first_night_desc":"",
+    "other_night_desc":"Choose a player, that player dies.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

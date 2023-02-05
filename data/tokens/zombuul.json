@@ -6,7 +6,7 @@
     "class":"DEM",
     "tokens":["zombuul_died_today", "zombuul_dead"],
     "first_night_desc":"",
-    "second_night_dec":"If no-one died during the day: The Zombuul points to a player. That player dies.",
+    "other_night_desc":"If no-one died during the day: The Zombuul points to a player. That player dies.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

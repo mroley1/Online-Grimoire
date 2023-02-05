@@ -1,0 +1,13 @@
+{
+    "id": "heretic",
+    "name":"Heretic",
+    "description":"Whoever wins, loses & whoever loses, wins, even if you are dead.",
+    "alignment":"GOOD",
+    "class":"OUT",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

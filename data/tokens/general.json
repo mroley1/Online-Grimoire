@@ -1,0 +1,13 @@
+{
+    "id": "general",
+    "name":"General",
+    "description":"Each night, you learn which alignment the Storyteller believes is winning: good, evil, or neither.",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":[],
+    "first_night_desc":"Show the General thumbs up for good winning, thumbs down for evil winning or thumb to the side for neither.",
+    "other_night_desc":"Show the General thumbs up for good winning, thumbs down for evil winning or thumb to the side for neither.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

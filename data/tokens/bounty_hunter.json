@@ -1,0 +1,13 @@
+{
+    "id": "bounty_hunter",
+    "name":"Bounty Hunter",
+    "description":"You start knowing 1 evil player. If the player you know dies, you learn another evil player tonight. [1 Townsfolk is evil]",
+    "alignment":"GOOD",
+    "class":"TOWN",
+    "tokens":["bounty_hunter_known"],
+    "first_night_desc":"Point to 1 evil player. Wake the townsfolk who is evil and show them the 'You are' card and the thumbs down evil sign.",
+    "other_night_desc":"If the known evil player has died, point to another evil player.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}
