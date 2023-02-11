@@ -200,11 +200,11 @@ async function load_scripts(){
   scripts.forEach(async element => {
     var script = await get_JSON("scripts/"+element["file"]+".json")
     option = document.createElement("option");
-    optionText = document.createTextNode(element["file"]);
+    optionText = document.createTextNode(script[0]["name"]);
     option.appendChild(optionText);
     document.getElementById("script_options").appendChild(option);
   });
-  populate_script(0) ////////////// turn this back
+  populate_script(0)
   
 }
 async function populate_script(x){
@@ -417,11 +417,16 @@ function gen_night_order_tab_role(token_JSON, night) {
   }
   div = document.createElement("div");
   div.classList = "night_order_tab";
+  div.id = token_JSON.id + "_night_order_tab";
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , "+color+")";
+  span = document.createElement("span");
+  span.classList = "night_order_span"
+  span.innerHTML = token_JSON[night.substring(0,5)+"_night_desc"];
+  div.appendChild(span);
   img = document.createElement("img");
   img.classList = "night_order_img";
   img.src = "assets/icons/"+token_JSON.id+".png";
-  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON[night.substring(0,5)+"_night_desc"]+"')");
+  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"')");
   div.appendChild(img);
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
@@ -432,11 +437,26 @@ function gen_night_order_tab_info(info) {
   img.classList = "night_order_img";
   img.src = "assets/"+info+".png"
   div.appendChild(img);
+  div.id = info + "_night_order_tab";
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , #999999)";
-  div.setAttribute("onclick", "javascript:expand_night_order_tab("+info+")");
+  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+info+"')");
+  span = document.createElement("span");
+  span.classList = "night_order_span"
+  span.innerHTML = "I dunno";
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
-function expand_night_order_tab(text) {}
+function expand_night_order_tab(id) {
+  tab = document.getElementById(id+"_night_order_tab")
+  tab.style.width = "500px";
+  tab.classList = "night_order_tab night_order_tab_sel";
+  tab.setAttribute("onclick", "javascript:collapse_night_order_tab('"+id+"')")
+}
+function collapse_night_order_tab(id) {
+  tab = document.getElementById(id+"_night_order_tab")
+  tab.style.width = "90px";
+  tab.classList = "night_order_tab";
+  tab.setAttribute("onclick", "javascript:expand_night_order_tab('"+id+"')")
+}
 function toggle_jinx() {}
 
 load_scripts()
