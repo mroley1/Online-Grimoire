@@ -4,7 +4,7 @@
     "description":"Each night*, choose a player: they die. Your 2 Townsfolk neighbours are poisoned.",
     "alignment":"EVIL",
     "class":"DEM",
-    "tokens":["no_dasii_dead", "no_dasii_poisoned"],
+    "tokens":["no_dashii_dead", "no_dashii_poisoned"],
     "first_night_desc":"",
     "other_night_desc":"The No Dashii points to a player. That player dies.",
     "change_makeup":[],

@@ -5,54 +5,60 @@ async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 
+function loaded() {
+  goodEvilReminderSpawn("good");
+  goodEvilReminderSpawn("evil");
+}
+
 // corner toggles
-function visibility_toggle() { 
-    var self = document.getElementById("visibility_toggle")
-    self.style.backgroundImage = "url(assets/visibility.png)"
-    if (self.style.backgroundColor!="lightblue") { 
-      //hide
-        self.style.backgroundColor = "lightblue";
-        document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
-        document.getElementById("pip_layer").style.display = "none"
-        tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
-        for (i = 0; i < tokens.length; i++) {
-          var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
-          var uid = tokens[i].getAttribute("uid");
-          document.getElementById(id+"_"+uid+"_death").style.display = "none";
-          switch (tokens[i].getAttribute("viability")) {
-          case "alive":
-            tokens[i].style.backgroundImage = "url(assets/token.png)"
-            break;
-          case "dead_vote":
-            tokens[i].style.backgroundImage = "url(assets/death.png)"
-            document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
-            break;
-          case "dead":
-            tokens[i].style.backgroundImage = "url(assets/death.png)"
-            break;
-          default: tokens[i].setAttribute("viability", "alive");
-          }
-          tokens[i].setAttribute("onclick", "javascript:deathCycle('"+ id + "', " + uid +")");
-        }
-    } else { 
-      //show
-        self.style.backgroundColor = "rgb(66, 66, 66)";
-        self.style.backgroundImage = "url(assets/visibility_off.png)"
-        document.getElementById("pip_layer").style.display = "inherit"
-        tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
-        for (i = 0; i < tokens.length; i++) {
-          var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
-          var uid = tokens[i].getAttribute("uid");
-          tokens[i].style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
-          document.getElementById(id+"_"+uid+"_vote").style.display = "none";
-          if (tokens[i].getAttribute("viability")=="dead_vote" || tokens[i].getAttribute("viability")=="dead") {
-            document.getElementById(id+"_"+uid+"_death").style.display = "inherit"
-          } else {
-            document.getElementById(id+"_"+uid+"_death").style.display = "none"
-          }
-          tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
-        }
+function visibility_toggle() {
+  var self = document.getElementById("visibility_toggle")
+  self.style.backgroundImage = "url(assets/visibility.png)"
+  if (self.style.backgroundColor!="lightblue") {
+    clear_night_order()
+    //hide
+    self.style.backgroundColor = "lightblue";
+    document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
+    document.getElementById("pip_layer").style.display = "none"
+    tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
+    for (i = 0; i < tokens.length; i++) {
+      var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
+      var uid = tokens[i].getAttribute("uid");
+      document.getElementById(id+"_"+uid+"_death").style.display = "none";
+      switch (tokens[i].getAttribute("viability")) {
+      case "alive":
+        tokens[i].style.backgroundImage = "url(assets/token.png)"
+        break;
+      case "dead_vote":
+        tokens[i].style.backgroundImage = "url(assets/death.png)"
+        document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
+        break;
+      case "dead":
+        tokens[i].style.backgroundImage = "url(assets/death.png)"
+        break;
+      default: tokens[i].setAttribute("viability", "alive");
+      }
+      tokens[i].setAttribute("onclick", "javascript:deathCycle('"+ id + "', " + uid +")");
     }
+  } else { 
+    //show
+    self.style.backgroundColor = "rgb(66, 66, 66)";
+    self.style.backgroundImage = "url(assets/visibility_off.png)"
+    document.getElementById("pip_layer").style.display = "inherit"
+    tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
+    for (i = 0; i < tokens.length; i++) {
+      var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
+      var uid = tokens[i].getAttribute("uid");
+      tokens[i].style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
+      document.getElementById(id+"_"+uid+"_vote").style.display = "none";
+      if (tokens[i].getAttribute("viability")=="dead_vote" || tokens[i].getAttribute("viability")=="dead") {
+        document.getElementById(id+"_"+uid+"_death").style.display = "inherit"
+      } else {
+        document.getElementById(id+"_"+uid+"_death").style.display = "none"
+      }
+      tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
+    }
+  }
 }
 function deathCycle(id, uid) {
   let token = document.getElementById(id+"_token_"+uid);
@@ -185,6 +191,44 @@ function remove_token(id, uid) {
 }
 function script_change() {
   populate_script(document.getElementById("script_options").options.selectedIndex)
+}
+
+//good/evil reminders
+function goodEvilReminderSpawn(type) {
+  var time = new Date();
+  var uid = time.getTime();
+  var div = document.createElement("div");
+  div.classList = "reminder drag goodEvil stacked";
+  var topDistance = type=="good" ? "90px" : "175px";
+  div.style = "background-image: url('assets/reminders/"+type+".png'); left: 5px; top: "+topDistance+"; border-radius: 100%; display: block; pointer-events: all;";
+  div.id = type + "_" + uid;
+  div.setAttribute("disposable-reminder", true);
+  div.setAttribute("alignment", type);
+  var img = document.createElement("img");
+  img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
+  img.src = "assets/delete.png";
+  img.id = type + "_" + uid + "_img";
+  div.appendChild(img);
+  document.getElementById("goodEvilLayer").appendChild(div);
+  dragInit();
+}
+function prompt_delete_reminder(id) {
+  document.getElementById(id + "_img").style.display = "inherit";
+  document.getElementById(id).setAttribute("onmouseup", null);
+  setTimeout(function(){try{document.getElementById(id).setAttribute("onclick", "javascript:delete_reminder('"+id+"')");}catch(TypeError){null};}, 30)
+}
+function delete_reminder(id) {
+  document.getElementById(id).setAttribute("onmouseup", null);
+  document.getElementById("goodEvilLayer").removeChild(document.getElementById(id));
+}
+function unprompt_reminders() {
+  tokens = document.getElementsByClassName("goodEvil");
+  for (var i = 0; i < tokens.length; i++){
+    var element = tokens[i];
+    document.getElementById(element.id + "_img").style.display = "none";
+    element.setAttribute("onclick", null);
+    element.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+element.id+"')");
+  }
 }
 
 
@@ -332,6 +376,15 @@ function dragStart(e) {
   
 }
 function dragEnd(e) {
+  if(e.target.getAttribute("disposable-reminder")) {
+    e.target.classList = "reminder drag goodEvil";
+    e.target.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+e.target.id+"')");
+    e.target.style.cursor = "pointer";
+    console.log(document.getElementsByClassName("stacked"))
+    if (document.getElementsByClassName("stacked").length<=1) {
+      goodEvilReminderSpawn(e.target.getAttribute("alignment"));
+    }
+  }
   active = false;
 }
 function drag(e) {
@@ -360,6 +413,7 @@ function setTranslate(xPos, yPos, el) {
 function neutralClick() {
   hideInfo()
   close_menu()
+  unprompt_reminders()
 }
 
 
@@ -422,6 +476,7 @@ function gen_night_order_tab_role(token_JSON, night) {
   span = document.createElement("span");
   span.classList = "night_order_span"
   span.innerHTML = token_JSON[night.substring(0,5)+"_night_desc"];
+  span.id = token_JSON.id + "_night_order_tab_span";
   div.appendChild(span);
   img = document.createElement("img");
   img.classList = "night_order_img";
@@ -431,6 +486,10 @@ function gen_night_order_tab_role(token_JSON, night) {
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
 function gen_night_order_tab_info(info) {
+  var default_info = {"MINION_INFO":"If this game does not have 7 or more players skip this.\nIf more than one Minion, they all make eye contact with each other. Show the “This is the Demon” card. Point to the Demon.",
+                      "DEMON_INFO":"If this game does not have 7 or more players skip this.\nShow the “These are your minions” card. Point to each Minion. Show the “These characters are not in play” card. Show 3 character tokens of good characters not in play.",
+                      "DAWN":"Wait approximately 10 seconds. Call for eyes open; immediately announce which players (if anyone) died",
+                      "DUSK":"Confirm all players have eyes closed. Wait approximately 10 seconds"}
   div = document.createElement("div");
   div.classList = "night_order_tab";
   img = document.createElement("img");
@@ -442,19 +501,23 @@ function gen_night_order_tab_info(info) {
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+info+"')");
   span = document.createElement("span");
   span.classList = "night_order_span"
-  span.innerHTML = "I dunno";
+  span.innerHTML = default_info[info];
+  span.id = info + "_night_order_tab_span";
+  div.appendChild(span);
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
 function expand_night_order_tab(id) {
   tab = document.getElementById(id+"_night_order_tab")
   tab.style.width = "500px";
-  tab.classList = "night_order_tab night_order_tab_sel";
+  tab.style.transform = "translateX(-410px)";
+  tab.style.height = document.getElementById(id + "_night_order_tab_span").scrollHeight;
   tab.setAttribute("onclick", "javascript:collapse_night_order_tab('"+id+"')")
 }
 function collapse_night_order_tab(id) {
   tab = document.getElementById(id+"_night_order_tab")
   tab.style.width = "90px";
-  tab.classList = "night_order_tab";
+  tab.style.transform = "translateX(0px)";
+  tab.style.height = "90px";
   tab.setAttribute("onclick", "javascript:expand_night_order_tab('"+id+"')")
 }
 function toggle_jinx() {}

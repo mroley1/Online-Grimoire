@@ -4,7 +4,7 @@
     "description":"When you learn that you died, publicly choose 1 alive player: if they are evil, your team loses.",
     "alignment":"GOOD",
     "class":"OUT",
-    "tokens":[""],
+    "tokens":[],
     "first_night_desc":"",
     "other_night_desc":"",
     "change_makeup":[],

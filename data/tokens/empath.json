@@ -5,8 +5,8 @@
     "alignment":"GOOD",
     "class":"TOWN",
     "tokens":[],
-    "first_night_desc":"",
-    "other_night_desc":"",
+    "first_night_desc":"Show the finger signal (0, 1, 2) for the number of evil alive neighbours of the Empath.",
+    "other_night_desc":"Show the finger signal (0, 1, 2) for the number of evil neighbours.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

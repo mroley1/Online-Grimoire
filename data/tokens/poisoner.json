@@ -5,8 +5,8 @@
     "alignment":"EVIL",
     "class":"MIN",
     "tokens":["poisoner_poisoned"],
-    "first_night_desc":"",
-    "other_night_desc":"",
+    "first_night_desc":"The Poisoner points to a player. That player is poisoned.",
+    "other_night_desc":"The previously poisoned player is no longer poisoned. The Poisoner points to a player. That player is poisoned.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

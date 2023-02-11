@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":["undertaker_executed"],
     "first_night_desc":"",
-    "other_night_desc":"",
+    "other_night_desc":"If a player was executed today: Show that player’s character token.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

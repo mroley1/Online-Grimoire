@@ -5,8 +5,8 @@
     "alignment":"EVIL",
     "class":"MIN",
     "tokens":[],
-    "first_night_desc":"",
-    "other_night_desc":"",
+    "first_night_desc":"Show the Grimoire to the Spy for as long as they need.",
+    "other_night_desc":"Show the Grimoire to the Spy for as long as they need.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

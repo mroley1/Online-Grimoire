@@ -5,8 +5,8 @@
     "alignment":"GOOD",
     "class":"TOWN",
     "tokens":["fortune_teller_red_herring"],
-    "first_night_desc":"",
-    "other_night_desc":"",
+    "first_night_desc":"The Fortune Teller points to two players. Give the head signal (nod 'yes', shake 'no') for whether one of those players is the Demon.",
+    "other_night_desc":"The Fortune Teller points to two players. Show the head signal (nod 'yes', shake 'no') for whether one of those players is the Demon.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

@@ -5,7 +5,7 @@
     "alignment":"GOOD",
     "class":"TOWN",
     "tokens":[],
-    "first_night_desc":"",
+    "first_night_desc":"Show the finger signal (0, 1, 2, …) for the number of pairs of neighbouring evil players.",
     "other_night_desc":"",
     "change_makeup":[],
     "hide_token":false,

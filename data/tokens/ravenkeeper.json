@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":[],
     "first_night_desc":"",
-    "other_night_desc":"",
+    "other_night_desc":"If the Ravenkeeper died tonight: The Ravenkeeper points to a player. Show that player’s character token.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":["monk_protected"],
     "first_night_desc":"",
-    "other_night_desc":"",
+    "other_night_desc":"The previously protected player is no longer protected. The Monk points to a player not themself. Mark that player 'Protected'.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

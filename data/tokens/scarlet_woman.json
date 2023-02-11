@@ -6,7 +6,7 @@
     "class":"MIN",
     "tokens":["scarlet_woman_demon"],
     "first_night_desc":"",
-    "other_night_desc":"",
+    "other_night_desc":"If the Scarlet Woman became the Demon today: Show the 'You are' card, then the demon token.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

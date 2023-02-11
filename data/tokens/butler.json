@@ -5,8 +5,8 @@
     "alignment":"GOOD",
     "class":"OUT",
     "tokens":["butler_master"],
-    "first_night_desc":"",
-    "other_night_desc":"",
+    "first_night_desc":"The Butler points to a player. Mark that player as 'Master'.",
+    "other_night_desc":"The Butler points to a player. Mark that player as 'Master'.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true
