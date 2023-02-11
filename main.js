@@ -19,7 +19,8 @@ function visibility_toggle() {
     //hide
     self.style.backgroundColor = "lightblue";
     document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
-    document.getElementById("pip_layer").style.display = "none"
+    document.getElementById("pip_layer").style.display = "none";
+    document.getElementById("goodEvilLayer").style.display = "none";
     tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
@@ -45,6 +46,7 @@ function visibility_toggle() {
     self.style.backgroundColor = "rgb(66, 66, 66)";
     self.style.backgroundImage = "url(assets/visibility_off.png)"
     document.getElementById("pip_layer").style.display = "inherit"
+    document.getElementById("goodEvilLayer").style.display = "inherit";
     tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
@@ -171,8 +173,9 @@ function spawnToken(id) {
   div.appendChild(name);
   document.getElementById("token_layer").appendChild(div);
   document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1
-  player_count_change()
+  player_count_change();
   dragInit();
+  clear_night_order();
 }
 function remove_token(id, uid) {
   var tokens = document.getElementById("info_token_landing").children
@@ -186,8 +189,9 @@ function remove_token(id, uid) {
     }
   }
   document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)-1
-  player_count_change()
-  hideInfo()
+  player_count_change();
+  hideInfo();
+  clear_night_order();
 }
 function script_change() {
   populate_script(document.getElementById("script_options").options.selectedIndex)
@@ -421,14 +425,16 @@ function neutralClick() {
 function toggle_night_order(night) {
   first = document.getElementById("first_night")
   other = document.getElementById("other_night")
-  clear_night_order()
   if (night == "firstnight" && first.style.color == "rgb(244, 244, 244)") {
+    clear_night_order()
     first.style.color = ""
     return;
   } else if (night == "othernight" && other.style.color == "rgb(244, 244, 244)") {
+    clear_night_order()
     other.style.color = ""
     return;
   } else {
+    clear_night_order()
     if (night == "firstnight") {
       first.style.color = "#f4f4f4"
       other.style.color = ""
@@ -442,26 +448,31 @@ function toggle_night_order(night) {
 }
 function clear_night_order() {
   document.getElementById("night_order_tab_landing").innerHTML = ""
+  document.getElementById("first_night").style.color = "";
+  document.getElementById("other_night").style.color = "";
+  document.getElementById("jinx_toggle").style.color = "";
 }
 async function populate_night_order(night) {
   var order = await get_JSON("nightsheet.json")
   order = order[night]
   tokens = document.getElementById("token_layer").children
-  var inPlay = new Set()
+  var inPlay = new Set();
+  var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-    if (tokens[i].getAttribute("viability")=="alive"){inPlay.add(id)}
+    if (tokens[i].getAttribute("viability")=="alive"){alive.add(id)}
+    inPlay.add(id);
   }
   for (i = 0;i<order.length;i++) {
     if (inPlay.has(order[i])) {
-      gen_night_order_tab_role(await get_JSON("tokens/"+order[i]+".json"), night)
+      gen_night_order_tab_role(await get_JSON("tokens/"+order[i]+".json"), night, (alive.has(order[i]))?false:true)
     }
     if (order[i].toUpperCase() == order[i]) {
       gen_night_order_tab_info(order[i])
     }
   }
 }
-function gen_night_order_tab_role(token_JSON, night) {
+function gen_night_order_tab_role(token_JSON, night, dead) {
   var color;
   switch (token_JSON.class) {
     case "TOWN":color = "#0033cc";break;
@@ -469,6 +480,7 @@ function gen_night_order_tab_role(token_JSON, night) {
     case "MIN":color = "#e62e00";break;
     case "DEM":color = "#cc0000";break;
   }
+  if (dead) {color = "#000000";}
   div = document.createElement("div");
   div.classList = "night_order_tab";
   div.id = token_JSON.id + "_night_order_tab";
