@@ -426,24 +426,20 @@ function toggle_night_order(night) {
   first = document.getElementById("first_night")
   other = document.getElementById("other_night")
   if (night == "firstnight" && first.style.color == "rgb(244, 244, 244)") {
-    clear_night_order()
-    first.style.color = ""
+    clear_night_order();
     return;
   } else if (night == "othernight" && other.style.color == "rgb(244, 244, 244)") {
-    clear_night_order()
-    other.style.color = ""
+    clear_night_order();
     return;
   } else {
-    clear_night_order()
+    clear_night_order();
     if (night == "firstnight") {
-      first.style.color = "#f4f4f4"
-      other.style.color = ""
+      first.style.color = "#f4f4f4";
     }
     if (night == "othernight") {
-      other.style.color = "#f4f4f4"
-      first.style.color = ""
+      other.style.color = "#f4f4f4";
     }
-    populate_night_order(night)
+    populate_night_order(night);
   }
 }
 function clear_night_order() {
@@ -455,12 +451,12 @@ function clear_night_order() {
 async function populate_night_order(night) {
   var order = await get_JSON("nightsheet.json")
   order = order[night]
-  tokens = document.getElementById("token_layer").children
+  tokens = document.getElementById("token_layer").children;
   var inPlay = new Set();
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-    if (tokens[i].getAttribute("viability")=="alive"){alive.add(id)}
+    if (tokens[i].getAttribute("viability")=="alive"){alive.add(id);}
     inPlay.add(id);
   }
   for (i = 0;i<order.length;i++) {
@@ -493,7 +489,7 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
   img = document.createElement("img");
   img.classList = "night_order_img";
   img.src = "assets/icons/"+token_JSON.id+".png";
-  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"')");
+  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"_night_order_tab')");
   div.appendChild(img);
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
@@ -510,7 +506,7 @@ function gen_night_order_tab_info(info) {
   div.appendChild(img);
   div.id = info + "_night_order_tab";
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , #999999)";
-  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+info+"')");
+  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+info+"_night_order_tab')");
   span = document.createElement("span");
   span.classList = "night_order_span"
   span.innerHTML = default_info[info];
@@ -519,19 +515,70 @@ function gen_night_order_tab_info(info) {
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
 function expand_night_order_tab(id) {
-  tab = document.getElementById(id+"_night_order_tab")
+  tab = document.getElementById(id)
   tab.style.width = "500px";
   tab.style.transform = "translateX(-410px)";
-  tab.style.height = document.getElementById(id + "_night_order_tab_span").scrollHeight;
+  tab.style.height = document.getElementById(id).scrollHeight;
   tab.setAttribute("onclick", "javascript:collapse_night_order_tab('"+id+"')")
 }
 function collapse_night_order_tab(id) {
-  tab = document.getElementById(id+"_night_order_tab")
+  tab = document.getElementById(id)
   tab.style.width = "90px";
   tab.style.transform = "translateX(0px)";
   tab.style.height = "90px";
   tab.setAttribute("onclick", "javascript:expand_night_order_tab('"+id+"')")
 }
-function toggle_jinx() {}
+async function toggle_populate_jinx() {
+  jinxBtn = document.getElementById("jinx_toggle")
+  if (jinxBtn.style.color == "rgb(244, 244, 244)") {
+    clear_night_order();
+    return;
+  } else {
+    clear_night_order();
+    jinxBtn.style.color = "rgb(244, 244, 244)"
+    jinxes = await get_JSON("jinx.json");
+    tokens = document.getElementById("token_layer").children;
+    var inPlay = new Set();
+    for (i = 0; i<tokens.length;i++) {
+      var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
+      inPlay.add(id);
+    }
+    for (const token of inPlay) {
+      for (i=0;i<jinxes.length;i++){
+        if (jinxes[i].id == token) {
+          for (j=0;j<jinxes[i].jinx.length;j++) {
+            if (inPlay.has(jinxes[i].jinx[j].id)) {
+              gen_jinxes_tab(jinxes[i].id, jinxes[i].jinx[j].id, jinxes[i].jinx[j].reason)
+            }
+          }
+        }
+      }
+    }
+  }
+}
+function gen_jinxes_tab(id1, id2, reason) {
+  div = document.createElement("div");
+  div.classList = "night_order_tab";
+  div.id = id1 + "_" + id2 + "_jinx_tab";
+  div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , #b3b300)";
+  span = document.createElement("span");
+  span.classList = "night_order_span"
+  span.innerHTML = reason;
+  span.id = id1 + "_" + id2 + "_jinx_tab_span";
+  div.appendChild(span);
+  imgDiv = document.createElement("div");
+  imgDiv.classList = "night_order_img"
+  img1 = document.createElement("img");
+  img1.src = "assets/icons/"+id1+".png";
+  img1.style = "width: 70%; position: absolute; top: 0px; left: 0px"
+  img2 = document.createElement("img");
+  img2.src = "assets/icons/"+id2+".png";
+  img2.style = "width: 70%; position: absolute; bottom: 0px; right: 0px"
+  imgDiv.appendChild(img1);
+  imgDiv.appendChild(img2);
+  div.appendChild(imgDiv);
+  div.setAttribute("onclick", "javascript:expand_night_order_tab('"+id1+"_"+id2+"_jinx_tab"+"')");
+  document.getElementById("night_order_tab_landing").appendChild(div);
+}
 
 load_scripts()
