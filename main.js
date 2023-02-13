@@ -1,6 +1,18 @@
 
 var UID_LENGTH = 13
 
+// TODO use token in menu as toggle for visibility of represented token
+// TODO implement shuffle feature: swap pictures not names. 
+// TODO make death tokens look less shitty
+// TODO make reminders draggable from info
+// TODO make hitboxxes more accurate in menu
+// TODO implement cast makeup to be responsive to script
+// TODO redesign info to look less like the hellscape it is at this point
+// TODO implement scrolling on night order tab's overflow
+// TODO handle cast makeup on changing script (dont rely on DOM inner values)
+// TODO implement travelers
+// TODO have good/evil token underneith existing ones to prevent cascading element creation7
+
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
