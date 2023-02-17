@@ -1,17 +1,17 @@
 
 var UID_LENGTH = 13
 
-// * use token in menu as toggle for visibility of represented token
-// TODO implement shuffle feature: swap pictures not names. 
+// * TODO use token in menu as toggle for visibility of represented token
+// ? TODO implement shuffle feature: swap pictures not names. 
 // TODO make death tokens look less shitty
-// TODO make reminders draggable from info
-// TODO make hitboxxes more accurate in menu
+// ! TODO make reminders draggable from info
+// TODO make hitboxes more accurate in menu
 // TODO implement cast makeup to be responsive to script
 // TODO redesign info to look less like the hellscape it is at this point
 // TODO implement scrolling on night order tab's overflow
-// TODO handle cast makeup on changing script (dont rely on DOM inner values)
+// * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // TODO implement travelers
-// TODO have good/evil token underneith existing ones to prevent cascading element creation
+// * TODO have good/evil token underneith existing ones to prevent cascading element creation
 
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
@@ -187,7 +187,7 @@ function cycle_token_visibility_toggle(id, uid) {
 
 
 //token functions
-function spawnToken(id, hide) {
+function spawnToken(id, hide, cat) {
   var time = new Date();
   var uid = time.getTime()
   var div = document.createElement("div");
@@ -198,6 +198,7 @@ function spawnToken(id, hide) {
   div.setAttribute("viability", "alive");
   div.setAttribute("uid", uid);
   div.setAttribute("hide", hide);
+  div.setAttribute("cat", cat);
   var death = document.createElement("img");
   death.src = "assets/shroud.png";
   death.classList = "token_death";
@@ -220,7 +221,7 @@ function spawnToken(id, hide) {
   name.id = id+"_name_"+uid;
   div.appendChild(name);
   document.getElementById("token_layer").appendChild(div);
-  document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1
+  update_role_counts();
   player_count_change();
   dragInit();
   clear_night_order();
@@ -236,14 +237,13 @@ function remove_token(id, uid) {
       rm.parentNode.removeChild(rm);
     }
   }
-  document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)-1
+  update_role_counts();
   player_count_change();
   hideInfo();
   clear_night_order();
 }
-function script_change() {
-  populate_script(document.getElementById("script_options").options.selectedIndex)
-}
+// ? function mutate_token() {}
+
 
 //good/evil reminders
 function goodEvilReminderSpawn(type) {
@@ -261,7 +261,7 @@ function goodEvilReminderSpawn(type) {
   img.src = "assets/delete.png";
   img.id = type + "_" + uid + "_img";
   div.appendChild(img);
-  document.getElementById("goodEvilLayer").appendChild(div);
+  document.getElementById("goodEvilLayer").prepend(div);
   dragInit();
 }
 function prompt_delete_reminder(id) {
@@ -327,7 +327,7 @@ async function populate_script(x){
           var outer_div = document.createElement("div");
           outer_div.classList = "menu_list_div";
           outer_div.title = tokenJSON["description"];
-          outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +")");
+          outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"')");
           var label = document.createElement("label");
           label.classList = "menu_list";
           label.innerHTML = tokenJSON["name"];
@@ -363,36 +363,52 @@ async function populate_script(x){
   clear("DEM")
   header("Demons", "DEM", "#e60000")
   options("DEM", scriptTokens)
-  player_count_change()
+  player_count_change();
+  update_role_counts();
 }
 function player_count_change() {
   number = document.getElementById("player_count").value;
   number = parseInt(number)-5;
   var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
-  var town_count = 0
-  var town = document.getElementById("TOWN").getElementsByClassName("menu_token_count")
-  for (i = 0; i < town.length; i++) {
-    town_count = town_count + parseInt(town[i].innerHTML)
+  var counts = [0, 0, 0, 0];
+  tokens = document.getElementsByClassName("role_token");
+  for (i = 0; i<tokens.length; i++) {
+    switch (tokens[i].getAttribute("cat")) {
+      case "TOWN":
+        counts[0]++;
+      break;
+      case "OUT":
+        counts[1]++;
+      break;
+      case "MIN":
+        counts[2]++;
+      break;
+      case "DEM":
+        counts[3]++;
+      break;
+    }
   }
-  document.getElementById("ratio_TOWN").innerHTML = town_count + "/" + table[number][0];
-  var out_count = 0
-  var out = document.getElementById("OUT").getElementsByClassName("menu_token_count")
-  for (i = 0; i < out.length; i++) {
-    out_count = out_count + parseInt(out[i].innerHTML)
+  document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + table[number][0];
+  document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + table[number][1];
+  document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + table[number][2];
+  document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + table[number][3];
+}
+function script_change() {
+  populate_script(document.getElementById("script_options").options.selectedIndex)
+}
+function update_role_counts(){
+  var counts = document.getElementsByClassName("menu_token_count");
+  for (i = 0; i<counts.length; i++) {
+    counts[i].innerHTML = 0;
   }
-  document.getElementById("ratio_OUT").innerHTML = out_count + "/" + table[number][1];
-  var min_count = 0
-  var min = document.getElementById("MIN").getElementsByClassName("menu_token_count")
-  for (i = 0; i < min.length; i++) {
-    min_count = min_count + parseInt(min[i].innerHTML)
+  var tokens = document.getElementsByClassName("role_token");
+  for (i = 0; i<tokens.length; i++) {
+    id = tokens[i].getAttribute("id").match(/.*(?=_token)/)[0];
+    try {document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1}
+    catch (e) {}
+    
   }
-  document.getElementById("ratio_MIN").innerHTML = min_count + "/" + table[number][2];
-  var dem_count = 0
-  var dem = document.getElementById("DEM").getElementsByClassName("menu_token_count")
-  for (i = 0; i < dem.length; i++) {
-    dem_count = dem_count + parseInt(dem[i].innerHTML)
-  }
-  document.getElementById("ratio_DEM").innerHTML = dem_count + "/" + table[number][3];
+
 }
 
 
