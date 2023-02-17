@@ -11,7 +11,7 @@ var UID_LENGTH = 13
 // TODO implement scrolling on night order tab's overflow
 // TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // TODO implement travelers
-// TODO have good/evil token underneith existing ones to prevent cascading element creation7
+// TODO have good/evil token underneith existing ones to prevent cascading element creation
 
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
