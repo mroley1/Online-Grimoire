@@ -1,7 +1,7 @@
 
 var UID_LENGTH = 13
 
-// TODO use token in menu as toggle for visibility of represented token
+// * use token in menu as toggle for visibility of represented token
 // TODO implement shuffle feature: swap pictures not names. 
 // TODO make death tokens look less shitty
 // TODO make reminders draggable from info
@@ -37,6 +37,9 @@ function visibility_toggle() {
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
       var uid = tokens[i].getAttribute("uid");
+      if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true") {
+        document.getElementById(id+"_token_"+uid).style.display = "none";
+      }
       document.getElementById(id+"_"+uid+"_death").style.display = "none";
       switch (tokens[i].getAttribute("viability")) {
       case "alive":
@@ -63,6 +66,7 @@ function visibility_toggle() {
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
       var uid = tokens[i].getAttribute("uid");
+      document.getElementById(id+"_token_"+uid).style.display = "inherit";
       tokens[i].style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
       document.getElementById(id+"_"+uid+"_vote").style.display = "none";
       if (tokens[i].getAttribute("viability")=="dead_vote" || tokens[i].getAttribute("viability")=="dead") {
@@ -105,7 +109,18 @@ function move_toggle() {
 
 //info functions
 async function infoCall(id, uid) {
-    document.getElementById("info_img").style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
+    document.getElementById("info_img").src = "assets/roles/"+id+"_token.png";
+    document.getElementById("info_img").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
+    document.getElementById("info_img").style.cursor = "pointer";
+    if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true"){
+      document.getElementById(id+"_"+uid+"_visibilty_pip").style.display = "inherit";
+      document.getElementById("info_visibility_shade").style.display = "inherit";
+      document.getElementById("info_visibility_img").style.display = "inherit";
+    } else {
+      document.getElementById(id+"_"+uid+"_visibilty_pip").style.display = "none";
+      document.getElementById("info_visibility_shade").style.display = "none";
+      document.getElementById("info_visibility_img").style.display = "none";
+    }
     var roleJSON = await get_JSON("tokens/"+id+".json")
     document.getElementById("info_title").innerHTML = roleJSON["name"];
     document.getElementById("info_desc").innerHTML = roleJSON["description"];
@@ -154,10 +169,25 @@ function hideInfo() {
 function nameIn(id, uid) {
   document.getElementById(id+"_name_"+uid).innerHTML = document.getElementById("info_name_feild").value;
 }
+function cycle_token_visibility_toggle(id, uid) {
+  focus = document.getElementById(id+"_token_"+uid);
+  hide = focus.getAttribute("hide")=="true";
+  if (hide) {
+    focus.setAttribute("hide", "false");
+    document.getElementById(id+"_"+uid+"_visibilty_pip").style.display = "none";
+    document.getElementById("info_visibility_shade").style.display = "none";
+    document.getElementById("info_visibility_img").style.display = "none";
+  } else {
+    focus.setAttribute("hide", "true");
+    document.getElementById(id+"_"+uid+"_visibilty_pip").style.display = "inherit";
+    document.getElementById("info_visibility_shade").style.display = "inherit";
+    document.getElementById("info_visibility_img").style.display = "inherit";
+  }
+}
 
 
 //token functions
-function spawnToken(id) {
+function spawnToken(id, hide) {
   var time = new Date();
   var uid = time.getTime()
   var div = document.createElement("div");
@@ -167,12 +197,18 @@ function spawnToken(id) {
   div.id = id+"_token_"+uid;
   div.setAttribute("viability", "alive");
   div.setAttribute("uid", uid);
+  div.setAttribute("hide", hide);
   var death = document.createElement("img");
   death.src = "assets/shroud.png";
   death.classList = "token_death";
   death.id = id + "_" + uid + "_death";
   death.style.display = "none" // none
   div.appendChild(death);
+  var visibility_pip = document.createElement("div");
+  visibility_pip.classList = "token_visibility_pip background_image";
+  visibility_pip.id = id+"_"+uid+"_visibilty_pip";
+  if (!hide) {visibility_pip.style.display = "none";}
+  div.appendChild(visibility_pip);
   var vote = document.createElement("img");
   vote.src = "assets/vote.png";
   vote.classList = "token_vote";
@@ -291,7 +327,7 @@ async function populate_script(x){
           var outer_div = document.createElement("div");
           outer_div.classList = "menu_list_div";
           outer_div.title = tokenJSON["description"];
-          outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"')");
+          outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +")");
           var label = document.createElement("label");
           label.classList = "menu_list";
           label.innerHTML = tokenJSON["name"];

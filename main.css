@@ -4,6 +4,9 @@
 }
 body {background-image: url('assets/background-img.jpg');}
 html, body {overscroll-behavior: none;}
+
+.background_image {background-position: center; background-repeat: no-repeat; background-size: contain;}
+
 .role_token {height: 150px; width: 150px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px; border-radius: 100%;}
 .bottom_buttons {position: absolute; bottom: 10px; width: 100px; height: 100px; border-radius: 20px; background-position: center; background-repeat: no-repeat; background-size: contain;}
 .info_tokens    {display:inline-block; width: 80px; height: 80px; background-position: center; background-repeat: no-repeat; background-size: contain; margin: 5px;}
@@ -20,3 +23,4 @@ html, body {overscroll-behavior: none;}
 .trashcan:hover {opacity: 0.7;}
 .token_death {width: 50px; pointer-events: none; position: absolute; left: 50px; top: 7px;}
 .token_vote {width: 100px; pointer-events: none; position: absolute; left: 25px; top: 25px;}
+.token_visibility_pip {width: 35%; height: 35%; background-image: url(assets/visibility_off_red.png); position: absolute; right: 25px; bottom: 25px; pointer-events: none;}
