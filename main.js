@@ -150,6 +150,7 @@ function spawnReminder(id, uid) {
     div.classList = "reminder drag";
     div.style = "background-image: url('assets/reminders/"+id+".png'); left: "+(parseInt(window.visualViewport.width/2)-37)+"; top: calc(50% - 37.5px)";
     div.id = id + "_" + uid;
+    div.setAttribute("uid", uid);
     document.getElementById("pip_layer").appendChild(div);
     var reminder = document.getElementById("info_"+id+"_"+uid)
     reminder.style.opacity = 0.7;
@@ -227,22 +228,26 @@ function spawnToken(id, hide, cat) {
   clear_night_order();
 }
 function remove_token(id, uid) {
-  var tokens = document.getElementById("info_token_landing").children
-  rm = document.getElementById(id+"_token_"+uid)
+  var tokens = document.getElementById("info_token_landing").children;
+  rm = document.getElementById(id+"_token_"+uid);
   rm.parentNode.removeChild(rm);
-  for (i = 0; i < tokens.length; i++) {
-    if (tokens[i].style.opacity == 0.7) {
-      tid = tokens[i].id.substring(5,tokens[i].id.length)
-      rm = document.getElementById(tid)
-      rm.parentNode.removeChild(rm);
-    }
-  }
+  clean_tokens(uid);
   update_role_counts();
   player_count_change();
   hideInfo();
   clear_night_order();
 }
-// ? function mutate_token() {}
+function clean_tokens(uid) {
+  let reminders = document.getElementById("pip_layer").getElementsByClassName("reminder");
+  for (i=reminders.length-1; i!=-1; --i) {
+    if (reminders[i].getAttribute("uid")==uid) {
+      document.getElementById("pip_layer").removeChild(reminders[i]);
+    }
+  }
+}
+function mutate_token(idFrom, uid, idTo) {
+
+}
 
 
 //good/evil reminders
