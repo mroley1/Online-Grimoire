@@ -9,7 +9,7 @@ const UID_LENGTH = 13
 // TODO make hitboxes more accurate in menu
 // TODO implement cast makeup to be responsive to script
 // TODO redesign info to look less like the hellscape it is at this point
-// TODO implement scrolling on night order tab's overflow
+// * TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
@@ -34,7 +34,7 @@ function visibility_toggle() {
     self.style.backgroundColor = "lightblue";
     document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
     document.getElementById("pip_layer").style.display = "none";
-    document.getElementById("goodEvilLayer").style.display = "none";
+    document.getElementById("dragPipLayer").style.display = "none";
     tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
@@ -63,7 +63,7 @@ function visibility_toggle() {
     self.style.backgroundColor = "rgb(66, 66, 66)";
     self.style.backgroundImage = "url(assets/visibility_off.png)"
     document.getElementById("pip_layer").style.display = "inherit"
-    document.getElementById("goodEvilLayer").style.display = "inherit";
+    document.getElementById("dragPipLayer").style.display = "inherit";
     tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
