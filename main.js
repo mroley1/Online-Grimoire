@@ -113,11 +113,11 @@ async function infoCall(id, uid) {
     document.getElementById("info_img").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
     document.getElementById("info_img").style.cursor = "pointer";
     if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true"){
-      document.getElementById(id+"_"+uid+"_visibilty_pip").style.display = "inherit";
+      document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "inherit";
       document.getElementById("info_visibility_shade").style.display = "inherit";
       document.getElementById("info_visibility_img").style.display = "inherit";
     } else {
-      document.getElementById(id+"_"+uid+"_visibilty_pip").style.display = "none";
+      document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "none";
       document.getElementById("info_visibility_shade").style.display = "none";
       document.getElementById("info_visibility_img").style.display = "none";
     }
@@ -140,6 +140,7 @@ async function infoCall(id, uid) {
         }
         document.getElementById("info_token_landing").appendChild(div);
     }
+    document.getElementById("info_edit_player"). setAttribute("onclick", "javascripr:mutate_menu('"+ id +"', "+ uid +")")
     document.getElementById("info_name_feild").value = document.getElementById(id+"_name_" + uid).innerHTML
     document.getElementById("info_name_feild").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")")
     document.getElementById("delete_button").setAttribute("onclick", "javascript:remove_token('"+ id +"', "+ uid +")")
@@ -175,12 +176,12 @@ function cycle_token_visibility_toggle(id, uid) {
   hide = focus.getAttribute("hide")=="true";
   if (hide) {
     focus.setAttribute("hide", "false");
-    document.getElementById(id+"_"+uid+"_visibilty_pip").style.display = "none";
+    document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "none";
     document.getElementById("info_visibility_shade").style.display = "none";
     document.getElementById("info_visibility_img").style.display = "none";
   } else {
     focus.setAttribute("hide", "true");
-    document.getElementById(id+"_"+uid+"_visibilty_pip").style.display = "inherit";
+    document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "inherit";
     document.getElementById("info_visibility_shade").style.display = "inherit";
     document.getElementById("info_visibility_img").style.display = "inherit";
   }
@@ -208,7 +209,7 @@ function spawnToken(id, hide, cat) {
   div.appendChild(death);
   var visibility_pip = document.createElement("div");
   visibility_pip.classList = "token_visibility_pip background_image";
-  visibility_pip.id = id+"_"+uid+"_visibilty_pip";
+  visibility_pip.id = id+"_"+uid+"_visibility_pip";
   if (!hide) {visibility_pip.style.display = "none";}
   div.appendChild(visibility_pip);
   var vote = document.createElement("img");
@@ -247,9 +248,21 @@ function clean_tokens(uid) {
 }
 function mutate_menu(id, uid) {
   console.log(id, uid);
+  mutate_token(id, uid, "lil_monsta")
 }
-function mutate_token(idFrom, uid, idTo) {
-
+async function mutate_token(idFrom, uid, idTo) {
+  var new_json = await get_JSON("tokens/"+idTo+".json");
+  let subject = document.getElementById(idFrom + "_token_" + uid);
+  subject.setAttribute("cat", new_json["class"]);
+  subject.style.backgroundImage = "url('assets/roles/" + idTo + "_token.png')";
+  subject.setAttribute("onclick", "javascript:infoCall('"+idTo+"', "+ uid +")");
+  subject.id = idTo + "_token_" + uid;
+  document.getElementById(idFrom + "_" + uid + "_death").id = idTo + "_" + uid + "_death";
+  document.getElementById(idFrom + "_" + uid + "_visibility_pip").id = idTo + "_" + uid + "_visibility_pip";
+  document.getElementById(idFrom + "_" + uid + "_vote").id = idTo + "_" + uid + "_vote";
+  document.getElementById(idFrom + "_name_" + uid).id = idTo + "_name_" + uid;
+  clean_tokens(uid);
+  hideInfo()
 }
 
 
