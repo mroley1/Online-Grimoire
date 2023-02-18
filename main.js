@@ -264,6 +264,23 @@ async function mutate_token(idFrom, uid, idTo) {
   clean_tokens(uid);
   hideInfo()
 }
+function randomize_roles() {
+  function randRange(x) {
+    return Math.floor(Math.random()*max);
+  }
+  function swap(a, b) {
+    aId = a.id.match(/.*(?=_token_)/);
+    aUid = a.getAttribute("uid");
+    bId = b.id.match(/.*(?=_token_)/);
+    bUid = b.getAttribute("uid");
+    mutate_token(aId, aUid, bId);
+    mutate_token(bId, bUid, aId);
+  }
+  var tokens = document.getElementById("token_layer").children;
+  for (i = tokens.length; i > 0; i--) {
+
+  }
+}
 
 
 //good/evil reminders
@@ -579,8 +596,8 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
 function gen_night_order_tab_info(info) {
-  var default_info = {"MINION_INFO":"If this game does not have 7 or more players skip this.\nIf more than one Minion, they all make eye contact with each other. Show the “This is the Demon” card. Point to the Demon.",
-                      "DEMON_INFO":"If this game does not have 7 or more players skip this.\nShow the “These are your minions” card. Point to each Minion. Show the “These characters are not in play” card. Show 3 character tokens of good characters not in play.",
+  var default_info = {"MINION_INFO":"If this game does not have 7 or more players skip this.\nIf more than one Minion, they all make eye contact with each other. Show the \"This is the Demon\" card. Point to the Demon.",
+                      "DEMON_INFO":"If this game does not have 7 or more players skip this.\nShow the \"These are your minions\" card. Point to each Minion. Show the \"These characters are not in play\" card. Show 3 character tokens of good characters not in play.",
                       "DAWN":"Wait approximately 10 seconds. Call for eyes open; immediately announce which players (if anyone) died",
                       "DUSK":"Confirm all players have eyes closed. Wait approximately 10 seconds"}
   div = document.createElement("div");
