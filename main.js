@@ -2,7 +2,8 @@
 const UID_LENGTH = 13
 
 // * TODO use token in menu as toggle for visibility of represented token
-// * TODO implement shuffle feature: swap pictures not names. 
+// * TODO implement shuffle feature: swap pictures not names.
+// TODO make travelers still visible when others are invisible
 // TODO allow tokens to be individually mutated
 // TODO make death tokens look less shitty
 // ! TODO make reminders draggable from info
@@ -191,7 +192,7 @@ function cycle_token_visibility_toggle(id, uid) {
 
 
 //token functions
-function spawnToken(id, hide, cat) {
+function spawnToken(id, hide, cat, hide_face) {
   var time = new Date();
   var uid = time.getTime()
   var div = document.createElement("div");
@@ -203,6 +204,7 @@ function spawnToken(id, hide, cat) {
   div.setAttribute("uid", uid);
   div.setAttribute("hide", hide);
   div.setAttribute("cat", cat);
+  div.setAttribute("show_face", !hide_face);
   var death = document.createElement("img");
   death.src = "assets/shroud.png";
   death.classList = "token_death";
@@ -255,6 +257,7 @@ async function mutate_token(idFrom, uid, idTo) {
   await get_JSON("tokens/"+idTo+".json").then(function(new_json){
     let subject = document.getElementById(idFrom + "_token_" + uid);
     subject.setAttribute("cat", new_json["class"]);
+    subject.setAttribute("show_face", !new_json["hide_face"]);
     subject.style.backgroundImage = "url('assets/roles/" + idTo + "_token.png')";
     subject.setAttribute("onclick", "javascript:infoCall('"+idTo+"', "+ uid +")");
     subject.id = idTo + "_token_" + uid;
@@ -376,7 +379,7 @@ async function populate_script(x){
         var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
         outer_div.title = tokenJSON["description"];
-        outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"')");
+        outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +")");
         var label = document.createElement("label");
         label.classList = "menu_list";
         label.innerHTML = tokenJSON["name"];
