@@ -248,7 +248,7 @@ function clean_tokens(uid) {
   }
 }
 function mutate_menu(id, uid) {
-  shuffle_roles();
+
 }
 async function mutate_token(idFrom, uid, idTo) {
   await get_JSON("tokens/"+idTo+".json").then(function(new_json){
@@ -274,12 +274,17 @@ function shuffle_roles() {
   }
   var tokens = document.getElementById("token_layer").children;
   var ids = [];
-  for (i = 0; i < tokens.length; i++) {
-    ids[i] = tokens[i].id.match(/.*(?=_token_)/)[0];
+  for (i = 0, j = 0; i < tokens.length; i++) {
+    if (tokens[i].getAttribute("hide")!="true") {
+      ids[j++] = tokens[i].id.match(/.*(?=_token_)/)[0];
+    }
   }
   shuffle(ids);
-  for (i = 0; i < tokens.length; i++) {
-    mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[i]);
+  var offset = 0
+  for (i = 0, j = 0; i < tokens.length; i++) {
+    if (tokens[i].getAttribute("hide")!="true") {
+      mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
+    }
   }
 }
 
