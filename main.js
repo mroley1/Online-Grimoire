@@ -19,8 +19,9 @@ async function get_JSON(path) {
 }
 
 function loaded() {
-  goodEvilReminderSpawn("good");
-  goodEvilReminderSpawn("evil");
+  dragPipLayerSpawn("good");
+  dragPipLayerSpawn("evil");
+  dragPipLayerSpawn("reminder_pip");
 }
 
 // corner toggles
@@ -290,22 +291,24 @@ function shuffle_roles() {
 
 
 //good/evil reminders
-function goodEvilReminderSpawn(type) {
+function dragPipLayerSpawn(type) {
+  const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
   var time = new Date();
   var uid = time.getTime();
   var div = document.createElement("div");
-  div.classList = "reminder drag goodEvil stacked";
-  var topDistance = type=="good" ? "90px" : "175px";
+  div.classList = "reminder drag";
+  var topDistance = ref[type];
   div.style = "background-image: url('assets/reminders/"+type+".png'); left: 5px; top: "+topDistance+"; border-radius: 100%; display: block; pointer-events: all;";
   div.id = type + "_" + uid;
   div.setAttribute("disposable-reminder", true);
   div.setAttribute("alignment", type);
+  div.setAttribute("stacked", true);
   var img = document.createElement("img");
   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
   img.src = "assets/delete.png";
   img.id = type + "_" + uid + "_img";
   div.appendChild(img);
-  document.getElementById("goodEvilLayer").prepend(div);
+  document.getElementById("dragPipLayer").prepend(div);
   dragInit();
 }
 function prompt_delete_reminder(id) {
@@ -315,10 +318,10 @@ function prompt_delete_reminder(id) {
 }
 function delete_reminder(id) {
   document.getElementById(id).setAttribute("onmouseup", null);
-  document.getElementById("goodEvilLayer").removeChild(document.getElementById(id));
+  document.getElementById("dragPipLayer").removeChild(document.getElementById(id));
 }
 function unprompt_reminders() {
-  tokens = document.getElementsByClassName("goodEvil");
+  tokens = document.getElementById("dragPipLayer").children;
   for (var i = 0; i < tokens.length; i++){
     var element = tokens[i];
     document.getElementById(element.id + "_img").style.display = "none";
@@ -499,13 +502,12 @@ function dragStart(e) {
 }
 function dragEnd(e) {
   if(e.target.getAttribute("disposable-reminder")) {
-    e.target.classList = "reminder drag goodEvil";
+    if (e.target.getAttribute("stacked")=="true") {
+      dragPipLayerSpawn(e.target.getAttribute("alignment"));
+    }
+    e.target.setAttribute("stacked", false);
     e.target.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+e.target.id+"')");
     e.target.style.cursor = "pointer";
-    console.log(document.getElementsByClassName("stacked"))
-    if (document.getElementsByClassName("stacked").length<=1) {
-      goodEvilReminderSpawn(e.target.getAttribute("alignment"));
-    }
   }
   active = false;
 }

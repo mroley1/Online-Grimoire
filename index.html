@@ -8,9 +8,10 @@
     <body style="overflow: hidden;" onload="javascript:loaded()">
 
         
-        <div id="alignment_tokens" style="position: absolute; top: 85px; height: 170px; width: 90px; left: 0px;">
-            <div id="goodSpawn" style="position: static; display: inline-block; margin: 5px; width: 75px; height: 75px; background-image: url('assets/reminders/good.png'); background-position: center; background-repeat: no-repeat; background-size: contain;"></div>
-            <div id="evilSpawn" style="position: static; display: inline-block; margin: 5px; width: 75px; height: 75px; background-image: url('assets/reminders/evil.png'); background-position: center; background-repeat: no-repeat; background-size: contain;"></div>
+        <div id="alignment_tokens" style="position: absolute; top: 85px; width: 90px; left: 0px;">
+            <div id="goodSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/good.png');"></div>
+            <div id="evilSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/evil.png');"></div>
+            <div id="genPipSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/reminder_pip.png');"></div>
         </div>
         
 
@@ -28,7 +29,7 @@
             <!--<div id="trashcan" class="trashcan"></div>-->
         </div>
         <div id="interactivePlane" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
-            <div id="goodEvilLayer"></div>
+            <div id="dragPipLayer"></div>
         </div>
         
         <div id="visibility_toggle" onclick="javascript:visibility_toggle()" class="bottom_buttons" style="background-image: url(assets/visibility_off.png); right: 10px; background-color: rgb(66, 66, 66); cursor: pointer;"></div>
