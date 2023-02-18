@@ -2,7 +2,6 @@
     <head>
         <script src="main.js"></script>
         <link href="main.css" rel="stylesheet">
-        <link href="menu.css" rel="stylesheet">
         <link rel="icon" href="assets/demon-head.ico">
         <title>Grimoire</title>
     </head>
@@ -61,6 +60,7 @@
             <div class="menu_left">
                 <div class="menu_title"></div>
             </div>
+            <div class="close_menu" onclick="javascript:close_menu()"></div>
             <div class="menu_body">
                 <span style="color: white;">script:</span>
                 <select id="script_options" onchange="javascript:script_change()"></select>
@@ -72,9 +72,12 @@
                 <div id="OUT"></div><br>
                 <div id="MIN"></div><br>
                 <div id="DEM"></div>
+                <div style="width: 100%; text-align: center; margin-top: 30px;">
+                    <div style="width: 200px; height: 80px; border-radius: 25px; background-color: #44444494; display: inline-block; text-align: center; cursor: pointer;" onclick="javascript:shuffle_roles()">
+                        <img src="assets/shuffle.png" style="height: 100%; display: inline-block;">
+                    </div>
+                </div>
             </div>
-            <div class="close_menu" onclick="javascript:close_menu()"></div>
-            <!--<div id="menu_toggle" class="menu_toggle" onclick="javascript:toggle_menu()" style="background-image: url('assets/right-arrow-icon.png'); rotate: 0deg;"></div>-->
         </div>
 
         <div style="position: absolute; top: 0px; right: 0px; width: 300px; height: 45px; display: inline-block;">

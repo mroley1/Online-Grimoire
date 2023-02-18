@@ -2,7 +2,8 @@
 var UID_LENGTH = 13
 
 // * TODO use token in menu as toggle for visibility of represented token
-// ? TODO implement shuffle feature: swap pictures not names. 
+// * TODO implement shuffle feature: swap pictures not names. 
+// TODO allow tokens to be individually mutated
 // TODO make death tokens look less shitty
 // ! TODO make reminders draggable from info
 // TODO make hitboxes more accurate in menu
@@ -247,8 +248,6 @@ function clean_tokens(uid) {
   }
 }
 function mutate_menu(id, uid) {
-  console.log(id, uid);
-  //mutate_token(id, uid, "lil_monsta")
   shuffle_roles();
 }
 async function mutate_token(idFrom, uid, idTo) {
@@ -267,30 +266,20 @@ async function mutate_token(idFrom, uid, idTo) {
   });
 }
 function shuffle_roles() {
-  function randRange(x) {
-    return Math.floor(Math.random()*x);
-  }
   function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
-    return a;
-}
-  function swap(a, b) {
-    aId = a.id.match(/.*(?=_token_)/)[0];
-    aUid = a.getAttribute("uid");
-    bId = b.id.match(/.*(?=_token_)/)[0];
-    bUid = b.getAttribute("uid");
-    console.log(aId, aUid, bId, bUid)
-    mutate_token(aId, aUid, bId).then(function(){
-      mutate_token(bId, bUid, aId);
-    });
   }
   var tokens = document.getElementById("token_layer").children;
-  shuffle(tokens)
-  for (i = tokens.length; i > 0; i--) {
-    swap(tokens[randRange(i)], tokens[i-1]);
+  var ids = [];
+  for (i = 0; i < tokens.length; i++) {
+    ids[i] = tokens[i].id.match(/.*(?=_token_)/)[0];
+  }
+  shuffle(ids);
+  for (i = 0; i < tokens.length; i++) {
+    mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[i]);
   }
 }
 
