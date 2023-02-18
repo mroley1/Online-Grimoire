@@ -245,6 +245,9 @@ function clean_tokens(uid) {
     }
   }
 }
+function mutate_menu(id, uid) {
+  console.log(id, uid);
+}
 function mutate_token(idFrom, uid, idTo) {
 
 }
