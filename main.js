@@ -367,7 +367,6 @@ async function populate_script(x){
   }
   function options(type, tokenNames) {
       var landing = document.getElementById(type)
-      console.log(tokenNames.length)
       for (i=0; i<tokenNames.length; i++) {
         var tokenJSON = tokenNames[i];
         if (tokenJSON.class == type) {
@@ -393,10 +392,6 @@ async function populate_script(x){
   function clear(div) {
       document.getElementById(div).innerHTML = ""
   }
-  // scriptTokens = [script.length-1];
-  // for (i = 1; i < script.length; i++) {
-  //   scriptTokens[i-1] = await get_JSON("tokens/"+script[i].id+".json")
-  // }
   var scriptTokens = [];
   count = script.length;
   script.forEach(async element => {
@@ -405,7 +400,6 @@ async function populate_script(x){
       count--;
     } else {count--}
     if (!count) {
-      console.log(scriptTokens)
       clear("TOWN")
       header("Town","TOWN", "#0033cc")
       options("TOWN", scriptTokens)
@@ -419,7 +413,7 @@ async function populate_script(x){
       header("Demons", "DEM", "#e60000")
       options("DEM", scriptTokens)
       clear("TRAV")
-      header("Travelers", "TRAV", "#6600ff")
+      header("Travellers", "TRAV", "#6600ff")
       options("TRAV", scriptTokens)
       player_count_change();
       update_role_counts();

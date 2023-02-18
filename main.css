@@ -39,4 +39,3 @@ html, body {overscroll-behavior: none;}
 .menu_token_count  {position: absolute; right: 10px; height: 20px; color: white;}
 .menu_header       {width: 263px; text-align: center; font-size: 40pt; text-shadow: 0 0 3px rgb(255, 255, 255)}
 .menu_ratio        {width: 100%; text-align: center; color: white; font-size: 15pt;}
-.menu_shuffle_btn  {}
