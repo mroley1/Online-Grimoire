@@ -1,0 +1,13 @@
+{
+    "id": "bishop",
+    "name":"Bishop",
+    "description":"Only the Storyteller can nominate. At least 1 opposing player must be nominated each day.",
+    "alignment":"BOTH",
+    "class":"TRAV",
+    "tokens":["bishop_nominate_good", "bishop_nominate_evil"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":false
+}

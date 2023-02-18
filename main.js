@@ -1,5 +1,5 @@
 
-var UID_LENGTH = 13
+const UID_LENGTH = 13
 
 // * TODO use token in menu as toggle for visibility of represented token
 // * TODO implement shuffle feature: swap pictures not names. 
@@ -11,7 +11,7 @@ var UID_LENGTH = 13
 // TODO redesign info to look less like the hellscape it is at this point
 // TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
-// TODO implement travelers
+// * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
 
 async function get_JSON(path) {
@@ -127,19 +127,19 @@ async function infoCall(id, uid) {
     document.getElementById("info_desc").innerHTML = roleJSON["description"];
     document.getElementById("info_token_landing").innerHTML = ""
     for (var i = 0; i < roleJSON["tokens"].length;i++){
-        var div = document.createElement("div");
-        div.className = "info_tokens";
-        TokenId = roleJSON["tokens"][i]
-        div.style.backgroundImage = "url('assets/reminders/"+TokenId+".png')";
-        div.id = "info_"+roleJSON["tokens"][i]+"_"+uid;
-        div.style.cursor = "pointer";
-        if (document.getElementById(TokenId+"_"+uid)!=undefined){
-          div.style.opacity = 0.7;
-          div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"', "+ uid +")")
-        } else {
-          div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"', "+ uid +")")
-        }
-        document.getElementById("info_token_landing").appendChild(div);
+      var div = document.createElement("div");
+      div.className = "info_tokens";
+      TokenId = roleJSON["tokens"][i]
+      div.style.backgroundImage = "url('assets/reminders/"+TokenId+".png')";
+      div.id = "info_"+roleJSON["tokens"][i]+"_"+uid;
+      div.style.cursor = "pointer";
+      if (document.getElementById(TokenId+"_"+uid)!=undefined){
+        div.style.opacity = 0.7;
+        div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"', "+ uid +")")
+      } else {
+        div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"', "+ uid +")")
+      }
+      document.getElementById("info_token_landing").appendChild(div);
     }
     document.getElementById("info_edit_player"). setAttribute("onclick", "javascripr:mutate_menu('"+ id +"', "+ uid +")")
     document.getElementById("info_name_feild").value = document.getElementById(id+"_name_" + uid).innerHTML
@@ -248,7 +248,7 @@ function clean_tokens(uid) {
   }
 }
 function mutate_menu(id, uid) {
-
+  //mutate_token(id, uid, "bureaucrat")
 }
 async function mutate_token(idFrom, uid, idTo) {
   await get_JSON("tokens/"+idTo+".json").then(function(new_json){
@@ -337,13 +337,14 @@ function close_menu() {
 }
 async function load_scripts(){
   var scripts = await get_JSON("scripts/scripts.json")
-  scripts.forEach(async element => {
+  for (i=0; i<scripts.length;i++) {
+    var element = scripts[i]
     var script = await get_JSON("scripts/"+element["file"]+".json")
     option = document.createElement("option");
     optionText = document.createTextNode(script[0]["name"]);
     option.appendChild(optionText);
     document.getElementById("script_options").appendChild(option);
-  });
+  }
   populate_script(0)
   
 }
@@ -366,49 +367,64 @@ async function populate_script(x){
   }
   function options(type, tokenNames) {
       var landing = document.getElementById(type)
-      tokenNames.forEach(async function(tokenJSON){
+      console.log(tokenNames.length)
+      for (i=0; i<tokenNames.length; i++) {
+        var tokenJSON = tokenNames[i];
         if (tokenJSON.class == type) {
-          var outer_div = document.createElement("div");
-          outer_div.classList = "menu_list_div";
-          outer_div.title = tokenJSON["description"];
-          outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"')");
-          var label = document.createElement("label");
-          label.classList = "menu_list";
-          label.innerHTML = tokenJSON["name"];
-          outer_div.appendChild(label);
-          var count_div = document.createElement("div");
-          count_div.classList = "menu_token_count";
-          count_div.innerHTML = 0;
-          count_div.id = tokenJSON["id"] + "_count";
-          outer_div.appendChild(count_div);
-          outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
-          var hr = document.createElement("hr");
-          outer_div.appendChild(hr);
-          landing.appendChild(outer_div)
-        }
-      })
+        var outer_div = document.createElement("div");
+        outer_div.classList = "menu_list_div";
+        outer_div.title = tokenJSON["description"];
+        outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"')");
+        var label = document.createElement("label");
+        label.classList = "menu_list";
+        label.innerHTML = tokenJSON["name"];
+        outer_div.appendChild(label);
+        var count_div = document.createElement("div");
+        count_div.classList = "menu_token_count";
+        count_div.innerHTML = 0;
+        count_div.id = tokenJSON["id"] + "_count";
+        outer_div.appendChild(count_div);
+        outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
+        var hr = document.createElement("hr");
+        outer_div.appendChild(hr);
+        landing.appendChild(outer_div)
+      }}
   }
   function clear(div) {
       document.getElementById(div).innerHTML = ""
   }
-  scriptTokens = [script.length-1];
-  for (i = 1; i < script.length; i++) {
-    scriptTokens[i-1] = await get_JSON("tokens/"+script[i].id+".json")
-  }
-  clear("TOWN")
-  header("Town","TOWN", "#0033cc")
-  options("TOWN", scriptTokens)
-  clear("OUT")
-  header("Outsiders", "OUT", "#1a53ff")
-  options("OUT", scriptTokens)
-  clear("MIN")
-  header("Minions", "MIN", "#b30000")
-  options("MIN", scriptTokens)
-  clear("DEM")
-  header("Demons", "DEM", "#e60000")
-  options("DEM", scriptTokens)
-  player_count_change();
-  update_role_counts();
+  // scriptTokens = [script.length-1];
+  // for (i = 1; i < script.length; i++) {
+  //   scriptTokens[i-1] = await get_JSON("tokens/"+script[i].id+".json")
+  // }
+  var scriptTokens = [];
+  count = script.length;
+  script.forEach(async element => {
+    if (element.id.substring(0,1)!="_") {
+      scriptTokens.push(await get_JSON("tokens/"+element.id+".json"))
+      count--;
+    } else {count--}
+    if (!count) {
+      console.log(scriptTokens)
+      clear("TOWN")
+      header("Town","TOWN", "#0033cc")
+      options("TOWN", scriptTokens)
+      clear("OUT")
+      header("Outsiders", "OUT", "#1a53ff")
+      options("OUT", scriptTokens)
+      clear("MIN")
+      header("Minions", "MIN", "#b30000")
+      options("MIN", scriptTokens)
+      clear("DEM")
+      header("Demons", "DEM", "#e60000")
+      options("DEM", scriptTokens)
+      clear("TRAV")
+      header("Travelers", "TRAV", "#6600ff")
+      options("TRAV", scriptTokens)
+      player_count_change();
+      update_role_counts();
+    }
+  })
 }
 function player_count_change() {
   number = document.getElementById("player_count").value;
@@ -583,6 +599,7 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
     case "OUT":color = "#0086b3";break;
     case "MIN":color = "#e62e00";break;
     case "DEM":color = "#cc0000";break;
+    case "TRAV":color = "#6600ff";break;
   }
   if (dead) {color = "#000000";}
   div = document.createElement("div");

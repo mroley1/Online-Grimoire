@@ -1,0 +1,13 @@
+{
+    "id": "gunslinger",
+    "name":"Gunslinger",
+    "description":"Each day, after the 1st vote has been tallied, you may choose a player that voted: they die.",
+    "alignment":"BOTH",
+    "class":"TRAV",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":false
+}

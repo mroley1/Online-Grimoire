@@ -1,0 +1,13 @@
+{
+    "id": "beggar",
+    "name":"Beggar",
+    "description":"You must use a vote token to vote. If a dead player gives you theirs, you learn their alignment. You are sober and healthy.",
+    "alignment":"BOTH",
+    "class":"TRAV",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":false
+}

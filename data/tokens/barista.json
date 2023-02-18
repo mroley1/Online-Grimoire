@@ -1,0 +1,13 @@
+{
+    "id": "barista",
+    "name":"Barista",
+    "description":"Each night, until dusk, 1) a player becomes sober, healthy & gets true info, or 2) their ability works twice. They learn which.",
+    "alignment":"BOTH",
+    "class":"TRAV",
+    "tokens":["barista_sober_and_healthy", "barista_ability_twice"],
+    "first_night_desc":"Choose a player, wake them and tell them which Barista power is affecting them. Treat them accordingly (sober/healthy/true info or activate their ability twice).",
+    "other_night_desc":"Choose a player, wake them and tell them which Barista power is affecting them. Treat them accordingly (sober/healthy/true info or activate their ability twice).",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":false
+}
