@@ -248,37 +248,49 @@ function clean_tokens(uid) {
 }
 function mutate_menu(id, uid) {
   console.log(id, uid);
-  mutate_token(id, uid, "lil_monsta")
+  //mutate_token(id, uid, "lil_monsta")
+  shuffle_roles();
 }
 async function mutate_token(idFrom, uid, idTo) {
-  var new_json = await get_JSON("tokens/"+idTo+".json");
-  let subject = document.getElementById(idFrom + "_token_" + uid);
-  subject.setAttribute("cat", new_json["class"]);
-  subject.style.backgroundImage = "url('assets/roles/" + idTo + "_token.png')";
-  subject.setAttribute("onclick", "javascript:infoCall('"+idTo+"', "+ uid +")");
-  subject.id = idTo + "_token_" + uid;
-  document.getElementById(idFrom + "_" + uid + "_death").id = idTo + "_" + uid + "_death";
-  document.getElementById(idFrom + "_" + uid + "_visibility_pip").id = idTo + "_" + uid + "_visibility_pip";
-  document.getElementById(idFrom + "_" + uid + "_vote").id = idTo + "_" + uid + "_vote";
-  document.getElementById(idFrom + "_name_" + uid).id = idTo + "_name_" + uid;
-  clean_tokens(uid);
-  hideInfo()
+  await get_JSON("tokens/"+idTo+".json").then(function(new_json){
+    let subject = document.getElementById(idFrom + "_token_" + uid);
+    subject.setAttribute("cat", new_json["class"]);
+    subject.style.backgroundImage = "url('assets/roles/" + idTo + "_token.png')";
+    subject.setAttribute("onclick", "javascript:infoCall('"+idTo+"', "+ uid +")");
+    subject.id = idTo + "_token_" + uid;
+    document.getElementById(idFrom + "_" + uid + "_death").id = idTo + "_" + uid + "_death";
+    document.getElementById(idFrom + "_" + uid + "_visibility_pip").id = idTo + "_" + uid + "_visibility_pip";
+    document.getElementById(idFrom + "_" + uid + "_vote").id = idTo + "_" + uid + "_vote";
+    document.getElementById(idFrom + "_name_" + uid).id = idTo + "_name_" + uid;
+    clean_tokens(uid);
+    hideInfo()
+  });
 }
-function randomize_roles() {
+function shuffle_roles() {
   function randRange(x) {
-    return Math.floor(Math.random()*max);
+    return Math.floor(Math.random()*x);
   }
+  function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
   function swap(a, b) {
-    aId = a.id.match(/.*(?=_token_)/);
+    aId = a.id.match(/.*(?=_token_)/)[0];
     aUid = a.getAttribute("uid");
-    bId = b.id.match(/.*(?=_token_)/);
+    bId = b.id.match(/.*(?=_token_)/)[0];
     bUid = b.getAttribute("uid");
-    mutate_token(aId, aUid, bId);
-    mutate_token(bId, bUid, aId);
+    console.log(aId, aUid, bId, bUid)
+    mutate_token(aId, aUid, bId).then(function(){
+      mutate_token(bId, bUid, aId);
+    });
   }
   var tokens = document.getElementById("token_layer").children;
+  shuffle(tokens)
   for (i = tokens.length; i > 0; i--) {
-
+    swap(tokens[randRange(i)], tokens[i-1]);
   }
 }
 
