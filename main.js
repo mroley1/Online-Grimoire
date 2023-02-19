@@ -1,26 +1,32 @@
 
-var UID_LENGTH = 13
+const UID_LENGTH = 13
 
 // * TODO use token in menu as toggle for visibility of represented token
-// * TODO implement shuffle feature: swap pictures not names. 
+// * TODO implement shuffle feature: swap pictures not names.
 // TODO allow tokens to be individually mutated
-// TODO make death tokens look less shitty
 // ! TODO make reminders draggable from info
-// TODO make hitboxes more accurate in menu
 // TODO implement cast makeup to be responsive to script
-// TODO redesign info to look less like the hellscape it is at this point
-// TODO implement scrolling on night order tab's overflow
+// * TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
-// TODO implement travelers
+// * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
+
+// ?  UI upgrade
+// ?
+// ? make travelers still visible when others are invisible
+// ? make death tokens look less shitty
+// ? make hitboxes more accurate in menu
+// ? redesign info to look less like the hellscape it is at this point
+// ?
 
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 
 function loaded() {
-  goodEvilReminderSpawn("good");
-  goodEvilReminderSpawn("evil");
+  dragPipLayerSpawn("good");
+  dragPipLayerSpawn("evil");
+  dragPipLayerSpawn("reminder_pip");
 }
 
 // corner toggles
@@ -33,7 +39,7 @@ function visibility_toggle() {
     self.style.backgroundColor = "lightblue";
     document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
     document.getElementById("pip_layer").style.display = "none";
-    document.getElementById("goodEvilLayer").style.display = "none";
+    document.getElementById("dragPipLayer").style.display = "none";
     tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
@@ -62,7 +68,7 @@ function visibility_toggle() {
     self.style.backgroundColor = "rgb(66, 66, 66)";
     self.style.backgroundImage = "url(assets/visibility_off.png)"
     document.getElementById("pip_layer").style.display = "inherit"
-    document.getElementById("goodEvilLayer").style.display = "inherit";
+    document.getElementById("dragPipLayer").style.display = "inherit";
     tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
@@ -127,19 +133,19 @@ async function infoCall(id, uid) {
     document.getElementById("info_desc").innerHTML = roleJSON["description"];
     document.getElementById("info_token_landing").innerHTML = ""
     for (var i = 0; i < roleJSON["tokens"].length;i++){
-        var div = document.createElement("div");
-        div.className = "info_tokens";
-        TokenId = roleJSON["tokens"][i]
-        div.style.backgroundImage = "url('assets/reminders/"+TokenId+".png')";
-        div.id = "info_"+roleJSON["tokens"][i]+"_"+uid;
-        div.style.cursor = "pointer";
-        if (document.getElementById(TokenId+"_"+uid)!=undefined){
-          div.style.opacity = 0.7;
-          div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"', "+ uid +")")
-        } else {
-          div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"', "+ uid +")")
-        }
-        document.getElementById("info_token_landing").appendChild(div);
+      var div = document.createElement("div");
+      div.className = "info_tokens";
+      TokenId = roleJSON["tokens"][i]
+      div.style.backgroundImage = "url('assets/reminders/"+TokenId+".png')";
+      div.id = "info_"+roleJSON["tokens"][i]+"_"+uid;
+      div.style.cursor = "pointer";
+      if (document.getElementById(TokenId+"_"+uid)!=undefined){
+        div.style.opacity = 0.7;
+        div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"', "+ uid +")")
+      } else {
+        div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"', "+ uid +")")
+      }
+      document.getElementById("info_token_landing").appendChild(div);
     }
     document.getElementById("info_edit_player"). setAttribute("onclick", "javascripr:mutate_menu('"+ id +"', "+ uid +")")
     document.getElementById("info_name_feild").value = document.getElementById(id+"_name_" + uid).innerHTML
@@ -190,7 +196,7 @@ function cycle_token_visibility_toggle(id, uid) {
 
 
 //token functions
-function spawnToken(id, hide, cat) {
+function spawnToken(id, hide, cat, hide_face) {
   var time = new Date();
   var uid = time.getTime()
   var div = document.createElement("div");
@@ -202,6 +208,7 @@ function spawnToken(id, hide, cat) {
   div.setAttribute("uid", uid);
   div.setAttribute("hide", hide);
   div.setAttribute("cat", cat);
+  div.setAttribute("show_face", !hide_face);
   var death = document.createElement("img");
   death.src = "assets/shroud.png";
   death.classList = "token_death";
@@ -248,12 +255,36 @@ function clean_tokens(uid) {
   }
 }
 function mutate_menu(id, uid) {
-  shuffle_roles();
+  var town = document.getElementById("mutate_menu_TOWN").children;
+  for (i=0; i<town.length; i++) {
+    town[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+town[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  for (i=0; i<outsiders.length; i++) {
+    outsiders[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+outsiders[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var minions = document.getElementById("mutate_menu_MIN").children;
+  for (i=0; i<minions.length; i++) {
+    minions[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+minions[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var demons = document.getElementById("mutate_menu_DEM").children;
+  for (i=0; i<demons.length; i++) {
+    demons[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+demons[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  for (i=0; i<travellers.length; i++) {
+    travellers[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+travellers[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  document.getElementById("mutate_menu_main").style.display = "inherit";
+}
+function close_mutate_menu() {
+  document.getElementById("mutate_menu_main").style.display = "none";
 }
 async function mutate_token(idFrom, uid, idTo) {
   await get_JSON("tokens/"+idTo+".json").then(function(new_json){
     let subject = document.getElementById(idFrom + "_token_" + uid);
     subject.setAttribute("cat", new_json["class"]);
+    subject.setAttribute("show_face", !new_json["hide_face"]);
     subject.style.backgroundImage = "url('assets/roles/" + idTo + "_token.png')";
     subject.setAttribute("onclick", "javascript:infoCall('"+idTo+"', "+ uid +")");
     subject.id = idTo + "_token_" + uid;
@@ -274,33 +305,49 @@ function shuffle_roles() {
   }
   var tokens = document.getElementById("token_layer").children;
   var ids = [];
-  for (i = 0; i < tokens.length; i++) {
-    ids[i] = tokens[i].id.match(/.*(?=_token_)/)[0];
+  for (i = 0, j = 0; i < tokens.length; i++) {
+    if (tokens[i].getAttribute("hide")!="true") {
+      ids[j++] = tokens[i].id.match(/.*(?=_token_)/)[0];
+    }
   }
   shuffle(ids);
-  for (i = 0; i < tokens.length; i++) {
-    mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[i]);
+  var offset = 0
+  for (i = 0, j = 0; i < tokens.length; i++) {
+    if (tokens[i].getAttribute("hide")!="true") {
+      mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
+    }
   }
+}
+function populate_mutate_menu(tokens) {
+  tokens.forEach((element) => {
+    var div = document.createElement("div");
+    div.id = "mutate_menu_" + element["id"];
+    div.classList = "background_image mutate_menu_token";
+    div.style.backgroundImage = "url(assets/roles/"+ element["id"] + "_token.png";
+    document.getElementById("mutate_menu_" + element["class"]).appendChild(div);
+  })
 }
 
 
 //good/evil reminders
-function goodEvilReminderSpawn(type) {
+function dragPipLayerSpawn(type) {
+  const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
   var time = new Date();
   var uid = time.getTime();
   var div = document.createElement("div");
-  div.classList = "reminder drag goodEvil stacked";
-  var topDistance = type=="good" ? "90px" : "175px";
+  div.classList = "reminder drag";
+  var topDistance = ref[type];
   div.style = "background-image: url('assets/reminders/"+type+".png'); left: 5px; top: "+topDistance+"; border-radius: 100%; display: block; pointer-events: all;";
   div.id = type + "_" + uid;
   div.setAttribute("disposable-reminder", true);
   div.setAttribute("alignment", type);
+  div.setAttribute("stacked", true);
   var img = document.createElement("img");
   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
   img.src = "assets/delete.png";
   img.id = type + "_" + uid + "_img";
   div.appendChild(img);
-  document.getElementById("goodEvilLayer").prepend(div);
+  document.getElementById("dragPipLayer").prepend(div);
   dragInit();
 }
 function prompt_delete_reminder(id) {
@@ -310,10 +357,10 @@ function prompt_delete_reminder(id) {
 }
 function delete_reminder(id) {
   document.getElementById(id).setAttribute("onmouseup", null);
-  document.getElementById("goodEvilLayer").removeChild(document.getElementById(id));
+  document.getElementById("dragPipLayer").removeChild(document.getElementById(id));
 }
 function unprompt_reminders() {
-  tokens = document.getElementsByClassName("goodEvil");
+  tokens = document.getElementById("dragPipLayer").children;
   for (var i = 0; i < tokens.length; i++){
     var element = tokens[i];
     document.getElementById(element.id + "_img").style.display = "none";
@@ -332,13 +379,14 @@ function close_menu() {
 }
 async function load_scripts(){
   var scripts = await get_JSON("scripts/scripts.json")
-  scripts.forEach(async element => {
+  for (i=0; i<scripts.length;i++) {
+    var element = scripts[i]
     var script = await get_JSON("scripts/"+element["file"]+".json")
     option = document.createElement("option");
     optionText = document.createTextNode(script[0]["name"]);
     option.appendChild(optionText);
     document.getElementById("script_options").appendChild(option);
-  });
+  }
   populate_script(0)
   
 }
@@ -361,49 +409,60 @@ async function populate_script(x){
   }
   function options(type, tokenNames) {
       var landing = document.getElementById(type)
-      tokenNames.forEach(async function(tokenJSON){
+      for (i=0; i<tokenNames.length; i++) {
+        var tokenJSON = tokenNames[i];
         if (tokenJSON.class == type) {
-          var outer_div = document.createElement("div");
-          outer_div.classList = "menu_list_div";
-          outer_div.title = tokenJSON["description"];
-          outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"')");
-          var label = document.createElement("label");
-          label.classList = "menu_list";
-          label.innerHTML = tokenJSON["name"];
-          outer_div.appendChild(label);
-          var count_div = document.createElement("div");
-          count_div.classList = "menu_token_count";
-          count_div.innerHTML = 0;
-          count_div.id = tokenJSON["id"] + "_count";
-          outer_div.appendChild(count_div);
-          outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
-          var hr = document.createElement("hr");
-          outer_div.appendChild(hr);
-          landing.appendChild(outer_div)
-        }
-      })
+        var outer_div = document.createElement("div");
+        outer_div.classList = "menu_list_div";
+        outer_div.title = tokenJSON["description"];
+        outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +")");
+        var label = document.createElement("label");
+        label.classList = "menu_list";
+        label.innerHTML = tokenJSON["name"];
+        outer_div.appendChild(label);
+        var count_div = document.createElement("div");
+        count_div.classList = "menu_token_count";
+        count_div.innerHTML = 0;
+        count_div.id = tokenJSON["id"] + "_count";
+        outer_div.appendChild(count_div);
+        outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
+        var hr = document.createElement("hr");
+        outer_div.appendChild(hr);
+        landing.appendChild(outer_div)
+      }}
   }
   function clear(div) {
       document.getElementById(div).innerHTML = ""
   }
-  scriptTokens = [script.length-1];
-  for (i = 1; i < script.length; i++) {
-    scriptTokens[i-1] = await get_JSON("tokens/"+script[i].id+".json")
-  }
-  clear("TOWN")
-  header("Town","TOWN", "#0033cc")
-  options("TOWN", scriptTokens)
-  clear("OUT")
-  header("Outsiders", "OUT", "#1a53ff")
-  options("OUT", scriptTokens)
-  clear("MIN")
-  header("Minions", "MIN", "#b30000")
-  options("MIN", scriptTokens)
-  clear("DEM")
-  header("Demons", "DEM", "#e60000")
-  options("DEM", scriptTokens)
-  player_count_change();
-  update_role_counts();
+  var scriptTokens = [];
+  count = script.length;
+  script.forEach(async element => {
+    if (element.id.substring(0,1)!="_") {
+      try{scriptTokens.push(await get_JSON("tokens/"+element.id+".json"))} catch {}
+      count--;
+    } else {count--}
+    if (!count) {
+      clear("TOWN")
+      header("Town","TOWN", "#0033cc")
+      options("TOWN", scriptTokens)
+      clear("OUT")
+      header("Outsiders", "OUT", "#1a53ff")
+      options("OUT", scriptTokens)
+      clear("MIN")
+      header("Minions", "MIN", "#b30000")
+      options("MIN", scriptTokens)
+      clear("DEM")
+      header("Demons", "DEM", "#e60000")
+      options("DEM", scriptTokens)
+      clear("TRAV")
+      header("Travellers", "TRAV", "#6600ff")
+      options("TRAV", scriptTokens)
+      player_count_change();
+      update_role_counts();
+      clear_mutate_menu();
+      populate_mutate_menu(scriptTokens);
+    }
+  })
 }
 function player_count_change() {
   number = document.getElementById("player_count").value;
@@ -449,6 +508,13 @@ function update_role_counts(){
   }
 
 }
+function clear_mutate_menu() {
+  document.getElementById("mutate_menu_TOWN").innerHTML = "";
+  document.getElementById("mutate_menu_OUT").innerHTML = "";
+  document.getElementById("mutate_menu_MIN").innerHTML = "";
+  document.getElementById("mutate_menu_DEM").innerHTML = "";
+  document.getElementById("mutate_menu_TRAV").innerHTML = "";
+}
 
 
 //drag functions
@@ -484,13 +550,12 @@ function dragStart(e) {
 }
 function dragEnd(e) {
   if(e.target.getAttribute("disposable-reminder")) {
-    e.target.classList = "reminder drag goodEvil";
+    if (e.target.getAttribute("stacked")=="true") {
+      dragPipLayerSpawn(e.target.getAttribute("alignment"));
+    }
+    e.target.setAttribute("stacked", false);
     e.target.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+e.target.id+"')");
     e.target.style.cursor = "pointer";
-    console.log(document.getElementsByClassName("stacked"))
-    if (document.getElementsByClassName("stacked").length<=1) {
-      goodEvilReminderSpawn(e.target.getAttribute("alignment"));
-    }
   }
   active = false;
 }
@@ -578,6 +643,7 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
     case "OUT":color = "#0086b3";break;
     case "MIN":color = "#e62e00";break;
     case "DEM":color = "#cc0000";break;
+    case "TRAV":color = "#6600ff";break;
   }
   if (dead) {color = "#000000";}
   div = document.createElement("div");

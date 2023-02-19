@@ -1,0 +1,13 @@
+{
+    "id": "bureaucrat",
+    "name":"Bureaucrat",
+    "description":"Each night, choose a player (not yourself): their vote counts as 3 votes tomorrow.",
+    "alignment":"BOTH",
+    "class":"TRAV",
+    "tokens":["bureaucrat_3_votes"],
+    "first_night_desc":"The Bureaucrat points to a player. Put the Bureaucrat's '3 votes' reminder by the chosen player's character token.",
+    "other_night_desc":"The Bureaucrat points to a player. Put the Bureaucrat's '3 votes' reminder by the chosen player's character token.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":false
+}

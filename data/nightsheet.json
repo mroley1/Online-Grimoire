@@ -1,5 +1,9 @@
 {
 	"firstnight": [
+		"bureaucrat",
+		"theif",
+		"barista",
+		"apprentice",
 		"philosopher",
 		"alchemist",
 		"poppy_grower",
@@ -55,6 +59,11 @@
 		"leviathan"
 	],
 	"othernight": [
+		"bureaucrat",
+		"theif",
+		"bone_collector",
+		"harlot",
+		"barista",
 		"DUSK",
 		"philosopher",		
 		"poppy_grower",

@@ -1,0 +1,13 @@
+{
+    "id": "bone_collector",
+    "name":"Bone Collector",
+    "description":"Once per game, at night*, choose a dead player: they regain their ability until dusk.",
+    "alignment":"BOTH",
+    "class":"TRAV",
+    "tokens":["bone_collector_no_ability", "bone_collector_has_ability"],
+    "first_night_desc":"",
+    "other_night_desc":"The Bone Collector either shakes their head no or points at any dead player. If they pointed at any dead player, put the Bone Collector's 'Has Ability' reminder by the chosen player's character token. (They may need to be woken tonight to use it.)",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":false
+}

@@ -1,0 +1,13 @@
+{
+    "id": "thief",
+    "name":"Thief",
+    "description":"Each night, choose a player (not yourself): their vote counts negatively tomorrow.",
+    "alignment":"BOTH",
+    "class":"TRAV",
+    "tokens":["thief_negative_vote"],
+    "first_night_desc":"The Thief points to a player. Put the Thief's 'Negative vote' reminder by the chosen player's character token.",
+    "other_night_desc":"The Thief points to a player. Put the Thief's 'Negative vote' reminder by the chosen player's character token.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":false
+}

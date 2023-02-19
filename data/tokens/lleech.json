@@ -1,0 +1,13 @@
+{
+    "id": "lleech",
+    "name":"Lleech",
+    "description":"Each night*, choose a player: they die. You start by choosing an alive player: they are poisoned - you die if & only if they die.",
+    "alignment":"EVIL",
+    "class":"DEM",
+    "tokens":["lleech_dead", "lleech_poisoned"],
+    "first_night_desc":"The Lleech points to a player. Place the Poisoned reminder token.",
+    "other_night_desc":"The Lleech points to a player. That player dies.",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

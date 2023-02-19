@@ -8,9 +8,10 @@
     <body style="overflow: hidden;" onload="javascript:loaded()">
 
         
-        <div id="alignment_tokens" style="position: absolute; top: 85px; height: 170px; width: 90px; left: 0px;">
-            <div id="goodSpawn" style="position: static; display: inline-block; margin: 5px; width: 75px; height: 75px; background-image: url('assets/reminders/good.png'); background-position: center; background-repeat: no-repeat; background-size: contain;"></div>
-            <div id="evilSpawn" style="position: static; display: inline-block; margin: 5px; width: 75px; height: 75px; background-image: url('assets/reminders/evil.png'); background-position: center; background-repeat: no-repeat; background-size: contain;"></div>
+        <div id="alignment_tokens" style="position: absolute; top: 85px; width: 90px; left: 0px;">
+            <div id="goodSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/good.png');"></div>
+            <div id="evilSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/evil.png');"></div>
+            <div id="genPipSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/reminder_pip.png');"></div>
         </div>
         
 
@@ -28,7 +29,7 @@
             <!--<div id="trashcan" class="trashcan"></div>-->
         </div>
         <div id="interactivePlane" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
-            <div id="goodEvilLayer"></div>
+            <div id="dragPipLayer"></div>
         </div>
         
         <div id="visibility_toggle" onclick="javascript:visibility_toggle()" class="bottom_buttons" style="background-image: url(assets/visibility_off.png); right: 10px; background-color: rgb(66, 66, 66); cursor: pointer;"></div>
@@ -71,7 +72,8 @@
                 <div id="TOWN"></div><br>
                 <div id="OUT"></div><br>
                 <div id="MIN"></div><br>
-                <div id="DEM"></div>
+                <div id="DEM"></div><br>
+                <div id="TRAV"></div>
                 <div style="width: 100%; text-align: center; margin-top: 30px;">
                     <div style="width: 200px; height: 80px; border-radius: 25px; background-color: #44444494; display: inline-block; text-align: center; cursor: pointer;" onclick="javascript:shuffle_roles()">
                         <img src="assets/shuffle.png" style="height: 100%; display: inline-block;">
@@ -85,6 +87,25 @@
             <div id="first_night" class="night_select" style="left: 100px;" onclick="javascript:toggle_night_order('firstnight')">first</div>
             <div id="other_night" class="night_select" style="right: 0px;" onclick="javascript:toggle_night_order('othernight')">other</div>
         </div>
-        <div id="night_order_tab_landing" style="position: absolute; width: 90px; right: 0px; top: 45px; word-wrap: normal; text-align: right;"></div>
+        <div style="position: absolute; width: 500px; right: 0px; top: 45px; word-wrap: normal; text-align: right; overflow-y: scroll; overflow-x: hidden; height: calc(100% - 41px); scrollbar-width: none; pointer-events: none;">
+            <div id="night_order_tab_landing" style="width: 90px; position: absolute; right: 0px; pointer-events: all;"></div>
+        </div>
+
+        <div id="mutate_menu_main" onclick="javascript:close_mutate_menu()" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-color: #000000b7; display: none;">
+            <div style="height: 70%; width: 100%; position: absolute; top: calc(15% - 50px); text-align: center; pointer-events: none;">
+                <div style="display: inline-block; height: 100%; width: 70%; pointer-events: all; background-color: #000000b7; border-radius: 100px; padding: 50px; overflow-y: scroll; scrollbar-width: none;">
+                    <div class="menu_header" style="color: #0033cc; display: inline-block;">Townsfolk</div><br>
+                    <div id="mutate_menu_TOWN"></div><br>
+                    <div class="menu_header" style="color: #1a53ff; display: inline-block;">Outsiders</div><br>
+                    <div id="mutate_menu_OUT"></div><br>
+                    <div class="menu_header" style="color: #b30000; display: inline-block;">Minions</div><br>
+                    <div id="mutate_menu_MIN"></div><br>
+                    <div class="menu_header" style="color: #e60000; display: inline-block;">Demons</div><br>
+                    <div id="mutate_menu_DEM"></div><br>
+                    <div class="menu_header" style="color: #6600ff; display: inline-block;">Travellers</div><br>
+                    <div id="mutate_menu_TRAV"></div><br>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
