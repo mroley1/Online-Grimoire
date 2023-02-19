@@ -3,17 +3,21 @@ const UID_LENGTH = 13
 
 // * TODO use token in menu as toggle for visibility of represented token
 // * TODO implement shuffle feature: swap pictures not names.
-// TODO make travelers still visible when others are invisible
 // TODO allow tokens to be individually mutated
-// TODO make death tokens look less shitty
 // ! TODO make reminders draggable from info
-// TODO make hitboxes more accurate in menu
 // TODO implement cast makeup to be responsive to script
-// TODO redesign info to look less like the hellscape it is at this point
 // * TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
+
+// ?  UI upgrade
+// ?
+// ? make travelers still visible when others are invisible
+// ? make death tokens look less shitty
+// ? make hitboxes more accurate in menu
+// ? redesign info to look less like the hellscape it is at this point
+// ?
 
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
@@ -251,7 +255,30 @@ function clean_tokens(uid) {
   }
 }
 function mutate_menu(id, uid) {
-  //mutate_token(id, uid, "bureaucrat")
+  var town = document.getElementById("mutate_menu_TOWN").children;
+  for (i=0; i<town.length; i++) {
+    town[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+town[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  for (i=0; i<outsiders.length; i++) {
+    outsiders[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+outsiders[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var minions = document.getElementById("mutate_menu_MIN").children;
+  for (i=0; i<minions.length; i++) {
+    minions[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+minions[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var demons = document.getElementById("mutate_menu_DEM").children;
+  for (i=0; i<demons.length; i++) {
+    demons[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+demons[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  for (i=0; i<travellers.length; i++) {
+    travellers[i].setAttribute("onclick", "mutate_token('"+id+"', "+uid+", '"+travellers[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  document.getElementById("mutate_menu_main").style.display = "inherit";
+}
+function close_mutate_menu() {
+  document.getElementById("mutate_menu_main").style.display = "none";
 }
 async function mutate_token(idFrom, uid, idTo) {
   await get_JSON("tokens/"+idTo+".json").then(function(new_json){
@@ -290,6 +317,15 @@ function shuffle_roles() {
       mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
     }
   }
+}
+function populate_mutate_menu(tokens) {
+  tokens.forEach((element) => {
+    var div = document.createElement("div");
+    div.id = "mutate_menu_" + element["id"];
+    div.classList = "background_image mutate_menu_token";
+    div.style.backgroundImage = "url(assets/roles/"+ element["id"] + "_token.png";
+    document.getElementById("mutate_menu_" + element["class"]).appendChild(div);
+  })
 }
 
 
@@ -402,7 +438,7 @@ async function populate_script(x){
   count = script.length;
   script.forEach(async element => {
     if (element.id.substring(0,1)!="_") {
-      scriptTokens.push(await get_JSON("tokens/"+element.id+".json"))
+      try{scriptTokens.push(await get_JSON("tokens/"+element.id+".json"))} catch {}
       count--;
     } else {count--}
     if (!count) {
@@ -423,6 +459,8 @@ async function populate_script(x){
       options("TRAV", scriptTokens)
       player_count_change();
       update_role_counts();
+      clear_mutate_menu();
+      populate_mutate_menu(scriptTokens);
     }
   })
 }
@@ -469,6 +507,13 @@ function update_role_counts(){
     
   }
 
+}
+function clear_mutate_menu() {
+  document.getElementById("mutate_menu_TOWN").innerHTML = "";
+  document.getElementById("mutate_menu_OUT").innerHTML = "";
+  document.getElementById("mutate_menu_MIN").innerHTML = "";
+  document.getElementById("mutate_menu_DEM").innerHTML = "";
+  document.getElementById("mutate_menu_TRAV").innerHTML = "";
 }
 
 

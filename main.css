@@ -24,6 +24,7 @@ html, body {overscroll-behavior: none;}
 .token_death {width: 50px; pointer-events: none; position: absolute; left: 50px; top: 7px;}
 .token_vote {width: 100px; pointer-events: none; position: absolute; left: 25px; top: 25px;}
 .token_visibility_pip {width: 35%; height: 35%; background-image: url(assets/visibility_off_red.png); position: absolute; right: 25px; bottom: 25px; pointer-events: none;}
+.mutate_menu_token {display: inline-block; height: 120px; width: 120px; cursor: pointer;}
 
 .alignment_token {position: static; display: inline-block; margin: 5px; width: 75px; height: 75px;}
 
