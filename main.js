@@ -6,7 +6,7 @@ const UID_LENGTH = 13
 // * TODO allow tokens to be individually mutated
 // ! TODO make reminders draggable from info
 // TODO implement cast makeup to be responsive to script
-// * TODO implement scrolling on night order tab's overflow
+// TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
@@ -50,14 +50,14 @@ function visibility_toggle() {
       document.getElementById(id+"_"+uid+"_death").style.display = "none";
       switch (tokens[i].getAttribute("viability")) {
       case "alive":
-        tokens[i].style.backgroundImage = "url(assets/token.png)"
+        tokens[i].style.backgroundImage = "url(assets/alive_token.png)"
         break;
       case "dead_vote":
-        tokens[i].style.backgroundImage = "url(assets/death.png)"
+        tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
         document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
         break;
       case "dead":
-        tokens[i].style.backgroundImage = "url(assets/death.png)"
+        tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
         break;
       default: tokens[i].setAttribute("viability", "alive");
       }
@@ -90,7 +90,7 @@ function deathCycle(id, uid) {
   switch (token.getAttribute("viability")) {
   case "alive": //toDeadVote
     token.setAttribute("viability", "dead_vote");
-    token.style.backgroundImage = "url(assets/death.png)"
+    token.style.backgroundImage = "url(assets/dead_token.png)"
     document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
     break;
   case "dead_vote": //toDead
@@ -99,7 +99,7 @@ function deathCycle(id, uid) {
     break;
   case "dead": // toAlive
     token.setAttribute("viability", "alive");
-    token.style.backgroundImage = "url(assets/token.png)"
+    token.style.backgroundImage = "url(assets/alive_token.png)"
     break;
   default: token.setAttribute("viability", "alive");
   }
@@ -179,6 +179,7 @@ function nameIn(id, uid) {
   document.getElementById(id+"_name_"+uid).innerHTML = document.getElementById("info_name_feild").value;
 }
 function cycle_token_visibility_toggle(id, uid) {
+  clear_night_order()
   focus = document.getElementById(id+"_token_"+uid);
   hide = focus.getAttribute("hide")=="true";
   if (hide) {
@@ -221,7 +222,7 @@ function spawnToken(id, hide, cat, hide_face) {
   if (!hide) {visibility_pip.style.display = "none";}
   div.appendChild(visibility_pip);
   var vote = document.createElement("img");
-  vote.src = "assets/vote.png";
+  vote.src = "assets/vote_token.png";
   vote.classList = "token_vote";
   vote.id = id + "_" + uid + "_vote";
   vote.style.display = "none" // none
