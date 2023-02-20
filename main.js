@@ -14,8 +14,8 @@ const UID_LENGTH = 13
 // ?  UI upgrade
 // ?
 // ? make travelers still visible when others are invisible
-// ? make death tokens look less shitty
-// ? make hitboxes more accurate in menu
+// * make death tokens look less shitty
+// * make hitboxes more accurate in menu
 // ? redesign info to look less like the hellscape it is at this point
 // ?
 
@@ -428,6 +428,7 @@ async function populate_script(x){
         outer_div.appendChild(count_div);
         outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
         var hr = document.createElement("hr");
+        hr.style.marginBlockEnd = "0em";
         outer_div.appendChild(hr);
         landing.appendChild(outer_div)
       }}

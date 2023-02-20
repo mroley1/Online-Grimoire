@@ -40,8 +40,9 @@ html, body {overscroll-behavior: none;}
 .menu_toggle       {position: absolute; right: 0px; top: 0px; width: 30px; height: 100%; background-position: center; background-size: contain; background-repeat: no-repeat; cursor: pointer;}
 .menu_title        {position: fixed; width: 280px; height: 70px; opacity: 1; background-image: url('assets/botc_logo.png'); background-position: center; background-repeat: no-repeat; background-size: contain; margin: 10px;}
 .menu_body         {position: fixed; width: 280px; height: calc(100% - 110px); padding: 10px; top: 90px; overflow-y: scroll; display: block; font-size: 25px;}
+.menu_body::-webkit-scrollbar {display: none;}
 .menu_list         {position: absolute; font-size: 20px; color: white; cursor: pointer;}
-.menu_list_div     {position: relative; cursor: pointer; font-size: 20px; width: 100%;}
+.menu_list_div     {position: relative; cursor: pointer; font-size: 20px; width: 100%; padding-top: 10px;}
 .menu_token_count  {position: absolute; right: 10px; height: 20px; color: white;}
 .menu_header       {width: 263px; text-align: center; font-size: 40pt; text-shadow: 0 0 3px rgb(255, 255, 255)}
 .menu_ratio        {width: 100%; text-align: center; color: white; font-size: 15pt;}
