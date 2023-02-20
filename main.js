@@ -3,7 +3,7 @@ const UID_LENGTH = 13
 
 // * TODO use token in menu as toggle for visibility of represented token
 // * TODO implement shuffle feature: swap pictures not names.
-// TODO allow tokens to be individually mutated
+// * TODO allow tokens to be individually mutated
 // ! TODO make reminders draggable from info
 // TODO implement cast makeup to be responsive to script
 // * TODO implement scrolling on night order tab's overflow
@@ -624,8 +624,8 @@ async function populate_night_order(night) {
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-    if (tokens[i].getAttribute("viability")=="alive"){alive.add(id);}
-    inPlay.add(id);
+    if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("hide")=="false"){alive.add(id);}
+    if (tokens[i].getAttribute("hide")=="false") {inPlay.add(id);}
   }
   for (i = 0;i<order.length;i++) {
     if (inPlay.has(order[i])) {
