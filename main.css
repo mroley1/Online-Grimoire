@@ -2,7 +2,7 @@
     font-family: PiratesBay;
     src: url(assets/fonts/piratesbay.ttf);
 }
-body {background-image: url('assets/purple_background.jpg');}
+body {background-image: url('assets/backgrounds/background5.51818346_90.webp'); background-position: center; background-repeat: no-repeat; background-size: cover;}
 html, body {overscroll-behavior: none;}
 
 .background_image {background-position: center; background-repeat: no-repeat; background-size: contain;}
