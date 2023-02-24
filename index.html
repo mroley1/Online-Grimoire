@@ -87,13 +87,13 @@
             <div id="first_night" class="night_select" style="left: 100px;" onclick="javascript:toggle_night_order('firstnight')">first</div>
             <div id="other_night" class="night_select" style="right: 0px;" onclick="javascript:toggle_night_order('othernight')">other</div>
         </div>
-        <div style="position: absolute; width: 500px; right: 0px; top: 45px; word-wrap: normal; text-align: right; overflow-y: scroll; overflow-x: hidden; height: calc(100% - 41px); scrollbar-width: none; pointer-events: none;">
+        <div style="position: absolute; width: 520px; right: 0px; top: 45px; word-wrap: normal; text-align: right; height: calc(100% - 41px); pointer-events: none;">
             <div id="night_order_tab_landing" style="width: 90px; position: absolute; right: 0px; pointer-events: all;"></div>
         </div>
 
-        <div id="mutate_menu_main" onclick="javascript:close_mutate_menu()" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-color: #000000b7; display: none;">
+        <div id="mutate_menu_main" class="mutate_menu_main" onclick="javascript:close_mutate_menu()">
             <div style="height: 70%; width: 100%; position: absolute; top: calc(15% - 50px); text-align: center; pointer-events: none;">
-                <div style="display: inline-block; height: 100%; width: 70%; pointer-events: all; background-color: #000000b7; border-radius: 100px; padding: 50px; overflow-y: scroll; scrollbar-width: none;">
+                <div class="mutate_menu_scroll_body">
                     <div class="menu_header" style="color: #0033cc; display: inline-block;">Townsfolk</div><br>
                     <div id="mutate_menu_TOWN"></div><br>
                     <div class="menu_header" style="color: #1a53ff; display: inline-block;">Outsiders</div><br>

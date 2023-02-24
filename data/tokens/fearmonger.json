@@ -5,7 +5,7 @@
     "alignment":"EVIL",
     "class":"MIN",
     "tokens":["fearmonger_fear"],
-    "first_night_desc":"",
+    "first_night_desc":"The Fearmonger points to a player. Place the Fear token next to that player and announce that a player has been selected with the Fearmonger ability.",
     "other_night_desc":"The Fearmonger points to a player. If different from the previous night, place the Fear token next to that player and announce that a new player has been selected with the Fearmonger ability.",
     "change_makeup":[],
     "hide_token":false,

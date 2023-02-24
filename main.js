@@ -3,10 +3,10 @@ const UID_LENGTH = 13
 
 // * TODO use token in menu as toggle for visibility of represented token
 // * TODO implement shuffle feature: swap pictures not names.
-// TODO allow tokens to be individually mutated
+// * TODO allow tokens to be individually mutated
 // ! TODO make reminders draggable from info
 // TODO implement cast makeup to be responsive to script
-// * TODO implement scrolling on night order tab's overflow
+// TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
@@ -14,8 +14,8 @@ const UID_LENGTH = 13
 // ?  UI upgrade
 // ?
 // ? make travelers still visible when others are invisible
-// ? make death tokens look less shitty
-// ? make hitboxes more accurate in menu
+// * make death tokens look less shitty
+// * make hitboxes more accurate in menu
 // ? redesign info to look less like the hellscape it is at this point
 // ?
 
@@ -50,14 +50,14 @@ function visibility_toggle() {
       document.getElementById(id+"_"+uid+"_death").style.display = "none";
       switch (tokens[i].getAttribute("viability")) {
       case "alive":
-        tokens[i].style.backgroundImage = "url(assets/token.png)"
+        tokens[i].style.backgroundImage = "url(assets/alive_token.png)"
         break;
       case "dead_vote":
-        tokens[i].style.backgroundImage = "url(assets/death.png)"
+        tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
         document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
         break;
       case "dead":
-        tokens[i].style.backgroundImage = "url(assets/death.png)"
+        tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
         break;
       default: tokens[i].setAttribute("viability", "alive");
       }
@@ -90,7 +90,7 @@ function deathCycle(id, uid) {
   switch (token.getAttribute("viability")) {
   case "alive": //toDeadVote
     token.setAttribute("viability", "dead_vote");
-    token.style.backgroundImage = "url(assets/death.png)"
+    token.style.backgroundImage = "url(assets/dead_token.png)"
     document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
     break;
   case "dead_vote": //toDead
@@ -99,7 +99,7 @@ function deathCycle(id, uid) {
     break;
   case "dead": // toAlive
     token.setAttribute("viability", "alive");
-    token.style.backgroundImage = "url(assets/token.png)"
+    token.style.backgroundImage = "url(assets/alive_token.png)"
     break;
   default: token.setAttribute("viability", "alive");
   }
@@ -179,6 +179,7 @@ function nameIn(id, uid) {
   document.getElementById(id+"_name_"+uid).innerHTML = document.getElementById("info_name_feild").value;
 }
 function cycle_token_visibility_toggle(id, uid) {
+  clear_night_order()
   focus = document.getElementById(id+"_token_"+uid);
   hide = focus.getAttribute("hide")=="true";
   if (hide) {
@@ -221,7 +222,7 @@ function spawnToken(id, hide, cat, hide_face) {
   if (!hide) {visibility_pip.style.display = "none";}
   div.appendChild(visibility_pip);
   var vote = document.createElement("img");
-  vote.src = "assets/vote.png";
+  vote.src = "assets/vote_token.png";
   vote.classList = "token_vote";
   vote.id = id + "_" + uid + "_vote";
   vote.style.display = "none" // none
@@ -427,6 +428,7 @@ async function populate_script(x){
         outer_div.appendChild(count_div);
         outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
         var hr = document.createElement("hr");
+        hr.style.marginBlockEnd = "0em";
         outer_div.appendChild(hr);
         landing.appendChild(outer_div)
       }}
@@ -624,8 +626,8 @@ async function populate_night_order(night) {
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-    if (tokens[i].getAttribute("viability")=="alive"){alive.add(id);}
-    inPlay.add(id);
+    if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("hide")=="false"){alive.add(id);}
+    if (tokens[i].getAttribute("hide")=="false") {inPlay.add(id);}
   }
   for (i = 0;i<order.length;i++) {
     if (inPlay.has(order[i])) {
