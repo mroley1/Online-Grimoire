@@ -406,7 +406,7 @@ async function populate_script(x){
       ratio.innerHTML = "0/0";
       ratio.id = "ratio_" + landing_name
       landing.appendChild(ratio);
-      landing.insertAdjacentHTML("beforeend", "<hr>");
+      landing.insertAdjacentHTML("beforeend", "<hr style='margin-block-end: 0em;'>");
   }
   function options(type, tokenNames) {
       var landing = document.getElementById(type)
@@ -585,6 +585,7 @@ function setTranslate(xPos, yPos, el) {
 
 //if you click on black space
 function neutralClick() {
+  active = false;
   hideInfo()
   close_menu()
   unprompt_reminders()
