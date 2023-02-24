@@ -4,19 +4,25 @@ const UID_LENGTH = 13
 // * TODO use token in menu as toggle for visibility of represented token
 // * TODO implement shuffle feature: swap pictures not names.
 // * TODO allow tokens to be individually mutated
-// ! TODO make reminders draggable from info
+// TODO make reminders draggable from info
 // TODO implement cast makeup to be responsive to script
 // TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
+// TODO game state json import/ export
+// TODO script upload
+// TODO background change
 
 // ?  UI upgrade
 // ?
-// ? make travelers still visible when others are invisible
+// ? make travelers still visible when others are invisible (upper left just icon) *redisign javascript to be more robust and handle spawning during hidden
 // * make death tokens look less shitty
 // * make hitboxes more accurate in menu
 // ? redesign info to look less like the hellscape it is at this point
+// ? ? Three tabs {description, reminders, power}
+// ? move visibility toggle to menu
+// ? spruce up top menu
 // ?
 
 async function get_JSON(path) {
