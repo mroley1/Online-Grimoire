@@ -84,7 +84,7 @@
                 <div onclick="javascript:expand_info_tab('rmnd')" class="info_tab_header" style="width: 100px; background-image: url('assets/blue_swirls.webp'); background-position: 75%; position: absolute; left: 0px; top: 0px;">
                     <img class="info_tab_img" src="assets/reminders.png">
                 </div>
-                <div style="position: absolute; top: 0px; left: 100px; height: 190; width: calc(100% - 160px); text-align: left; overflow-wrap: break-word; white-space: normal; margin: 30px;">
+                <div style="position: absolute; top: 0px; left: 100px; height: 190; width: calc(100vw - 510px); text-align: left; overflow-wrap: break-word; white-space: normal; margin: 30px;">
                     <div class="info_tokens" id="info_balloonist_seen_townsfolk_1677298738581" onclick="javascript:spawnReminder('balloonist_seen_townsfolk', 1677298738581)" style="background-image: url(&quot;assets/reminders/balloonist_seen_townsfolk.png&quot;); cursor: pointer;"></div>
                     <div class="info_tokens" id="info_balloonist_seen_outsider_1677298738581" onclick="javascript:spawnReminder('balloonist_seen_outsider', 1677298738581)" style="background-image: url(&quot;assets/reminders/balloonist_seen_outsider.png&quot;); cursor: pointer;"></div>
                     <div class="info_tokens" id="info_balloonist_seen_minion_1677298738581" onclick="javascript:spawnReminder('balloonist_seen_minion', 1677298738581)" style="background-image: url(&quot;assets/reminders/balloonist_seen_minion.png&quot;); cursor: pointer;"></div>
@@ -95,6 +95,16 @@
             <div id="info_powr" class="info_tab">
                 <div onclick="javascript:expand_info_tab('powr')" class="info_tab_header" style="width: 100px; background-image: url('assets/yellow_swirls.webp'); background-position: 25%; position: absolute; left: 0px; top: 0px;">
                     <img class="info_tab_img" src="assets/power.png">
+                </div>
+                <div style="position: absolute; top: 0px; left: 100px; height: 190; width: calc(100vw - 510px); text-align: center; overflow-wrap: break-word; white-space: normal; margin: 30px;">
+                    <span style="color:rgb(175, 175, 175); font-size: 20pt; font-family: PiratesBay;">Player Name:</span><br><br>
+                    <input autocomplete="off" onchange="javascript:nameIn()" type="text" id="info_name_feild" class="info_name_feild"><br><br>
+                    <div style="width: 100%; height: 50%;">
+                        <div class="info_tokens" id="info_remove" style="cursor: pointer; background-color: #e60000; background-image: url('assets/delete.png');"></div>
+                        <div class="info_tokens" id="info_remove" style="cursor: pointer; background-color: #444444; background-image: url('assets/tombstone.png');"></div>
+                        <div class="info_tokens" id="info_remove" style="cursor: pointer; background-color: #00639c; background-image: url('assets/visibility_off.png');"></div>
+                        <div class="info_tokens" id="info_remove" style="cursor: pointer; background-color: #00920c; background-image: url('assets/edit.png');"></div>
+                    </div>
                 </div>
             </div>
         </div>-->
