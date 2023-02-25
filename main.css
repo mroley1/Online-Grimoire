@@ -54,7 +54,7 @@ html, body {overscroll-behavior: none;}
 .close_menu        {position: absolute; top: 5px; right: 5px; width: 55px; height: 55px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
 .close_menu:hover  {opacity: 0.6;}
 .menu_main         {position: absolute; top: 0px; left: 0px; height: 100%; width: 300px; background-image: url('assets/background-img2.webp');transition: transform ease-in-out 0.2s;}
-.menu_left         {position: absolute; left: 0px; top: 0px; width: 300px; height: 100%; border-right: 1px solid white; overflow: hidden;}
+.menu_left         {position: absolute; left: 0px; top: 0px; width: 299px; height: 100%; border-right: 1px solid white; overflow: hidden;}
 .menu_toggle       {position: absolute; right: 0px; top: 0px; width: 30px; height: 100%; background-position: center; background-size: contain; background-repeat: no-repeat; cursor: pointer;}
 .menu_title        {position: fixed; width: 280px; height: 70px; opacity: 1; background-image: url('assets/botc_logo.png'); background-position: center; background-repeat: no-repeat; background-size: contain; margin: 10px;}
 .menu_body         {position: fixed; width: 280px; height: calc(100% - 110px); padding: 10px; top: 90px; overflow-y: scroll; display: block; font-size: 25px;}
