@@ -2,17 +2,60 @@
     font-family: PiratesBay;
     src: url(assets/fonts/piratesbay.ttf);
 }
-body {background-image: url('assets/backgrounds/background5.51818346_90.webp'); background-position: center; background-repeat: no-repeat; background-size: cover;}
+:root {
+    --BG-IMG:url('assets/backgrounds/green_circle_large.webp');
+}
+
+@media screen and (orientation:portrait) {
+    .body_background_image::before {transform: rotate(90deg); width: 100vh; height: 100vw; left: calc(50% - calc(100vh / 2)); top: calc(50% - calc(100vw / 2));}
+}
+@media screen and (orientation:landscape) {
+    .body_background_image::before {transform: rotate(0deg); width: 100vw; height: 100vh; left: calc(50% - calc(100vw / 2)); top: calc(50% - calc(100vh / 2));}
+}
+
+body {background-position: center; background-repeat: no-repeat; background-size: cover;}
 html, body {overscroll-behavior: none;}
 
 .background_image {background-position: center; background-repeat: no-repeat; background-size: contain;}
 
-.role_token {height: 150px; width: 150px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px; border-radius: 100%;}
+.body_background_image{background: transparent; overflow: hidden; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px; pointer-events: none;}
+.body_background_image::before {content: ""; z-index: -1; background-position: center; background-repeat: no-repeat; background-size: cover; background-image: var(--BG-IMG); position: absolute;}
+
+#visibility_toggle {background-image: url(assets/visibility_off.png); right: 10px; background-color: rgb(66, 66, 66); cursor: pointer;}
+#body_actual[night="true"] #visibility_toggle {background-color: lightblue;}
+
 .bottom_buttons {position: absolute; bottom: 10px; width: 100px; height: 100px; border-radius: 20px; background-position: center; background-repeat: no-repeat; background-size: contain;}
-.info_tokens    {display:inline-block; width: 80px; height: 80px; background-position: center; background-repeat: no-repeat; background-size: contain; margin: 5px;}
-.reminder   {height: 75px; width: 75px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px; border-radius: 100%;}
+.reminder {height: 75px; width: 75px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px; border-radius: 100%;}
+#body_actual[night="true"] .reminder {display: none;}
 .token_text {position: absolute;width: 100%; top:150px; height: 35px; text-align: center; font-size: 20pt; font-family: PiratesBay; pointer-events: none; color: white;}
-.info_name_feild {height: 40px; width: 470px; position: absolute; top: 180px; right: 0px; color:black; font-size: 20pt; background-color: #afafaf;}
+
+/*new info*/
+#info_box {position: absolute; left: 0px; bottom: 0px; width: 100%; height: 250px; background-image: url('assets/vines.png'); white-space: nowrap; overflow: hidden;}
+.info_tab {height: 250px; top: 0px; display: inline-block; color: white; text-align: center; left: 0px; position: relative; overflow: hidden;}
+.info_tab_header {height: 250px; cursor: pointer;}
+.info_tab_img {width: 100%; margin-top: 75px;}
+#info_desc {width: 250px; transition: width ease-in-out 0.2s;}
+#info_desc:is([focus="true"]) {width: calc(100% - 200px);}
+#info_img {width: 250px; height: 250px; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s;}
+#info_desc:not([focus="true"]) #info_img {width: 200px; height: 200px;}
+#info_title_field {height: 100px; position: absolute; top: 0px; left: 0px; color:rgb(211, 211, 211); font-size: 50pt; font-family: PiratesBay;}
+#info_name_field {position: absolute; top: 70px; left: 30px; color:rgb(192, 72, 72); font-size: 17pt; font-family: PiratesBay;}
+#info_desc_field {position: absolute; width: calc(100vw - 500px); top: 100px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
+#info_visibility_shade {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-color: black; opacity: 0.5; border-radius: 100%; display: none; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s;}
+#info_desc:not([focus="true"]) #info_visibility_shade {width: 200px; height: 200px; left: 25px;}
+#info_box:is([hidden="true"]) #info_visibility_shade {display: inherit;}
+#info_visibility_img {position: absolute; top: 0px; left: 0px; height: 125px; width: 125px; pointer-events: none; padding: 62.5; display: none; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s, padding ease-in-out 0.2s;}
+#info_desc:not([focus="true"]) #info_visibility_img {width: 100px; height: 100px; left: 25px; padding: 50;}
+#info_box:is([hidden="true"]) #info_visibility_img {display: inherit;}
+#info_rmnd {width: 100px; transition: width ease-in-out 0.2s;}
+#info_rmnd:is([focus="true"]) {width: calc(100% - 350px);}
+.info_tokens {display:inline-block; width: 100px; height: 100px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
+#info_powr {width: 100px; transition: width ease-in-out 0.2s;}
+#info_powr:is([focus="true"]) {width: calc(100% - 350px);}
+.info_name_input {height: 40px; width: 100%; color:black; font-size: 20pt; background-color: #afafaf;}
+.info_power_options {display:inline-block; width: 80px; height: 80px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
+#info_visibility_toggle {background-image: url('assets/visibility_off.png');}
+#info_box:is([hidden="true"]) #info_visibility_toggle {background-image: url('assets/visibility.png');}
 
 .night_order_tab {width: 90px; height: 90px; display: inline-block; background-position: center; background-repeat: no-repeat; background-size: contain; border-bottom: 2px solid black; cursor: pointer; position:static; transform: translateX(0px); transition: all ease-in-out 0.2s; text-align: left; min-height: 90px; overflow: hidden;}
 .night_order_img {width: 90px; height: 90px; display: inline; pointer-events: none; position: absolute; left: 0px; top: 0px;}
@@ -21,9 +64,19 @@ html, body {overscroll-behavior: none;}
 .night_select {width: 96px; height: 41px; position: absolute; text-align: center; font-family: PiratesBay; font-size: 28pt; border: black 2px solid; background-image: url("assets/vines.png"); color: #afafaf; cursor: pointer; user-select: none;}
 .trashcan {position: absolute; bottom: 5px; left: 5px; width: 70px; height: 70px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; border-radius: 10px; background-image: url("assets/delete.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
 .trashcan:hover {opacity: 0.7;}
-.token_death {width: 50px; pointer-events: none; position: absolute; left: 50px; top: 7px;}
-.token_vote {width: 100px; pointer-events: none; position: absolute; left: 25px; top: 25px;}
-.token_visibility_pip {width: 35%; height: 35%; background-image: url(assets/visibility_off_red.png); position: absolute; right: 25px; bottom: 25px; pointer-events: none;}
+
+.role_token {height: 150px; width: 150px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px; border-radius: 100%; background-image: url(assets/alive_token.png);}
+.role_token[viability*="dead"] {background-image: url(assets/dead_token.png);}
+#body_actual[night="true"] .role_token[hide="true"] {display: none;}
+.token_death {width: 50px; pointer-events: none; position: absolute; left: 50px; top: 7px; display: none;}
+#body_actual[night="false"] .role_token[viability*="dead"] .token_death {display: inherit;}
+.token_vote {width: 100px; pointer-events: none; position: absolute; left: 25px; top: 25px; display: none;}
+#body_actual[night="true"] .role_token[viability="dead_vote"] .token_vote {display: inherit;}
+.token_visibility_pip {width: 35%; height: 35%; background-image: url(assets/visibility_off_red.png); position: absolute; right: 25px; bottom: 25px; pointer-events: none; display: none;}
+.role_token[hide="true"] .token_visibility_pip {display: inherit;}
+.token_oursider_betray {width: 80%; height: 80%; position: absolute; top: -15px; left: -15px; pointer-events: none; display: none;}
+#body_actual[night="true"] .token_oursider_betray {display: inherit;}
+
 .mutate_menu_main {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-color: #000000b7; display: none;}
 .mutate_menu_scroll_body {display: inline-block; height: 100%; width: 70%; pointer-events: all; background-color: #000000b7; border-radius: 100px; padding: 50px; overflow-y: scroll;}
 .mutate_menu_scroll_body::-webkit-scrollbar {display: none;}
@@ -36,7 +89,7 @@ html, body {overscroll-behavior: none;}
 .close_menu        {position: absolute; top: 5px; right: 5px; width: 55px; height: 55px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
 .close_menu:hover  {opacity: 0.6;}
 .menu_main         {position: absolute; top: 0px; left: 0px; height: 100%; width: 300px; background-image: url('assets/background-img2.webp');transition: transform ease-in-out 0.2s;}
-.menu_left         {position: absolute; left: 0px; top: 0px; width: 300px; height: 100%; border-right: 1px solid white; overflow: hidden;}
+.menu_left         {position: absolute; left: 0px; top: 0px; width: 299px; height: 100%; border-right: 1px solid white; overflow: hidden;}
 .menu_toggle       {position: absolute; right: 0px; top: 0px; width: 30px; height: 100%; background-position: center; background-size: contain; background-repeat: no-repeat; cursor: pointer;}
 .menu_title        {position: fixed; width: 280px; height: 70px; opacity: 1; background-image: url('assets/botc_logo.png'); background-position: center; background-repeat: no-repeat; background-size: contain; margin: 10px;}
 .menu_body         {position: fixed; width: 280px; height: calc(100% - 110px); padding: 10px; top: 90px; overflow-y: scroll; display: block; font-size: 25px;}
