@@ -122,22 +122,15 @@ function move_toggle() {
 
 //info functions
 async function infoCall(id, uid) {
+  let data_token = document.getElementById(id + "_token_" + uid);
     document.getElementById("info_img").src = "assets/roles/"+id+"_token.png";
-    document.getElementById("info_img").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
-    document.getElementById("info_img").style.cursor = "pointer";
-    if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true"){
-      document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "inherit";
-      document.getElementById("info_visibility_shade").style.display = "inherit";
-      document.getElementById("info_visibility_img").style.display = "inherit";
-    } else {
-      document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "none";
-      document.getElementById("info_visibility_shade").style.display = "none";
-      document.getElementById("info_visibility_img").style.display = "none";
-    }
     var roleJSON = await get_JSON("tokens/"+id+".json")
-    document.getElementById("info_title").innerHTML = roleJSON["name"];
-    document.getElementById("info_desc").innerHTML = roleJSON["description"];
-    document.getElementById("info_token_landing").innerHTML = ""
+    console.log()
+    document.getElementById("info_title_field").innerHTML = roleJSON["name"];
+    document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
+    document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
+    document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
+    document.getElementById("info_token_landing").innerHTML = "";
     for (var i = 0; i < roleJSON["tokens"].length;i++){
       var div = document.createElement("div");
       div.className = "info_tokens";
@@ -153,11 +146,26 @@ async function infoCall(id, uid) {
       }
       document.getElementById("info_token_landing").appendChild(div);
     }
-    document.getElementById("info_edit_player"). setAttribute("onclick", "javascripr:mutate_menu('"+ id +"', "+ uid +")")
-    document.getElementById("info_name_feild").value = document.getElementById(id+"_name_" + uid).innerHTML
-    document.getElementById("info_name_feild").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")")
-    document.getElementById("delete_button").setAttribute("onclick", "javascript:remove_token('"+ id +"', "+ uid +")")
-    document.getElementById("info_box").style.display = "inherit";
+    document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('"+id+"', '"+ uid +"')");
+    document.getElementById("info_kill_cycle").setAttribute("onclick", "javascript:deathCycle('"+id+"', '"+ uid +"')");
+    document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
+    document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('"+id+"', '"+ uid +"')");
+    // document.getElementById("info_img").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
+    // document.getElementById("info_img").style.cursor = "pointer";
+    // if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true"){
+    //   document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "inherit";
+    //   document.getElementById("info_visibility_shade").style.display = "inherit";
+    //   document.getElementById("info_visibility_img").style.display = "inherit";
+    // } else {
+    //   document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "none";
+    //   document.getElementById("info_visibility_shade").style.display = "none";
+    //   document.getElementById("info_visibility_img").style.display = "none";
+    // }
+    // document.getElementById("info_edit_player"). setAttribute("onclick", "javascripr:mutate_menu('"+ id +"', "+ uid +")")
+    // document.getElementById("info_name_feild").value = document.getElementById(id+"_name_" + uid).innerHTML
+    document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")")
+    // document.getElementById("delete_button").setAttribute("onclick", "javascript:remove_token('"+ id +"', "+ uid +")")
+    setTimeout(function() {document.getElementById("info_box").style.display = "inherit";}, 10)
 }
 function spawnReminder(id, uid) {
     var div = document.createElement("div");
@@ -182,7 +190,10 @@ function hideInfo() {
     document.getElementById("info_box").style.display = "none";
 }
 function nameIn(id, uid) {
-  document.getElementById(id+"_name_"+uid).innerHTML = document.getElementById("info_name_feild").value;
+  let value = document.getElementById("info_name_input").value;
+  document.getElementById(id+"_name_"+uid).innerHTML = value;
+  document.getElementById("info_name_field").innerHTML = value;
+  document.getElementById("info_img_name").innerHTML = value;
 }
 function cycle_token_visibility_toggle(id, uid) {
   clear_night_order()
@@ -198,6 +209,22 @@ function cycle_token_visibility_toggle(id, uid) {
     document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "inherit";
     document.getElementById("info_visibility_shade").style.display = "inherit";
     document.getElementById("info_visibility_img").style.display = "inherit";
+  }
+}
+function expand_info_tab(tab) {
+  document.getElementById("info_desc").setAttribute("focus", "false");
+  document.getElementById("info_rmnd").setAttribute("focus", "false");
+  document.getElementById("info_powr").setAttribute("focus", "false");
+  switch (tab) {
+    case 'desc':
+      document.getElementById("info_desc").setAttribute("focus", "true");
+    break;
+    case 'rmnd':
+      document.getElementById("info_rmnd").setAttribute("focus", "true");
+    break;
+    case 'powr':
+      document.getElementById("info_powr").setAttribute("focus", "true");
+    break;
   }
 }
 
@@ -522,24 +549,6 @@ function clear_mutate_menu() {
   document.getElementById("mutate_menu_MIN").innerHTML = "";
   document.getElementById("mutate_menu_DEM").innerHTML = "";
   document.getElementById("mutate_menu_TRAV").innerHTML = "";
-}
-function expand_info_tab(tab) {
-  document.getElementById("info_desc").setAttribute("focus", "false");
-  document.getElementById("info_rmnd").setAttribute("focus", "false");
-  document.getElementById("info_powr").setAttribute("focus", "false");
-  document.getElementById("info_img").setAttribute("focus", "false");
-  switch (tab) {
-    case 'desc':
-      document.getElementById("info_desc").setAttribute("focus", "true");
-      document.getElementById("info_img").setAttribute("focus", "true");
-    break;
-    case 'rmnd':
-      document.getElementById("info_rmnd").setAttribute("focus", "true");
-    break;
-    case 'powr':
-      document.getElementById("info_powr").setAttribute("focus", "true");
-    break;
-  }
 }
 
 

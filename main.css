@@ -3,7 +3,7 @@
     src: url(assets/fonts/piratesbay.ttf);
 }
 :root {
-    --BG-IMG:url('assets/backgrounds/red_circle_large.webp');
+    --BG-IMG:url('assets/backgrounds/green_circle_large.webp');
 }
 
 @media screen and (orientation:portrait) {
@@ -34,10 +34,14 @@ html, body {overscroll-behavior: none;}
 #info_desc {width: 250px; transition: width ease-in-out 0.2s;}
 #info_desc:is([focus="true"]) {width: calc(100% - 200px);}
 #info_img {width: 250px; height: 250px; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s;}
-#info_img:not([focus="true"]) {width: 200px; height: 200px;}
+#info_desc:not([focus="true"]) #info_img {width: 200px; height: 200px;}
 #info_title_field {height: 100px; position: absolute; top: 0px; left: 0px; color:rgb(211, 211, 211); font-size: 50pt; font-family: PiratesBay;}
 #info_name_field {position: absolute; top: 70px; left: 30px; color:rgb(192, 72, 72); font-size: 17pt; font-family: PiratesBay;}
-#info_desc_field {position: absolute; top: 100px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay;}
+#info_desc_field {position: absolute; width: calc(100vw - 500px); top: 100px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
+#info_visibility_shade {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-color: black; opacity: 0.5; border-radius: 100%; display: none; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s;}
+#info_desc:not([focus="true"]) #info_visibility_shade {width: 200px; height: 200px; left: 25px;}
+#info_visibility_img {position: absolute; top: 0px; left: 0px; height: 125px; width: 125px; pointer-events: none; padding: 62.5; display: none; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s, padding ease-in-out 0.2s;}
+#info_desc:not([focus="true"]) #info_visibility_img {width: 100px; height: 100px; left: 25px; padding: 50;}
 
 #info_rmnd {width: 100px; transition: width ease-in-out 0.2s;}
 #info_rmnd:is([focus="true"]) {width: calc(100% - 350px);}
@@ -45,7 +49,7 @@ html, body {overscroll-behavior: none;}
 
 #info_powr {width: 100px; transition: width ease-in-out 0.2s;}
 #info_powr:is([focus="true"]) {width: calc(100% - 350px);}
-.info_name_feild {height: 40px; width: 100%; color:black; font-size: 20pt; background-color: #afafaf;}
+.info_name_input {height: 40px; width: 100%; color:black; font-size: 20pt; background-color: #afafaf;}
 .info_power_options {display:inline-block; width: 80px; height: 80px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
 
 
