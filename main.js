@@ -20,7 +20,7 @@ const UID_LENGTH = 13
 // * make death tokens look less shitty
 // * make hitboxes more accurate in menu
 // ! ? redesign info to look less like the hellscape it is at this point
-// ! ? ? Three tabs {description, reminders, power}
+// ! ? ? Three tabs {description, reminders, power} power: kill, remove, visibility, edit, name
 // ? move visibility toggle to menu
 // ? spruce up top menu
 // ?
