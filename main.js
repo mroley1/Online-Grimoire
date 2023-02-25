@@ -19,8 +19,8 @@ const UID_LENGTH = 13
 // ? make travelers still visible when others are invisible (upper left just icon) *redisign javascript to be more robust and handle spawning during hidden
 // * make death tokens look less shitty
 // * make hitboxes more accurate in menu
-// ? redesign info to look less like the hellscape it is at this point
-// ? ? Three tabs {description, reminders, power}
+// ! ? redesign info to look less like the hellscape it is at this point
+// ! ? ? Three tabs {description, reminders, power}
 // ? move visibility toggle to menu
 // ? spruce up top menu
 // ?
