@@ -12,6 +12,7 @@ const UID_LENGTH = 13
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
 // TODO game state json import/ export
 // TODO script upload
+// TODO shift to reliance on database instead of json heap
 // ! TODO background change
 
 // ?  UI upgrade
@@ -55,59 +56,6 @@ function visibility_toggle() {
       tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
     }
   }
-  // var self = document.getElementById("visibility_toggle")
-  // self.style.backgroundImage = "url(assets/visibility.png)"
-  // if (self.style.backgroundColor!="lightblue") {
-  //   clear_night_order()
-  //   //hide
-  //   self.style.backgroundColor = "lightblue";
-  //   document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
-  //   document.getElementById("pip_layer").style.display = "none";
-  //   document.getElementById("dragPipLayer").style.display = "none";
-  //   tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
-  //   for (i = 0; i < tokens.length; i++) {
-  //     var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
-  //     var uid = tokens[i].getAttribute("uid");
-  //     if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true") {
-  //       document.getElementById(id+"_token_"+uid).style.display = "none";
-  //     }
-  //     document.getElementById(id+"_"+uid+"_death").style.display = "none";
-  //     switch (tokens[i].getAttribute("viability")) {
-  //     case "alive":
-  //       tokens[i].style.backgroundImage = "url(assets/alive_token.png)"
-  //       break;
-  //     case "dead_vote":
-  //       tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
-  //       document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
-  //       break;
-  //     case "dead":
-  //       tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
-  //       break;
-  //     default: tokens[i].setAttribute("viability", "alive");
-  //     }
-  //     tokens[i].setAttribute("onclick", "javascript:deathCycle('"+ id + "', " + uid +")");
-  //   }
-  // } else { 
-  //   //show
-  //   self.style.backgroundColor = "rgb(66, 66, 66)";
-  //   self.style.backgroundImage = "url(assets/visibility_off.png)"
-  //   document.getElementById("pip_layer").style.display = "inherit"
-  //   document.getElementById("dragPipLayer").style.display = "inherit";
-  //   tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
-  //   for (i = 0; i < tokens.length; i++) {
-  //     var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
-  //     var uid = tokens[i].getAttribute("uid");
-  //     document.getElementById(id+"_token_"+uid).style.display = "inherit";
-  //     tokens[i].style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
-  //     document.getElementById(id+"_"+uid+"_vote").style.display = "none";
-  //     if (tokens[i].getAttribute("viability")=="dead_vote" || tokens[i].getAttribute("viability")=="dead") {
-  //       document.getElementById(id+"_"+uid+"_death").style.display = "inherit"
-  //     } else {
-  //       document.getElementById(id+"_"+uid+"_death").style.display = "none"
-  //     }
-  //     tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
-  //   }
-  // }
 }
 function deathCycle(id, uid) {
   let token = document.getElementById(id+"_token_"+uid);
@@ -169,6 +117,7 @@ async function infoCall(id, uid) {
     } else {
       document.getElementById("info_desc").setAttribute("hidden", "false");
     }
+    document.getElementById("info_name_input").value = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
     document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
     document.getElementById("info_box").style.display = "inherit";
 }
@@ -331,7 +280,7 @@ async function mutate_token(idFrom, uid, idTo) {
     document.getElementById(idFrom + "_" + uid + "_vote").id = idTo + "_" + uid + "_vote";
     document.getElementById(idFrom + "_name_" + uid).id = idTo + "_name_" + uid;
     clean_tokens(uid);
-    hideInfo()
+    if (document.getElementById("info_box").style.display == "inherit") {infoCall(idTo, uid);}
   });
 }
 function shuffle_roles() {
@@ -340,6 +289,7 @@ function shuffle_roles() {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
+    hideInfo();
   }
   var tokens = document.getElementById("token_layer").children;
   var ids = [];
