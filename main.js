@@ -109,13 +109,14 @@ async function infoCall(id, uid) {
       document.getElementById("info_token_landing").appendChild(div);
     }
     document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('"+id+"', '"+ uid +"')");
-    document.getElementById("info_kill_cycle").setAttribute("onclick", "javascript:deathCycle('"+id+"', '"+ uid +"')");
+    document.getElementById("info_kill_cycle").setAttribute("onclick", "javascript:info_death_cycle_trigger('"+id+"', '"+ uid +"')");
+    update_info_death_cycle(id, uid);
     document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
     document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('"+id+"', '"+ uid +"')");
     if (data_token.getAttribute("hide")=="true"){
-      document.getElementById("info_desc").setAttribute("hidden", "true");
+      document.getElementById("info_box").setAttribute("hidden", "true");
     } else {
-      document.getElementById("info_desc").setAttribute("hidden", "false");
+      document.getElementById("info_box").setAttribute("hidden", "false");
     }
     document.getElementById("info_name_input").value = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
     document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
@@ -153,10 +154,10 @@ function cycle_token_visibility_toggle(id, uid) {
   clear_night_order()
   if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true") {
     document.getElementById(id+"_token_"+uid).setAttribute("hide", "false");
-    document.getElementById("info_desc").setAttribute("hidden", "false");
+    document.getElementById("info_box").setAttribute("hidden", "false");
   } else {
     document.getElementById(id+"_token_"+uid).setAttribute("hide", "true");
-    document.getElementById("info_desc").setAttribute("hidden", "true");
+    document.getElementById("info_box").setAttribute("hidden", "true");
   }
 }
 function expand_info_tab(tab) {
@@ -172,6 +173,24 @@ function expand_info_tab(tab) {
     break;
     case 'powr':
       document.getElementById("info_powr").setAttribute("focus", "true");
+    break;
+  }
+}
+function info_death_cycle_trigger(id, uid) {
+  deathCycle(id, uid);
+  update_info_death_cycle(id, uid);
+  
+}
+function update_info_death_cycle(id, uid) {
+  switch (document.getElementById(id+"_token_"+uid).getAttribute("viability")) {
+  case "alive":
+    document.getElementById("info_kill_cycle").style.backgroundImage = "url('assets/tombstone.png')"
+    break;
+  case "dead_vote":
+  document.getElementById("info_kill_cycle").style.backgroundImage = "url('assets/vote.png')"
+    break;
+  case "dead":
+  document.getElementById("info_kill_cycle").style.backgroundImage = "url('assets/revive.png')"
     break;
   }
 }
