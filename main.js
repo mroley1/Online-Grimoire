@@ -16,7 +16,7 @@ const UID_LENGTH = 13
 
 // ?  UI upgrade
 // ?
-// ? make travelers still visible when others are invisible (upper left just icon) *redisign javascript to be more robust and handle spawning during hidden
+// ? make travelers still visible when others are invisible (upper left just icon) *redisign javascript(or css) to be more robust and handle spawning during hidden
 // * make death tokens look less shitty
 // * make hitboxes more accurate in menu
 // ! ? redesign info to look less like the hellscape it is at this point
@@ -522,6 +522,24 @@ function clear_mutate_menu() {
   document.getElementById("mutate_menu_MIN").innerHTML = "";
   document.getElementById("mutate_menu_DEM").innerHTML = "";
   document.getElementById("mutate_menu_TRAV").innerHTML = "";
+}
+function expand_info_tab(tab) {
+  document.getElementById("info_desc").setAttribute("focus", "false");
+  document.getElementById("info_rmnd").setAttribute("focus", "false");
+  document.getElementById("info_powr").setAttribute("focus", "false");
+  document.getElementById("info_img").setAttribute("focus", "false");
+  switch (tab) {
+    case 'desc':
+      document.getElementById("info_desc").setAttribute("focus", "true");
+      document.getElementById("info_img").setAttribute("focus", "true");
+    break;
+    case 'rmnd':
+      document.getElementById("info_rmnd").setAttribute("focus", "true");
+    break;
+    case 'powr':
+      document.getElementById("info_powr").setAttribute("focus", "true");
+    break;
+  }
 }
 
 

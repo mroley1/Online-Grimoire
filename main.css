@@ -29,8 +29,23 @@ html, body {overscroll-behavior: none;}
 .info_name_feild {height: 40px; width: 470px; position: absolute; top: 180px; right: 0px; color:black; font-size: 20pt; background-color: #afafaf;}
 
 /*new info*/
-#info_box {position: absolute; left: 0px; bottom: 0px; width: 100%; height: 250px; background-image: url('assets/vines.png'); white-space: nowrap;}
-.info_tab {height: 100%; width: 150px; display: inline-block; color: white; text-align: center;}
+#info_box {position: absolute; left: 0px; bottom: 0px; width: 100%; height: 250px; background-image: url('assets/vines.png'); white-space: nowrap; overflow: hidden;}
+.info_tab {height: 250px; top: 0px; display: inline-block; color: white; text-align: center; left: 0px; position: relative; overflow: hidden;}
+.info_tab_header {height: 250px; cursor: pointer;}
+.info_tab_img {width: 100%; margin-top: 75px;}
+#info_desc {width: 250px; transition: width ease-in-out 0.2s;}
+#info_desc:is([focus="true"]) {width: calc(100% - 200px);}
+#info_img {width: 250px; height: 250px; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s;}
+#info_img:not([focus="true"]) {width: 200px; height: 200px;}
+#info_title_field {height: 100px; position: absolute; top: 0px; left: 0px; color:rgb(211, 211, 211); font-size: 50pt; font-family: PiratesBay;}
+#info_name_field {position: absolute; top: 70px; left: 30px; color:rgb(192, 72, 72); font-size: 17pt; font-family: PiratesBay;}
+#info_desc_field {position: absolute; top: 100px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay;}
+
+#info_rmnd {width: 100px; transition: width ease-in-out 0.2s;}
+#info_rmnd:is([focus="true"]) {width: calc(100% - 350px);}
+#info_powr {width: 100px; transition: width ease-in-out 0.2s;}
+#info_powr:is([focus="true"]) {width: calc(100% - 350px);}
+
 
 .night_order_tab {width: 90px; height: 90px; display: inline-block; background-position: center; background-repeat: no-repeat; background-size: contain; border-bottom: 2px solid black; cursor: pointer; position:static; transform: translateX(0px); transition: all ease-in-out 0.2s; text-align: left; min-height: 90px; overflow: hidden;}
 .night_order_img {width: 90px; height: 90px; display: inline; pointer-events: none; position: absolute; left: 0px; top: 0px;}
