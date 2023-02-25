@@ -12,15 +12,15 @@ const UID_LENGTH = 13
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
 // TODO game state json import/ export
 // TODO script upload
-// TODO background change
+// ! TODO background change
 
 // ?  UI upgrade
 // ?
-// ? make travelers still visible when others are invisible (upper left just icon) *redisign javascript(or css) to be more robust and handle spawning during hidden
+// * make travelers still visible when others are invisible (upper left just icon) *redisign javascript(or css) to be more robust and handle spawning during hidden
 // * make death tokens look less shitty
 // * make hitboxes more accurate in menu
-// ! ? redesign info to look less like the hellscape it is at this point
-// ! ? ? Three tabs {description, reminders, power} power: kill, remove, visibility, edit, name
+// * ? redesign info to look less like the hellscape it is at this point
+// * ? ? Three tabs {description, reminders, power} power: kill, remove, visibility, edit, name
 // ? move visibility toggle to menu
 // ? spruce up top menu
 // ?
@@ -37,75 +37,89 @@ function loaded() {
 
 // corner toggles
 function visibility_toggle() {
-  var self = document.getElementById("visibility_toggle")
-  self.style.backgroundImage = "url(assets/visibility.png)"
-  if (self.style.backgroundColor!="lightblue") {
-    clear_night_order()
-    //hide
-    self.style.backgroundColor = "lightblue";
-    document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
-    document.getElementById("pip_layer").style.display = "none";
-    document.getElementById("dragPipLayer").style.display = "none";
-    tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
+  tokens = document.getElementById("token_layer").getElementsByClassName("role_token");
+  if (document.getElementById("body_actual").getAttribute("night")=="false") { // ! nighttime
+    document.getElementById("body_actual").setAttribute("night", "true");
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
       var uid = tokens[i].getAttribute("uid");
-      if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true") {
-        document.getElementById(id+"_token_"+uid).style.display = "none";
-      }
-      document.getElementById(id+"_"+uid+"_death").style.display = "none";
-      switch (tokens[i].getAttribute("viability")) {
-      case "alive":
-        tokens[i].style.backgroundImage = "url(assets/alive_token.png)"
-        break;
-      case "dead_vote":
-        tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
-        document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
-        break;
-      case "dead":
-        tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
-        break;
-      default: tokens[i].setAttribute("viability", "alive");
-      }
+      tokens[i].style.backgroundImage = "";
       tokens[i].setAttribute("onclick", "javascript:deathCycle('"+ id + "', " + uid +")");
     }
-  } else { 
-    //show
-    self.style.backgroundColor = "rgb(66, 66, 66)";
-    self.style.backgroundImage = "url(assets/visibility_off.png)"
-    document.getElementById("pip_layer").style.display = "inherit"
-    document.getElementById("dragPipLayer").style.display = "inherit";
-    tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
+  } else {                                                                     // ! daytime
+    document.getElementById("body_actual").setAttribute("night", "false");
     for (i = 0; i < tokens.length; i++) {
       var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
       var uid = tokens[i].getAttribute("uid");
-      document.getElementById(id+"_token_"+uid).style.display = "inherit";
       tokens[i].style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
-      document.getElementById(id+"_"+uid+"_vote").style.display = "none";
-      if (tokens[i].getAttribute("viability")=="dead_vote" || tokens[i].getAttribute("viability")=="dead") {
-        document.getElementById(id+"_"+uid+"_death").style.display = "inherit"
-      } else {
-        document.getElementById(id+"_"+uid+"_death").style.display = "none"
-      }
       tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
     }
   }
+  // var self = document.getElementById("visibility_toggle")
+  // self.style.backgroundImage = "url(assets/visibility.png)"
+  // if (self.style.backgroundColor!="lightblue") {
+  //   clear_night_order()
+  //   //hide
+  //   self.style.backgroundColor = "lightblue";
+  //   document.getElementById("move_toggle").style.backgroundColor = "rgb(66, 66, 66)";
+  //   document.getElementById("pip_layer").style.display = "none";
+  //   document.getElementById("dragPipLayer").style.display = "none";
+  //   tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
+  //   for (i = 0; i < tokens.length; i++) {
+  //     var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
+  //     var uid = tokens[i].getAttribute("uid");
+  //     if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true") {
+  //       document.getElementById(id+"_token_"+uid).style.display = "none";
+  //     }
+  //     document.getElementById(id+"_"+uid+"_death").style.display = "none";
+  //     switch (tokens[i].getAttribute("viability")) {
+  //     case "alive":
+  //       tokens[i].style.backgroundImage = "url(assets/alive_token.png)"
+  //       break;
+  //     case "dead_vote":
+  //       tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
+  //       document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
+  //       break;
+  //     case "dead":
+  //       tokens[i].style.backgroundImage = "url(assets/dead_token.png)"
+  //       break;
+  //     default: tokens[i].setAttribute("viability", "alive");
+  //     }
+  //     tokens[i].setAttribute("onclick", "javascript:deathCycle('"+ id + "', " + uid +")");
+  //   }
+  // } else { 
+  //   //show
+  //   self.style.backgroundColor = "rgb(66, 66, 66)";
+  //   self.style.backgroundImage = "url(assets/visibility_off.png)"
+  //   document.getElementById("pip_layer").style.display = "inherit"
+  //   document.getElementById("dragPipLayer").style.display = "inherit";
+  //   tokens = document.getElementById("token_layer").getElementsByClassName("role_token")
+  //   for (i = 0; i < tokens.length; i++) {
+  //     var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
+  //     var uid = tokens[i].getAttribute("uid");
+  //     document.getElementById(id+"_token_"+uid).style.display = "inherit";
+  //     tokens[i].style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
+  //     document.getElementById(id+"_"+uid+"_vote").style.display = "none";
+  //     if (tokens[i].getAttribute("viability")=="dead_vote" || tokens[i].getAttribute("viability")=="dead") {
+  //       document.getElementById(id+"_"+uid+"_death").style.display = "inherit"
+  //     } else {
+  //       document.getElementById(id+"_"+uid+"_death").style.display = "none"
+  //     }
+  //     tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
+  //   }
+  // }
 }
 function deathCycle(id, uid) {
   let token = document.getElementById(id+"_token_"+uid);
   switch (token.getAttribute("viability")) {
   case "alive": //toDeadVote
     token.setAttribute("viability", "dead_vote");
-    token.style.backgroundImage = "url(assets/dead_token.png)"
-    document.getElementById(id + "_" + uid + "_vote").style.display = "inherit";
     break;
   case "dead_vote": //toDead
     token.setAttribute("viability", "dead");
-    document.getElementById(id + "_" + uid + "_vote").style.display = "none";
     break;
   case "dead": // toAlive
     token.setAttribute("viability", "alive");
-    token.style.backgroundImage = "url(assets/alive_token.png)"
     break;
   default: token.setAttribute("viability", "alive");
   }
@@ -150,22 +164,13 @@ async function infoCall(id, uid) {
     document.getElementById("info_kill_cycle").setAttribute("onclick", "javascript:deathCycle('"+id+"', '"+ uid +"')");
     document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
     document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('"+id+"', '"+ uid +"')");
-    // document.getElementById("info_img").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
-    // document.getElementById("info_img").style.cursor = "pointer";
-    // if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true"){
-    //   document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "inherit";
-    //   document.getElementById("info_visibility_shade").style.display = "inherit";
-    //   document.getElementById("info_visibility_img").style.display = "inherit";
-    // } else {
-    //   document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "none";
-    //   document.getElementById("info_visibility_shade").style.display = "none";
-    //   document.getElementById("info_visibility_img").style.display = "none";
-    // }
-    // document.getElementById("info_edit_player"). setAttribute("onclick", "javascripr:mutate_menu('"+ id +"', "+ uid +")")
-    // document.getElementById("info_name_feild").value = document.getElementById(id+"_name_" + uid).innerHTML
-    document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")")
-    // document.getElementById("delete_button").setAttribute("onclick", "javascript:remove_token('"+ id +"', "+ uid +")")
-    setTimeout(function() {document.getElementById("info_box").style.display = "inherit";}, 10)
+    if (data_token.getAttribute("hide")=="true"){
+      document.getElementById("info_desc").setAttribute("hidden", "true");
+    } else {
+      document.getElementById("info_desc").setAttribute("hidden", "false");
+    }
+    document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
+    document.getElementById("info_box").style.display = "inherit";
 }
 function spawnReminder(id, uid) {
     var div = document.createElement("div");
@@ -197,18 +202,12 @@ function nameIn(id, uid) {
 }
 function cycle_token_visibility_toggle(id, uid) {
   clear_night_order()
-  focus = document.getElementById(id+"_token_"+uid);
-  hide = focus.getAttribute("hide")=="true";
-  if (hide) {
-    focus.setAttribute("hide", "false");
-    document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "none";
-    document.getElementById("info_visibility_shade").style.display = "none";
-    document.getElementById("info_visibility_img").style.display = "none";
+  if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true") {
+    document.getElementById(id+"_token_"+uid).setAttribute("hide", "false");
+    document.getElementById("info_desc").setAttribute("hidden", "false");
   } else {
-    focus.setAttribute("hide", "true");
-    document.getElementById(id+"_"+uid+"_visibility_pip").style.display = "inherit";
-    document.getElementById("info_visibility_shade").style.display = "inherit";
-    document.getElementById("info_visibility_img").style.display = "inherit";
+    document.getElementById(id+"_token_"+uid).setAttribute("hide", "true");
+    document.getElementById("info_desc").setAttribute("hidden", "true");
   }
 }
 function expand_info_tab(tab) {
@@ -231,6 +230,7 @@ function expand_info_tab(tab) {
 
 //token functions
 function spawnToken(id, hide, cat, hide_face) {
+  if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
   var time = new Date();
   var uid = time.getTime()
   var div = document.createElement("div");
@@ -247,19 +247,23 @@ function spawnToken(id, hide, cat, hide_face) {
   death.src = "assets/shroud.png";
   death.classList = "token_death";
   death.id = id + "_" + uid + "_death";
-  death.style.display = "none" // none
   div.appendChild(death);
   var visibility_pip = document.createElement("div");
   visibility_pip.classList = "token_visibility_pip background_image";
   visibility_pip.id = id+"_"+uid+"_visibility_pip";
-  if (!hide) {visibility_pip.style.display = "none";}
   div.appendChild(visibility_pip);
   var vote = document.createElement("img");
   vote.src = "assets/vote_token.png";
   vote.classList = "token_vote";
   vote.id = id + "_" + uid + "_vote";
-  vote.style.display = "none" // none
   div.appendChild(vote);
+  if (cat == "TRAV"){
+    var oursider_betray = document.createElement("div");
+    oursider_betray.style.backgroundImage = "url('assets/icons/"+id+".png')"
+    oursider_betray.classList = "token_oursider_betray background_image";
+    oursider_betray.id = id+"_"+uid+"_oursider_betray";
+    div.appendChild(oursider_betray);
+  }
   var name = document.createElement("span")
   name.classList = "token_text"
   name.id = id+"_name_"+uid;
@@ -371,7 +375,7 @@ function dragPipLayerSpawn(type) {
   var div = document.createElement("div");
   div.classList = "reminder drag";
   var topDistance = ref[type];
-  div.style = "background-image: url('assets/reminders/"+type+".png'); left: 5px; top: "+topDistance+"; border-radius: 100%; display: block; pointer-events: all;";
+  div.style = "background-image: url('assets/reminders/"+type+".png'); left: 5px; top: "+topDistance+"; border-radius: 100%; pointer-events: all;";
   div.id = type + "_" + uid;
   div.setAttribute("disposable-reminder", true);
   div.setAttribute("alignment", type);
