@@ -10,7 +10,7 @@ const UID_LENGTH = 13
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
-// ! TODO game state json import/ export
+// * TODO game state json import/ export
 // ? TODO script upload
 // ? TODO shift to reliance on database instead of json heap
 // ! TODO background change
@@ -43,6 +43,7 @@ function generate_game_state_json() {
     state.players[i].show_face = players[i].getAttribute("show_face");
     state.players[i].left = players[i].style.left;
     state.players[i].top = players[i].style.top;
+    state.players[i].name = players[i].getElementsByClassName("token_text")[0].innerHTML;
   }
   state.reminders = [];
   reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
@@ -59,14 +60,29 @@ function generate_game_state_json() {
   for (i = 0; i < pips.length; i++) {
     if (pips[i].getAttribute("stacked") == "false") {
       state.pips[j] = new Object();
-      state.pips[j].id = pips[i].id;
-      state.pips[j].stacked = pips[i].getAttribute("stacked");
+      state.pips[j].type = pips[i].id.substring(0,pips[i].id.length-UID_LENGTH-1);
       state.pips[j].left = pips[i].style.left;
       state.pips[j].top = pips[i].style.top;
       j++;
     }
   }
   return JSON.stringify(state);
+}
+
+function load_game_state_json(state) {
+  document.getElementById("script_options").value = state.script;
+  document.getElementById("player_count").value = state.playercount;
+  document.getElementById("body_actual").setAttribute("night", state.night);
+  populate_script(state.script);
+  for (let i = 0; i < state.players.length; i++) {
+    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].hide, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+  }
+  for (let i = 0; i < state.reminders.length; i++) {
+    spawnReminder(state.reminders[i].character, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
+  }
+  for (let i = 0; i < state.pips.length; i++) {
+    dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top)
+  }
 }
 
 async function get_JSON(path) {
@@ -122,7 +138,6 @@ function move_toggle() {
     } else {
         self.style.backgroundColor = "green";
     }
-    console.log(generate_game_state_json()) // ! REMOVE
 }
 
 
@@ -173,9 +188,11 @@ function spawnReminder(id, uid, left, top) {
     div.id = id + "_" + uid;
     div.setAttribute("uid", uid);
     document.getElementById("reminder_layer").appendChild(div);
-    var reminder = document.getElementById("info_"+id+"_"+uid)
-    reminder.style.opacity = 0.7;
-    reminder.setAttribute("onclick", "javascript:recall_reminder_button('"+ id +"', "+ uid +")")
+    try{
+      var reminder = document.getElementById("info_"+id+"_"+uid)
+      reminder.style.opacity = 0.7;
+      reminder.setAttribute("onclick", "javascript:recall_reminder_button('"+ id +"', "+ uid +")")
+    } catch {}
     dragInit();
 }
 function spawnReminderDefault(id, uid) {
@@ -244,7 +261,7 @@ function update_info_death_cycle(id, uid) {
 
 
 //token functions
-function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top) {
+function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameText) {
   if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
   var div = document.createElement("div");
   div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
@@ -278,6 +295,7 @@ function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top) {
     div.appendChild(oursider_betray);
   }
   var name = document.createElement("span")
+  name.innerHTML = nameText;
   name.classList = "token_text"
   name.id = id+"_name_"+uid;
   div.appendChild(name);
@@ -290,7 +308,7 @@ function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top) {
 function spawnTokenDefault(id, hide, cat, hide_face) {
   var time = new Date();
   var uid = time.getTime()
-  spawnToken(id, uid, hide, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)");
+  spawnToken(id, uid, hide, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid) {
   var tokens = document.getElementById("info_token_landing").children;
@@ -556,11 +574,11 @@ function script_change() {
 }
 function update_role_counts(){
   var counts = document.getElementsByClassName("menu_token_count");
-  for (i = 0; i<counts.length; i++) {
+  for (let i = 0; i<counts.length; i++) {
     counts[i].innerHTML = 0;
   }
   var tokens = document.getElementsByClassName("role_token");
-  for (i = 0; i<tokens.length; i++) {
+  for (let i = 0; i<tokens.length; i++) {
     id = tokens[i].getAttribute("id").match(/.*(?=_token)/)[0];
     try {document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1}
     catch (e) {}
