@@ -21,6 +21,8 @@ html, body {overscroll-behavior: none;}
 .body_background_image{background: transparent; overflow: hidden; width: 100%; height: 100%; position: absolute; left: 0px; top: 0px; pointer-events: none;}
 .body_background_image::before {content: ""; z-index: -1; background-position: center; background-repeat: no-repeat; background-size: cover; background-image: var(--BG-IMG); position: absolute;}
 
+#body_actual[night="true"] #alignment_tokens {display: none;}
+
 #visibility_toggle {background-image: url(assets/visibility_off.png); right: 10px; background-color: rgb(66, 66, 66); cursor: pointer;}
 #body_actual[night="true"] #visibility_toggle {background-color: lightblue;}
 

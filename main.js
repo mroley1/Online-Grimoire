@@ -5,14 +5,14 @@ const UID_LENGTH = 13
 // * TODO implement shuffle feature: swap pictures not names.
 // * TODO allow tokens to be individually mutated
 // TODO make reminders draggable from info
-// TODO implement cast makeup to be responsive to script
+// ! TODO implement cast makeup to be responsive to script
 // TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
-// TODO game state json import/ export
-// TODO script upload
-// TODO shift to reliance on database instead of json heap
+// ! TODO game state json import/ export
+// ? TODO script upload
+// ? TODO shift to reliance on database instead of json heap
 // ! TODO background change
 
 // ?  UI upgrade
@@ -22,18 +22,61 @@ const UID_LENGTH = 13
 // * make hitboxes more accurate in menu
 // * ? redesign info to look less like the hellscape it is at this point
 // * ? ? Three tabs {description, reminders, power} power: kill, remove, visibility, edit, name
-// ? move visibility toggle to menu
-// ? spruce up top menu
+// ! move visibility toggle to menu
+// ! spruce up top menu
 // ?
+
+function generate_game_state_json() {
+  var state = new Object();
+  state.script = document.getElementById("script_options").value;
+  state.playercount = document.getElementById("player_count").value;
+  state.night = document.getElementById("body_actual").getAttribute("night");
+  state.players = [];
+  players = document.getElementById("token_layer").getElementsByClassName("role_token");
+  for (i = 0; i < players.length; i++) {
+    state.players[i] = new Object();
+    state.players[i].character = players[i].id.substring(0,players[i].id.length-UID_LENGTH-7);
+    state.players[i].uid = players[i].getAttribute("uid");
+    state.players[i].hide = players[i].getAttribute("hide");
+    state.players[i].viability = players[i].getAttribute("viability");
+    state.players[i].cat = players[i].getAttribute("cat");
+    state.players[i].show_face = players[i].getAttribute("show_face");
+    state.players[i].left = players[i].style.left;
+    state.players[i].top = players[i].style.top;
+  }
+  state.reminders = [];
+  reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
+  for (i = 0; i < reminders.length; i++) {
+    state.reminders[i] = new Object();
+    state.reminders[i].character = reminders[i].id.substring(0,reminders[i].id.length-UID_LENGTH-1);
+    state.reminders[i].uid = reminders[i].getAttribute("uid");
+    state.reminders[i].left = reminders[i].style.left;
+    state.reminders[i].top = reminders[i].style.top;
+  }
+  state.pips = [];
+  pips = document.getElementById("interactivePlane").getElementsByClassName("reminder");
+  var j = 0;
+  for (i = 0; i < pips.length; i++) {
+    if (pips[i].getAttribute("stacked") == "false") {
+      state.pips[j] = new Object();
+      state.pips[j].id = pips[i].id;
+      state.pips[j].stacked = pips[i].getAttribute("stacked");
+      state.pips[j].left = pips[i].style.left;
+      state.pips[j].top = pips[i].style.top;
+      j++;
+    }
+  }
+  return JSON.stringify(state);
+}
 
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 
 function loaded() {
-  dragPipLayerSpawn("good");
-  dragPipLayerSpawn("evil");
-  dragPipLayerSpawn("reminder_pip");
+  dragPipLayerSpawnDefault("good");
+  dragPipLayerSpawnDefault("evil");
+  dragPipLayerSpawnDefault("reminder_pip");
 }
 
 // corner toggles
@@ -79,6 +122,7 @@ function move_toggle() {
     } else {
         self.style.backgroundColor = "green";
     }
+    console.log(generate_game_state_json()) // ! REMOVE
 }
 
 
@@ -104,7 +148,7 @@ async function infoCall(id, uid) {
         div.style.opacity = 0.7;
         div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"', "+ uid +")")
       } else {
-        div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"', "+ uid +")")
+        div.setAttribute("onclick", "javascript:spawnReminderDefault('"+ TokenId +"', "+ uid +")")
       }
       document.getElementById("info_token_landing").appendChild(div);
     }
@@ -122,22 +166,25 @@ async function infoCall(id, uid) {
     document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
     document.getElementById("info_box").style.display = "inherit";
 }
-function spawnReminder(id, uid) {
+function spawnReminder(id, uid, left, top) {
     var div = document.createElement("div");
     div.classList = "reminder drag";
-    div.style = "background-image: url('assets/reminders/"+id+".png'); left: "+(parseInt(window.visualViewport.width/2)-37)+"; top: calc(50% - 37.5px)";
+    div.style = "background-image: url('assets/reminders/"+id+".png'); left: "+left+"; top: "+top;
     div.id = id + "_" + uid;
     div.setAttribute("uid", uid);
-    document.getElementById("pip_layer").appendChild(div);
+    document.getElementById("reminder_layer").appendChild(div);
     var reminder = document.getElementById("info_"+id+"_"+uid)
     reminder.style.opacity = 0.7;
     reminder.setAttribute("onclick", "javascript:recall_reminder_button('"+ id +"', "+ uid +")")
     dragInit();
 }
+function spawnReminderDefault(id, uid) {
+  spawnReminder(id, uid, (parseInt(window.visualViewport.width/2)-37)+"px", "calc(50% - 37.5px)");
+}
 function recall_reminder_button(id, uid) {
   var reminder = document.getElementById("info_"+id+"_"+uid)
   reminder.style.opacity = 1;
-  reminder.setAttribute("onclick", "javascript:spawnReminder('"+ id +"', "+ uid +")")
+  reminder.setAttribute("onclick", "javascript:spawnReminderDefault('"+ id +"', "+ uid +")")
   rm = document.getElementById(id+"_"+uid);
   rm.parentNode.removeChild(rm);
 }
@@ -197,16 +244,14 @@ function update_info_death_cycle(id, uid) {
 
 
 //token functions
-function spawnToken(id, hide, cat, hide_face) {
+function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top) {
   if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
-  var time = new Date();
-  var uid = time.getTime()
   var div = document.createElement("div");
   div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
   div.classList = "role_token drag";
-  div.style = "background-image: url('assets/roles/"+id+"_token.png'); left: "+(parseInt(window.visualViewport.width/2)-75)+"px; top: calc(50% - 75px)";
+  div.style = "background-image: url('assets/roles/"+id+"_token.png'); left: "+left+"; top: " + top;
   div.id = id+"_token_"+uid;
-  div.setAttribute("viability", "alive");
+  div.setAttribute("viability", viability);
   div.setAttribute("uid", uid);
   div.setAttribute("hide", hide);
   div.setAttribute("cat", cat);
@@ -242,6 +287,11 @@ function spawnToken(id, hide, cat, hide_face) {
   dragInit();
   clear_night_order();
 }
+function spawnTokenDefault(id, hide, cat, hide_face) {
+  var time = new Date();
+  var uid = time.getTime()
+  spawnToken(id, uid, hide, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)");
+}
 function remove_token(id, uid) {
   var tokens = document.getElementById("info_token_landing").children;
   rm = document.getElementById(id+"_token_"+uid);
@@ -253,10 +303,10 @@ function remove_token(id, uid) {
   clear_night_order();
 }
 function clean_tokens(uid) {
-  let reminders = document.getElementById("pip_layer").getElementsByClassName("reminder");
+  let reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
   for (i=reminders.length-1; i!=-1; --i) {
     if (reminders[i].getAttribute("uid")==uid) {
-      document.getElementById("pip_layer").removeChild(reminders[i]);
+      document.getElementById("reminder_layer").removeChild(reminders[i]);
     }
   }
 }
@@ -337,14 +387,12 @@ function populate_mutate_menu(tokens) {
 
 
 //good/evil reminders
-function dragPipLayerSpawn(type) {
-  const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
+function dragPipLayerSpawn(type, left, top) {
   var time = new Date();
   var uid = time.getTime();
   var div = document.createElement("div");
   div.classList = "reminder drag";
-  var topDistance = ref[type];
-  div.style = "background-image: url('assets/reminders/"+type+".png'); left: 5px; top: "+topDistance+"; border-radius: 100%; pointer-events: all;";
+  div.style = "background-image: url('assets/reminders/"+type+".png'); left: "+left+"; top: "+top+"; border-radius: 100%; pointer-events: all;";
   div.id = type + "_" + uid;
   div.setAttribute("disposable-reminder", true);
   div.setAttribute("alignment", type);
@@ -356,6 +404,10 @@ function dragPipLayerSpawn(type) {
   div.appendChild(img);
   document.getElementById("dragPipLayer").prepend(div);
   dragInit();
+}
+function dragPipLayerSpawnDefault(type) {
+  const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
+  dragPipLayerSpawn(type, "5px", ref[type]);
 }
 function prompt_delete_reminder(id) {
   document.getElementById(id + "_img").style.display = "inherit";
@@ -422,7 +474,7 @@ async function populate_script(x){
         var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
         outer_div.title = tokenJSON["description"];
-        outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +")");
+        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +", 'alive')");
         var label = document.createElement("label");
         label.classList = "menu_list";
         label.innerHTML = tokenJSON["name"];
@@ -559,7 +611,7 @@ function dragStart(e) {
 function dragEnd(e) {
   if(e.target.getAttribute("disposable-reminder")) {
     if (e.target.getAttribute("stacked")=="true") {
-      dragPipLayerSpawn(e.target.getAttribute("alignment"));
+      dragPipLayerSpawnDefault(e.target.getAttribute("alignment"));
     }
     e.target.setAttribute("stacked", false);
     e.target.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+e.target.id+"')");
