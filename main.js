@@ -75,7 +75,7 @@ function load_game_state_json(state) {
   document.getElementById("body_actual").setAttribute("night", state.night);
   populate_script(state.script);
   for (let i = 0; i < state.players.length; i++) {
-    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].hide, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].hide, state.players[i].cat, state.players[i].hide_face, state.players[i].visibility, state.players[i].left, state.players[i].top, state.players[i].name)
   }
   for (let i = 0; i < state.reminders.length; i++) {
     spawnReminder(state.reminders[i].character, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
