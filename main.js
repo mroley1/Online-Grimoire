@@ -11,20 +11,19 @@ const UID_LENGTH = 13
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
 // * TODO game state json import/ export
-// ? TODO script upload
-// ? TODO shift to reliance on database instead of json heap
+// * TODO script upload
+// // ? TODO shift to reliance on database instead of json heap
 // ! TODO background change
 
-// ?  UI upgrade
-// ?
+// *  UI upgrade
+// *
 // * make travelers still visible when others are invisible (upper left just icon) *redisign javascript(or css) to be more robust and handle spawning during hidden
 // * make death tokens look less shitty
 // * make hitboxes more accurate in menu
 // * ? redesign info to look less like the hellscape it is at this point
 // * ? ? Three tabs {description, reminders, power} power: kill, remove, visibility, edit, name
-// ! move visibility toggle to menu
-// ! spruce up top menu
-// ?
+// * spruce up top menu
+// *
 
 function generate_game_state_json() {
   var state = new Object();
@@ -561,6 +560,10 @@ function populate_script(script){
       populate_mutate_menu(scriptTokens);
     }
   })
+}
+function increment_player_count(x) {
+  document.getElementById("player_count").value = parseInt(document.getElementById("player_count").value) + parseInt(x);
+  player_count_change()
 }
 function player_count_change() {
   number = document.getElementById("player_count").value;

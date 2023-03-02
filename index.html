@@ -85,7 +85,13 @@
                         <hr>
                         <br>
                         <span style="color: white; text-shadow: 0 0 10px black; font-size: 25pt;"># Of Players</span><br>
-                        <input type="number" min="5" max="15" value="5" style="font-size: 40px; width: 80px; margin-top: 10px;" id="player_count" onchange="javascript:player_count_change()"></input>
+                        <div style="margin-top: 10px;">
+                            <div id="player_count_wrapper">
+                                <div class="player_count_increment" style="background-color: rgb(173, 0, 0);" onclick="javascript:increment_player_count(-1)">-</div>
+                                <input type="number" inputmode="numeric" min="5" max="15" value="5" id="player_count" onchange="javascript:player_count_change()"></input>
+                                <div class="player_count_increment" style="background-color: rgb(0, 129, 0);" onclick="javascript:increment_player_count(1)">+</div>
+                            </div>
+                        </div>
                         <br><br>
                     </div>
                 </div>
