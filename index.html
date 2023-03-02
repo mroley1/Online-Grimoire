@@ -73,13 +73,21 @@
                 <div id="menu_settings_dropdown" expand="false">
                     <div id="menu_settings_dropdown_button" onclick="javascript:toggle_menu_collapse()">
                         <img id="menu_settings_dropdown_img" src="assets/expand_more.png">
-                    </div><br><br>
-                    <span style="color: black;">script:</span>
-                    <select id="script_options" onchange="javascript:script_change()"></select>
-                    <br>
-                    <span style="color: black;"># of players:</span>
-                    <input type="number" min="5" max="18" value="5" style="width: 50px;" id="player_count" onchange="javascript:player_count_change()"></input>
-                    <br><br>
+                    </div>
+                    <div id="menu_settings_dropdown_body">
+                        <span style="color: white; text-shadow: 0 0 10px black; font-size: 35pt;">Script</span><br>
+                        <select id="script_options" style="margin-top: 5px; box-shadow: 0 0 5px rgb(0, 36, 199); background-color: rgb(46, 72, 189); color: white;" onchange="javascript:script_select()"></select>
+                        <br><br>
+                        <label for="script_upload" id="script_upload_label">Upload Script</label><br>
+                        <input style="opacity: 0;" type="file" id="script_upload" accept=".json" onchange="javascript:script_upload()">
+                        <hr>
+                        <span id="script_upload_feedback" used="select">No File Loaded</span>
+                        <hr>
+                        <br>
+                        <span style="color: white; text-shadow: 0 0 10px black; font-size: 25pt;"># Of Players</span><br>
+                        <input type="number" min="5" max="15" value="5" style="font-size: 40px; width: 80px; margin-top: 10px;" id="player_count" onchange="javascript:player_count_change()"></input>
+                        <br><br>
+                    </div>
                 </div>
                 <br>
                 <div id="TOWN"></div><br>

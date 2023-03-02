@@ -13,7 +13,7 @@
     .body_background_image::before {transform: rotate(0deg); width: 100vw; height: 100vh; left: calc(50% - calc(100vw / 2)); top: calc(50% - calc(100vh / 2));}
 }
 
-body {background-position: center; background-repeat: no-repeat; background-size: cover;}
+body {overflow: hidden;}
 html, body {overscroll-behavior: none;}
 
 .background_image {background-position: center; background-repeat: no-repeat; background-size: contain;}
@@ -84,12 +84,19 @@ html, body {overscroll-behavior: none;}
 .mutate_menu_scroll_body::-webkit-scrollbar {display: none;}
 .mutate_menu_token {display: inline-block; height: 120px; width: 120px; cursor: pointer;}
 #menu_settings_dropdown{height: 40px; overflow: hidden; border-radius: 20px; transition: height ease-in-out 0.2s; background-color: #ffffff2c;}
-#menu_settings_dropdown:is([expand="true"]) {height: 200px;}
+#menu_settings_dropdown:is([expand="true"]) {height: 470px;}
 #menu_settings_dropdown_button {width: 100%; height: 40px; position: relative; text-align: center; border-radius: 40px; background-image: url(assets/steel_bg.png); cursor: pointer; background-position: 50% 50%; background-size: cover; background-repeat: no-repeat;}
-#menu_settings_dropdown_button::before {content: ""; width: 100%; height: 100%; border-radius: 20px; pointer-events: none; position: absolute; left: 0px; top: 0px; transition: background-color ease-in-out 0.2s; background-color: #00000000;}
+#menu_settings_dropdown_button::before {content: ""; width: 100%; height: 100%; border-radius: 20px; position: absolute; left: 0px; top: 0px; transition: background-color ease-in-out 0.2s; background-color: #00000000;}
 #menu_settings_dropdown:is([expand="true"]) #menu_settings_dropdown_button::before {background-color: #66666692;}
+#menu_settings_dropdown_button:hover:before {background-color: #0000004f;}
 #menu_settings_dropdown_img{height: 100%; pointer-events: none; transition: transform ease-in-out 0.2s; display: inline-block;}
 #menu_settings_dropdown:is([expand="true"]) #menu_settings_dropdown_img{transform: rotate(180deg);}
+#menu_settings_dropdown_body {width: 90%; margin: 5%; height: calc(calc(100% - 20px) * 0.9); text-align: center;}
+#script_upload_label {color: white; background-color: rgb(45, 146, 75); padding: 10px; border-radius: 10px; cursor: pointer;}
+#script_upload_feedback {font-size: 20pt; color: white; height: 30px; font-weight: bold; font-family: PiratesBay;}
+#script_upload_feedback:is([used="upload"]) {color: rgb(0, 63, 5); text-shadow: 0 0 3px white;}
+#script_upload_feedback:is([used="select"]) {color: rgb(0, 36, 199); text-shadow: 0 0 1px white;}
+#script_upload_feedback:is([used="error"]) {color: rgb(131, 0, 0); text-shadow: 0 0 3px white;}
 
 .alignment_token {position: static; display: inline-block; margin: 5px; width: 75px; height: 75px;}
 

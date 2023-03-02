@@ -459,20 +459,37 @@ function close_menu() {
 }
 async function load_scripts(){
   var scripts = await get_JSON("scripts/scripts.json")
+  var initScript;
   for (i=0; i<scripts.length;i++) {
     var element = scripts[i]
-    var script = await get_JSON("scripts/"+element["file"]+".json")
+    var script = await get_JSON("scripts/"+element["file"]+".json");
+    if (i == 0) {initScript = script;}
     option = document.createElement("option");
     optionText = document.createTextNode(script[0]["name"]);
     option.appendChild(optionText);
     document.getElementById("script_options").appendChild(option);
   }
-  populate_script(0)
-  
+  populate_script(initScript)
 }
-async function populate_script(x){
-  var script_names = await get_JSON("scripts/scripts.json")
-  var script = await get_JSON("scripts/"+script_names[x]["file"]+".json")
+async function script_select() {
+  var script_names = await get_JSON("scripts/scripts.json");
+  var script = await get_JSON("scripts/"+script_names[document.getElementById("script_options").options.selectedIndex]["file"]+".json");
+  document.getElementById("script_upload_feedback").setAttribute("used", "select");
+  populate_script(script);
+}
+async function script_upload() {
+  let json = JSON.parse(await document.getElementById("script_upload").files[0].text());
+  try {
+    json[0]["id"]
+    populate_script(json);
+    document.getElementById("script_upload_feedback").setAttribute("used", "upload");
+  } catch {
+    document.getElementById("script_upload_feedback").innerHTML = "Error Processing File";
+    document.getElementById("script_upload_feedback").setAttribute("used", "error");
+  }
+}
+function populate_script(script){
+  document.getElementById("script_upload_feedback").innerHTML = script[0]["name"];
   function header(text, landing_name, color) {
       var div = document.createElement("div");
       div.innerHTML = text;
@@ -547,6 +564,14 @@ async function populate_script(x){
 }
 function player_count_change() {
   number = document.getElementById("player_count").value;
+  if (number < 5) {
+    document.getElementById("player_count").value = 5;
+    number = 5
+  }
+  if (number > 15) {
+    document.getElementById("player_count").value = 15;
+    number = 15
+  }
   number = parseInt(number)-5;
   var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
   var counts = [0, 0, 0, 0];
@@ -571,9 +596,6 @@ function player_count_change() {
   document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + table[number][1];
   document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + table[number][2];
   document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + table[number][3];
-}
-function script_change() {
-  populate_script(document.getElementById("script_options").options.selectedIndex)
 }
 function update_role_counts(){
   var counts = document.getElementsByClassName("menu_token_count");
