@@ -28,7 +28,7 @@
         <div id="info_box" style="display: none;">
             <div id="info_desc" class="info_tab" focus="true">
                 <div onclick="javascript:expand_info_tab('desc')" class="info_tab_header" style="width: 250px;">
-                    <img id="info_img" src="assets/roles/balloonist_token.png" focus="true">
+                    <img id="info_img" focus="true">
                     <div id="info_visibility_shade" focus="true"></div>
                     <img id="info_visibility_img" src="assets/visibility_off_red.png" focus="true"><br>
                     <span id="info_img_name" style="color:rgb(192, 72, 72); font-size: 20pt; font-family: PiratesBay;"></span>
@@ -70,11 +70,17 @@
             </div>
             <div class="close_menu" onclick="javascript:close_menu()"></div>
             <div class="menu_body">
-                <span style="color: white;">script:</span>
-                <select id="script_options" onchange="javascript:script_change()"></select>
-                <br>
-                <span style="color: white;"># of players:</span>
-                <input type="number" min="5" max="18" value="5" style="width: 50px;" id="player_count" onchange="javascript:player_count_change()"></input>
+                <div id="menu_settings_dropdown" expand="false">
+                    <div id="menu_settings_dropdown_button" onclick="javascript:toggle_menu_collapse()">
+                        <img id="menu_settings_dropdown_img" src="assets/expand_more.png">
+                    </div><br><br>
+                    <span style="color: black;">script:</span>
+                    <select id="script_options" onchange="javascript:script_change()"></select>
+                    <br>
+                    <span style="color: black;"># of players:</span>
+                    <input type="number" min="5" max="18" value="5" style="width: 50px;" id="player_count" onchange="javascript:player_count_change()"></input>
+                    <br><br>
+                </div>
                 <br>
                 <div id="TOWN"></div><br>
                 <div id="OUT"></div><br>

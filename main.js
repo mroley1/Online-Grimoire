@@ -49,7 +49,7 @@ function generate_game_state_json() {
   reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
   for (i = 0; i < reminders.length; i++) {
     state.reminders[i] = new Object();
-    state.reminders[i].character = reminders[i].id.substring(0,reminders[i].id.length-UID_LENGTH-1);
+    state.reminders[i].id = reminders[i].id.substring(0,reminders[i].id.length-UID_LENGTH-1);
     state.reminders[i].uid = reminders[i].getAttribute("uid");
     state.reminders[i].left = reminders[i].style.left;
     state.reminders[i].top = reminders[i].style.top;
@@ -78,7 +78,7 @@ function load_game_state_json(state) {
     spawnToken(state.players[i].character, state.players[i].uid, state.players[i].hide, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
   for (let i = 0; i < state.reminders.length; i++) {
-    spawnReminder(state.reminders[i].character, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
+    spawnReminder(state.reminders[i].id, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
   }
   for (let i = 0; i < state.pips.length; i++) {
     dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top)
@@ -287,13 +287,13 @@ function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameTe
   vote.classList = "token_vote";
   vote.id = id + "_" + uid + "_vote";
   div.appendChild(vote);
+  var oursider_betray = document.createElement("div");
   if (cat == "TRAV"){
-    var oursider_betray = document.createElement("div");
     oursider_betray.style.backgroundImage = "url('assets/icons/"+id+".png')"
-    oursider_betray.classList = "token_oursider_betray background_image";
-    oursider_betray.id = id+"_"+uid+"_oursider_betray";
-    div.appendChild(oursider_betray);
   }
+  oursider_betray.classList = "token_oursider_betray background_image";
+  oursider_betray.id = id+"_"+uid+"_oursider_betray";
+  div.appendChild(oursider_betray);
   var name = document.createElement("span")
   name.innerHTML = nameText;
   name.classList = "token_text"
@@ -358,6 +358,8 @@ async function mutate_token(idFrom, uid, idTo) {
   await get_JSON("tokens/"+idTo+".json").then(function(new_json){
     let subject = document.getElementById(idFrom + "_token_" + uid);
     subject.setAttribute("cat", new_json["class"]);
+    if (new_json["class"] == "TRAV") {subject.getElementsByClassName("token_oursider_betray")[0].style.backgroundImage = "url('assets/icons/"+idTo+".png')"}
+    else {subject.getElementsByClassName("token_oursider_betray")[0].style.backgroundImage = ""}
     subject.setAttribute("show_face", !new_json["hide_face"]);
     subject.style.backgroundImage = "url('assets/roles/" + idTo + "_token.png')";
     subject.setAttribute("onclick", "javascript:infoCall('"+idTo+"', "+ uid +")");
@@ -371,6 +373,7 @@ async function mutate_token(idFrom, uid, idTo) {
   });
 }
 function shuffle_roles() {
+  if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
   function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -592,6 +595,13 @@ function clear_mutate_menu() {
   document.getElementById("mutate_menu_MIN").innerHTML = "";
   document.getElementById("mutate_menu_DEM").innerHTML = "";
   document.getElementById("mutate_menu_TRAV").innerHTML = "";
+}
+function toggle_menu_collapse() {
+  if (document.getElementById("menu_settings_dropdown").getAttribute("expand") == "true") {
+    document.getElementById("menu_settings_dropdown").setAttribute("expand", "false");
+  } else {
+    document.getElementById("menu_settings_dropdown").setAttribute("expand", "true");
+  }
 }
 
 
