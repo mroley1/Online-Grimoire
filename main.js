@@ -5,35 +5,93 @@ const UID_LENGTH = 13
 // * TODO implement shuffle feature: swap pictures not names.
 // * TODO allow tokens to be individually mutated
 // TODO make reminders draggable from info
-// TODO implement cast makeup to be responsive to script
+// ! TODO implement cast makeup to be responsive to script
 // TODO implement scrolling on night order tab's overflow
 // * TODO handle cast makeup on changing script (dont rely on DOM inner values)
 // * TODO implement travelers
 // * TODO have good/evil token underneith existing ones to prevent cascading element creation
-// TODO game state json import/ export
-// TODO script upload
-// TODO shift to reliance on database instead of json heap
+// * TODO game state json import/ export
+// * TODO script upload
+// // ? TODO shift to reliance on database instead of json heap
 // ! TODO background change
 
-// ?  UI upgrade
-// ?
+// *  UI upgrade
+// *
 // * make travelers still visible when others are invisible (upper left just icon) *redisign javascript(or css) to be more robust and handle spawning during hidden
 // * make death tokens look less shitty
 // * make hitboxes more accurate in menu
 // * ? redesign info to look less like the hellscape it is at this point
 // * ? ? Three tabs {description, reminders, power} power: kill, remove, visibility, edit, name
-// ? move visibility toggle to menu
-// ? spruce up top menu
-// ?
+// * spruce up top menu
+// *
+
+function generate_game_state_json() {
+  var state = new Object();
+  state.script = document.getElementById("script_options").value;
+  state.playercount = document.getElementById("player_count").value;
+  state.night = document.getElementById("body_actual").getAttribute("night");
+  state.players = [];
+  players = document.getElementById("token_layer").getElementsByClassName("role_token");
+  for (i = 0; i < players.length; i++) {
+    state.players[i] = new Object();
+    state.players[i].character = players[i].id.substring(0,players[i].id.length-UID_LENGTH-7);
+    state.players[i].uid = players[i].getAttribute("uid");
+    state.players[i].hide = players[i].getAttribute("hide");
+    state.players[i].viability = players[i].getAttribute("viability");
+    state.players[i].cat = players[i].getAttribute("cat");
+    state.players[i].show_face = players[i].getAttribute("show_face");
+    state.players[i].left = players[i].style.left;
+    state.players[i].top = players[i].style.top;
+    state.players[i].name = players[i].getElementsByClassName("token_text")[0].innerHTML;
+  }
+  state.reminders = [];
+  reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
+  for (i = 0; i < reminders.length; i++) {
+    state.reminders[i] = new Object();
+    state.reminders[i].id = reminders[i].id.substring(0,reminders[i].id.length-UID_LENGTH-1);
+    state.reminders[i].uid = reminders[i].getAttribute("uid");
+    state.reminders[i].left = reminders[i].style.left;
+    state.reminders[i].top = reminders[i].style.top;
+  }
+  state.pips = [];
+  pips = document.getElementById("interactivePlane").getElementsByClassName("reminder");
+  var j = 0;
+  for (i = 0; i < pips.length; i++) {
+    if (pips[i].getAttribute("stacked") == "false") {
+      state.pips[j] = new Object();
+      state.pips[j].type = pips[i].id.substring(0,pips[i].id.length-UID_LENGTH-1);
+      state.pips[j].left = pips[i].style.left;
+      state.pips[j].top = pips[i].style.top;
+      j++;
+    }
+  }
+  return JSON.stringify(state);
+}
+
+function load_game_state_json(state) {
+  document.getElementById("script_options").value = state.script;
+  document.getElementById("player_count").value = state.playercount;
+  document.getElementById("body_actual").setAttribute("night", state.night);
+  populate_script(state.script);
+  for (let i = 0; i < state.players.length; i++) {
+    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].hide, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+  }
+  for (let i = 0; i < state.reminders.length; i++) {
+    spawnReminder(state.reminders[i].id, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
+  }
+  for (let i = 0; i < state.pips.length; i++) {
+    dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top)
+  }
+}
 
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 
 function loaded() {
-  dragPipLayerSpawn("good");
-  dragPipLayerSpawn("evil");
-  dragPipLayerSpawn("reminder_pip");
+  dragPipLayerSpawnDefault("good");
+  dragPipLayerSpawnDefault("evil");
+  dragPipLayerSpawnDefault("reminder_pip");
 }
 
 // corner toggles
@@ -104,7 +162,7 @@ async function infoCall(id, uid) {
         div.style.opacity = 0.7;
         div.setAttribute("onclick", "javascript:recall_reminder_button('"+ TokenId +"', "+ uid +")")
       } else {
-        div.setAttribute("onclick", "javascript:spawnReminder('"+ TokenId +"', "+ uid +")")
+        div.setAttribute("onclick", "javascript:spawnReminderDefault('"+ TokenId +"', "+ uid +")")
       }
       document.getElementById("info_token_landing").appendChild(div);
     }
@@ -122,22 +180,27 @@ async function infoCall(id, uid) {
     document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
     document.getElementById("info_box").style.display = "inherit";
 }
-function spawnReminder(id, uid) {
+function spawnReminder(id, uid, left, top) {
     var div = document.createElement("div");
     div.classList = "reminder drag";
-    div.style = "background-image: url('assets/reminders/"+id+".png'); left: "+(parseInt(window.visualViewport.width/2)-37)+"; top: calc(50% - 37.5px)";
+    div.style = "background-image: url('assets/reminders/"+id+".png'); left: "+left+"; top: "+top;
     div.id = id + "_" + uid;
     div.setAttribute("uid", uid);
-    document.getElementById("pip_layer").appendChild(div);
-    var reminder = document.getElementById("info_"+id+"_"+uid)
-    reminder.style.opacity = 0.7;
-    reminder.setAttribute("onclick", "javascript:recall_reminder_button('"+ id +"', "+ uid +")")
+    document.getElementById("reminder_layer").appendChild(div);
+    try{
+      var reminder = document.getElementById("info_"+id+"_"+uid)
+      reminder.style.opacity = 0.7;
+      reminder.setAttribute("onclick", "javascript:recall_reminder_button('"+ id +"', "+ uid +")")
+    } catch {}
     dragInit();
+}
+function spawnReminderDefault(id, uid) {
+  spawnReminder(id, uid, (parseInt(window.visualViewport.width/2)-37)+"px", "calc(50% - 37.5px)");
 }
 function recall_reminder_button(id, uid) {
   var reminder = document.getElementById("info_"+id+"_"+uid)
   reminder.style.opacity = 1;
-  reminder.setAttribute("onclick", "javascript:spawnReminder('"+ id +"', "+ uid +")")
+  reminder.setAttribute("onclick", "javascript:spawnReminderDefault('"+ id +"', "+ uid +")")
   rm = document.getElementById(id+"_"+uid);
   rm.parentNode.removeChild(rm);
 }
@@ -197,16 +260,14 @@ function update_info_death_cycle(id, uid) {
 
 
 //token functions
-function spawnToken(id, hide, cat, hide_face) {
+function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameText) {
   if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
-  var time = new Date();
-  var uid = time.getTime()
   var div = document.createElement("div");
   div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
   div.classList = "role_token drag";
-  div.style = "background-image: url('assets/roles/"+id+"_token.png'); left: "+(parseInt(window.visualViewport.width/2)-75)+"px; top: calc(50% - 75px)";
+  div.style = "background-image: url('assets/roles/"+id+"_token.png'); left: "+left+"; top: " + top;
   div.id = id+"_token_"+uid;
-  div.setAttribute("viability", "alive");
+  div.setAttribute("viability", viability);
   div.setAttribute("uid", uid);
   div.setAttribute("hide", hide);
   div.setAttribute("cat", cat);
@@ -225,14 +286,15 @@ function spawnToken(id, hide, cat, hide_face) {
   vote.classList = "token_vote";
   vote.id = id + "_" + uid + "_vote";
   div.appendChild(vote);
+  var oursider_betray = document.createElement("div");
   if (cat == "TRAV"){
-    var oursider_betray = document.createElement("div");
     oursider_betray.style.backgroundImage = "url('assets/icons/"+id+".png')"
-    oursider_betray.classList = "token_oursider_betray background_image";
-    oursider_betray.id = id+"_"+uid+"_oursider_betray";
-    div.appendChild(oursider_betray);
   }
+  oursider_betray.classList = "token_oursider_betray background_image";
+  oursider_betray.id = id+"_"+uid+"_oursider_betray";
+  div.appendChild(oursider_betray);
   var name = document.createElement("span")
+  name.innerHTML = nameText;
   name.classList = "token_text"
   name.id = id+"_name_"+uid;
   div.appendChild(name);
@@ -241,6 +303,11 @@ function spawnToken(id, hide, cat, hide_face) {
   player_count_change();
   dragInit();
   clear_night_order();
+}
+function spawnTokenDefault(id, hide, cat, hide_face) {
+  var time = new Date();
+  var uid = time.getTime()
+  spawnToken(id, uid, hide, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid) {
   var tokens = document.getElementById("info_token_landing").children;
@@ -253,10 +320,10 @@ function remove_token(id, uid) {
   clear_night_order();
 }
 function clean_tokens(uid) {
-  let reminders = document.getElementById("pip_layer").getElementsByClassName("reminder");
+  let reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
   for (i=reminders.length-1; i!=-1; --i) {
     if (reminders[i].getAttribute("uid")==uid) {
-      document.getElementById("pip_layer").removeChild(reminders[i]);
+      document.getElementById("reminder_layer").removeChild(reminders[i]);
     }
   }
 }
@@ -290,6 +357,8 @@ async function mutate_token(idFrom, uid, idTo) {
   await get_JSON("tokens/"+idTo+".json").then(function(new_json){
     let subject = document.getElementById(idFrom + "_token_" + uid);
     subject.setAttribute("cat", new_json["class"]);
+    if (new_json["class"] == "TRAV") {subject.getElementsByClassName("token_oursider_betray")[0].style.backgroundImage = "url('assets/icons/"+idTo+".png')"}
+    else {subject.getElementsByClassName("token_oursider_betray")[0].style.backgroundImage = ""}
     subject.setAttribute("show_face", !new_json["hide_face"]);
     subject.style.backgroundImage = "url('assets/roles/" + idTo + "_token.png')";
     subject.setAttribute("onclick", "javascript:infoCall('"+idTo+"', "+ uid +")");
@@ -303,6 +372,7 @@ async function mutate_token(idFrom, uid, idTo) {
   });
 }
 function shuffle_roles() {
+  if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
   function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -337,14 +407,12 @@ function populate_mutate_menu(tokens) {
 
 
 //good/evil reminders
-function dragPipLayerSpawn(type) {
-  const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
+function dragPipLayerSpawn(type, left, top) {
   var time = new Date();
   var uid = time.getTime();
   var div = document.createElement("div");
   div.classList = "reminder drag";
-  var topDistance = ref[type];
-  div.style = "background-image: url('assets/reminders/"+type+".png'); left: 5px; top: "+topDistance+"; border-radius: 100%; pointer-events: all;";
+  div.style = "background-image: url('assets/reminders/"+type+".png'); left: "+left+"; top: "+top+"; border-radius: 100%; pointer-events: all;";
   div.id = type + "_" + uid;
   div.setAttribute("disposable-reminder", true);
   div.setAttribute("alignment", type);
@@ -356,6 +424,10 @@ function dragPipLayerSpawn(type) {
   div.appendChild(img);
   document.getElementById("dragPipLayer").prepend(div);
   dragInit();
+}
+function dragPipLayerSpawnDefault(type) {
+  const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
+  dragPipLayerSpawn(type, "5px", ref[type]);
 }
 function prompt_delete_reminder(id) {
   document.getElementById(id + "_img").style.display = "inherit";
@@ -386,20 +458,37 @@ function close_menu() {
 }
 async function load_scripts(){
   var scripts = await get_JSON("scripts/scripts.json")
+  var initScript;
   for (i=0; i<scripts.length;i++) {
     var element = scripts[i]
-    var script = await get_JSON("scripts/"+element["file"]+".json")
+    var script = await get_JSON("scripts/"+element["file"]+".json");
+    if (i == 0) {initScript = script;}
     option = document.createElement("option");
     optionText = document.createTextNode(script[0]["name"]);
     option.appendChild(optionText);
     document.getElementById("script_options").appendChild(option);
   }
-  populate_script(0)
-  
+  populate_script(initScript)
 }
-async function populate_script(x){
-  var script_names = await get_JSON("scripts/scripts.json")
-  var script = await get_JSON("scripts/"+script_names[x]["file"]+".json")
+async function script_select() {
+  var script_names = await get_JSON("scripts/scripts.json");
+  var script = await get_JSON("scripts/"+script_names[document.getElementById("script_options").options.selectedIndex]["file"]+".json");
+  document.getElementById("script_upload_feedback").setAttribute("used", "select");
+  populate_script(script);
+}
+async function script_upload() {
+  let json = JSON.parse(await document.getElementById("script_upload").files[0].text());
+  try {
+    json[0]["id"]
+    populate_script(json);
+    document.getElementById("script_upload_feedback").setAttribute("used", "upload");
+  } catch {
+    document.getElementById("script_upload_feedback").innerHTML = "Error Processing File";
+    document.getElementById("script_upload_feedback").setAttribute("used", "error");
+  }
+}
+function populate_script(script){
+  document.getElementById("script_upload_feedback").innerHTML = script[0]["name"];
   function header(text, landing_name, color) {
       var div = document.createElement("div");
       div.innerHTML = text;
@@ -422,7 +511,7 @@ async function populate_script(x){
         var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
         outer_div.title = tokenJSON["description"];
-        outer_div.setAttribute("onclick", "javascript:spawnToken('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +")");
+        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +", 'alive')");
         var label = document.createElement("label");
         label.classList = "menu_list";
         label.innerHTML = tokenJSON["name"];
@@ -472,8 +561,20 @@ async function populate_script(x){
     }
   })
 }
+function increment_player_count(x) {
+  document.getElementById("player_count").value = parseInt(document.getElementById("player_count").value) + parseInt(x);
+  player_count_change()
+}
 function player_count_change() {
   number = document.getElementById("player_count").value;
+  if (number < 5) {
+    document.getElementById("player_count").value = 5;
+    number = 5
+  }
+  if (number > 15) {
+    document.getElementById("player_count").value = 15;
+    number = 15
+  }
   number = parseInt(number)-5;
   var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
   var counts = [0, 0, 0, 0];
@@ -499,16 +600,13 @@ function player_count_change() {
   document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + table[number][2];
   document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + table[number][3];
 }
-function script_change() {
-  populate_script(document.getElementById("script_options").options.selectedIndex)
-}
 function update_role_counts(){
   var counts = document.getElementsByClassName("menu_token_count");
-  for (i = 0; i<counts.length; i++) {
+  for (let i = 0; i<counts.length; i++) {
     counts[i].innerHTML = 0;
   }
   var tokens = document.getElementsByClassName("role_token");
-  for (i = 0; i<tokens.length; i++) {
+  for (let i = 0; i<tokens.length; i++) {
     id = tokens[i].getAttribute("id").match(/.*(?=_token)/)[0];
     try {document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1}
     catch (e) {}
@@ -522,6 +620,13 @@ function clear_mutate_menu() {
   document.getElementById("mutate_menu_MIN").innerHTML = "";
   document.getElementById("mutate_menu_DEM").innerHTML = "";
   document.getElementById("mutate_menu_TRAV").innerHTML = "";
+}
+function toggle_menu_collapse() {
+  if (document.getElementById("menu_settings_dropdown").getAttribute("expand") == "true") {
+    document.getElementById("menu_settings_dropdown").setAttribute("expand", "false");
+  } else {
+    document.getElementById("menu_settings_dropdown").setAttribute("expand", "true");
+  }
 }
 
 
@@ -559,7 +664,7 @@ function dragStart(e) {
 function dragEnd(e) {
   if(e.target.getAttribute("disposable-reminder")) {
     if (e.target.getAttribute("stacked")=="true") {
-      dragPipLayerSpawn(e.target.getAttribute("alignment"));
+      dragPipLayerSpawnDefault(e.target.getAttribute("alignment"));
     }
     e.target.setAttribute("stacked", false);
     e.target.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+e.target.id+"')");
