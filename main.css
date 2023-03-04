@@ -36,26 +36,35 @@ html, body {overscroll-behavior: none;}
 .info_tab {height: 250px; top: 0px; display: inline-block; color: white; text-align: center; left: 0px; position: relative; overflow: hidden;}
 .info_tab_header {height: 250px; cursor: pointer;}
 .info_tab_img {width: 100%; margin-top: 75px;}
+
 #info_desc {width: 250px; transition: width ease-in-out 0.2s;}
-#info_desc:is([focus="true"]) {width: calc(100% - 200px);}
-#info_img {width: 250px; height: 250px; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s;}
+#info_desc:is([focus="true"]) {width: calc(100% - 315px);}
 #info_desc:not([focus="true"]) #info_img {width: 200px; height: 200px;}
-#info_title_field {height: 100px; position: absolute; top: 0px; left: 0px; color:rgb(211, 211, 211); font-size: 50pt; font-family: PiratesBay;}
-#info_name_field {position: absolute; top: 70px; left: 30px; color:rgb(192, 72, 72); font-size: 17pt; font-family: PiratesBay;}
-#info_desc_field {position: absolute; width: calc(100vw - 500px); top: 100px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
+#info_img {width: 250px; height: 250px; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s;}
 #info_visibility_shade {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-color: black; opacity: 0.5; border-radius: 100%; display: none; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s;}
+#info_visibility_img {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-position: center; background-repeat: no-repeat; background-size: 60%; display: none; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s, padding ease-in-out 0.2s;}
 #info_desc:not([focus="true"]) #info_visibility_shade {width: 200px; height: 200px; left: 25px;}
 #info_box:is([hidden="hide"]) #info_visibility_shade {display: inherit;}
 #info_box:is([hidden="bluff"]) #info_visibility_shade {display: inherit;}
-#info_visibility_img {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-position: center; background-repeat: no-repeat; background-size: 60%; display: none; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s, padding ease-in-out 0.2s;}
 #info_desc:not([focus="true"]) #info_visibility_img {width: 200px; height: 200px; left: 25px;}
 #info_box:is([hidden="hide"]) #info_visibility_img {display: inherit; background-image: url(assets/visibility_off_red.png);}
 #info_box:is([hidden="bluff"]) #info_visibility_img {display: inherit; background-image: url(assets/visibility_off_yellow.png);}
+
+#info_title_field {height: 100px; position: absolute; top: 0px; left: 0px; color:rgb(211, 211, 211); font-size: 50pt; font-family: PiratesBay;}
+#info_name_field {position: absolute; top: 70px; left: 30px; color:rgb(192, 72, 72); font-size: 17pt; font-family: PiratesBay;}
+#info_desc_field {position: absolute; width: calc(100vw - 600px); top: 100px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
+
+#info_list {width: 100px; transition: width ease-in-out 0.2s;}
+#info_list:is([focus="true"]) {width: calc(100% - 465px);}
+
 #info_rmnd {width: 100px; transition: width ease-in-out 0.2s;}
-#info_rmnd:is([focus="true"]) {width: calc(100% - 350px);}
+#info_rmnd:is([focus="true"]) {width: calc(100% - 465px);}
+#info_token_landing {position: absolute; top: 0px; left: 100px; height: 220; width: calc(100vw - 595px); text-align: left; overflow-wrap: break-word; white-space: normal; margin: 15px;}
 .info_tokens {display:inline-block; width: 100px; height: 100px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
+
 #info_powr {width: 100px; transition: width ease-in-out 0.2s;}
-#info_powr:is([focus="true"]) {width: calc(100% - 350px);}
+#info_powr:is([focus="true"]) {width: calc(100% - 465px);}
+#power_options_container {position: absolute; top: 0px; left: 100px; height: 190; width: calc(100vw - 625px); text-align: center; overflow-wrap: break-word; white-space: normal; margin: 30px;}
 .info_name_input {height: 40px; width: 100%; color:black; font-size: 20pt; background-color: #afafaf;}
 .info_power_options {display:inline-block; width: 80px; height: 80px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
 #info_box:is([hidden="show"]) #info_visibility_toggle {background-image: url('assets/bluff.png');}
