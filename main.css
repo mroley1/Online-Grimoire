@@ -52,10 +52,14 @@ html, body {overscroll-behavior: none;}
 
 #info_title_field {height: 100px; position: absolute; top: 0px; left: 0px; color:rgb(211, 211, 211); font-size: 50pt; font-family: PiratesBay;}
 #info_name_field {position: absolute; top: 70px; left: 30px; color:rgb(192, 72, 72); font-size: 17pt; font-family: PiratesBay;}
-#info_desc_field {position: absolute; width: calc(100vw - 600px); top: 100px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
+#info_desc_field {position: absolute; width: calc(100vw - 600px); top: 95px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
 
 #info_list {width: 100px; transition: width ease-in-out 0.2s;}
 #info_list:is([focus="true"]) {width: calc(100% - 465px);}
+#info_list_scroll {position: absolute; top: 0px; left: 100px; height: 190; width: calc(100vw - 625px); text-align: left; overflow-wrap: break-word; white-space: normal; margin: 30px; overflow-y: scroll;}
+#info_list_scroll::-webkit-scrollbar {display: none;}
+.info_list_scroll_option {width: calc(100% - 5px); height: 80px; background-size: 100% 100%; margin: 5px; cursor: pointer; color: white; font-family: PiratesBay; text-align: center; position: relative;}
+.info_list_scroll_option span {font-size: 30pt; position: absolute; top: calc(50% - 20pt); left: 0px; width: 100%;}
 
 #info_rmnd {width: 100px; transition: width ease-in-out 0.2s;}
 #info_rmnd:is([focus="true"]) {width: calc(100% - 465px);}
