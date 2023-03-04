@@ -1,29 +1,11 @@
 
 const UID_LENGTH = 13
 
-// * TODO use token in menu as toggle for visibility of represented token
-// * TODO implement shuffle feature: swap pictures not names.
-// * TODO allow tokens to be individually mutated
+
 // TODO make reminders draggable from info
 // ! TODO implement cast makeup to be responsive to script
 // TODO implement scrolling on night order tab's overflow
-// * TODO handle cast makeup on changing script (dont rely on DOM inner values)
-// * TODO implement travelers
-// * TODO have good/evil token underneith existing ones to prevent cascading element creation
-// * TODO game state json import/ export
-// * TODO script upload
-// // ? TODO shift to reliance on database instead of json heap
 // ! TODO background change
-
-// *  UI upgrade
-// *
-// * make travelers still visible when others are invisible (upper left just icon) *redisign javascript(or css) to be more robust and handle spawning during hidden
-// * make death tokens look less shitty
-// * make hitboxes more accurate in menu
-// * ? redesign info to look less like the hellscape it is at this point
-// * ? ? Three tabs {description, reminders, power} power: kill, remove, visibility, edit, name
-// * spruce up top menu
-// *
 
 function generate_game_state_json() {
   var state = new Object();
@@ -68,11 +50,10 @@ function generate_game_state_json() {
   return JSON.stringify(state);
 }
 
-function load_game_state_json(state) {
-  document.getElementById("script_options").value = state.script;
+async function load_game_state_json(state) {
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
-  populate_script(state.script);
+  populate_script(await get_JSON("scripts/Gang's All Here.json"));
   for (let i = 0; i < state.players.length; i++) {
     spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
@@ -230,11 +211,15 @@ function cycle_token_visibility_toggle(id, uid) {
 }
 function expand_info_tab(tab) {
   document.getElementById("info_desc").setAttribute("focus", "false");
+  document.getElementById("info_list").setAttribute("focus", "false");
   document.getElementById("info_rmnd").setAttribute("focus", "false");
   document.getElementById("info_powr").setAttribute("focus", "false");
   switch (tab) {
     case 'desc':
       document.getElementById("info_desc").setAttribute("focus", "true");
+    break;
+    case 'list':
+      document.getElementById("info_list").setAttribute("focus", "true");
     break;
     case 'rmnd':
       document.getElementById("info_rmnd").setAttribute("focus", "true");
