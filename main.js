@@ -595,8 +595,10 @@ function player_count_change() {
     let json = await get_JSON("tokens/" + id + ".json")
     for (i = 0; i<json["change_makeup"].length; i++) {
       if (Object.keys(json["change_makeup"][i]).includes("TOWN")) {
-        if (json["change_makeup"][i].TOWN == 0 || makeup.TOWN["hardMod"] == -1) {
-          makeup.TOWN["hardMod"] = -1;
+        if (json["change_makeup"][i].TOWN == "NONE" || makeup.TOWN["hardMod"] == "NONE") {
+          makeup.TOWN["hardMod"] = "NONE";
+        } else if (json["change_makeup"][i].TOWN == "ANY" || makeup.TOWN["hardMod"] == "ANY") {
+          makeup.TOWN["hardMod"] = "ANY";
         } else {
           makeup.TOWN["hardMod"] += json["change_makeup"][i].TOWN;
         }
@@ -608,8 +610,10 @@ function player_count_change() {
         makeup.TOWN["softModNeg"] += json["change_makeup"][i].OPTTOWNNEG;
       }
       if (Object.keys(json["change_makeup"][i]).includes("OUT")) {
-        if (json["change_makeup"][i].OUT == 0 || makeup.OUT["hardMod"] == -1) {
-          makeup.OUT["hardMod"] = -1;
+        if (json["change_makeup"][i].OUT == "NONE" || makeup.OUT["hardMod"] == "NONE") {
+          makeup.OUT["hardMod"] = "NONE";
+        } else if (json["change_makeup"][i].OUT == "ANY" || makeup.OUT["hardMod"] == "ANY") {
+          makeup.OUT["hardMod"] = "ANY";
         } else {
           makeup.OUT["hardMod"] += json["change_makeup"][i].OUT;
         }
@@ -621,8 +625,10 @@ function player_count_change() {
         makeup.OUT["softModNeg"] += json["change_makeup"][i].OPTOUTNEG;
       }
       if (Object.keys(json["change_makeup"][i]).includes("MIN")) {
-        if (json["change_makeup"][i].MIN == 0 || makeup.MIN["hardMod"] == -1) {
-          makeup.MIN["hardMod"] = -1;
+        if (json["change_makeup"][i].MIN == "NONE" || makeup.MIN["hardMod"] == "NONE") {
+          makeup.MIN["hardMod"] = "NONE";
+        } else if (json["change_makeup"][i].MIN == "ANY" || makeup.MIN["hardMod"] == "ANY") {
+          makeup.MIN["hardMod"] = "ANY";
         } else {
           makeup.MIN["hardMod"] += json["change_makeup"][i].MIN;
         }
@@ -634,8 +640,10 @@ function player_count_change() {
         makeup.MIN["softModNeg"] += json["change_makeup"][i].OPTMINNEG;
       }
       if (Object.keys(json["change_makeup"][i]).includes("DEM")) {
-        if (json["change_makeup"][i].DEM == 0 || makeup.DEM["hardMod"] == -1) {
-          makeup.DEM["hardMod"] = -1;
+        if (json["change_makeup"][i].DEM == "NONE" || makeup.DEM["hardMod"] == "NONE") {
+          makeup.DEM["hardMod"] = "NONE";
+        } else if (json["change_makeup"][i].DEM == "ANY" || makeup.DEM["hardMod"] == "ANY") {
+          makeup.DEM["hardMod"] = "ANY";
         } else {
           makeup.DEM["hardMod"] += json["change_makeup"][i].DEM;
         }
