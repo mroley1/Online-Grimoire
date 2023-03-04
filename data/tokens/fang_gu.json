@@ -7,7 +7,7 @@
     "tokens":["fang_gu_dead", "fang_gu_once"],
     "first_night_desc":"",
     "other_night_desc":"The Fang Gu points to a player. That player dies. Or, if that player was an Outsider and there are no other Fang Gu in play: The Fang Gu dies instead of the chosen player. The chosen player is now an evil Fang Gu. Wake the new Fang Gu. Show the 'You are' card, then the Fang Gu token. Show the 'You are' card, then the thumb-down 'evil' hand sign.",
-    "change_makeup":[{"OUT":1}],
+    "change_makeup":[{"OUT":1},{"TOWN":-1}],
     "hide_token":false,
     "hide_face":true
 }
