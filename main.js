@@ -131,6 +131,7 @@ async function infoCall(id, uid) {
     document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
     document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
     document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
+    document.getElementById("info_list").setAttribute("current_player", id);
     document.getElementById("info_token_landing").innerHTML = "";
     for (var i = 0; i < roleJSON["tokens"].length;i++){
       var div = document.createElement("div");
@@ -246,6 +247,82 @@ function update_info_death_cycle(id, uid) {
   document.getElementById("info_kill_cycle").style.backgroundImage = "url('assets/revive.png')"
     break;
   }
+}
+function load_playerinfo_shroud(typeId) {
+  function mapped_specials(typeId) {
+    switch (typeId) {
+      case 2:
+        var bluffs = [];
+        var tokens = document.getElementById("token_layer").children;
+        for (i = 0; i<tokens.length; i++) {
+          if (tokens[i].getAttribute("visibility") == "bluff") {
+            bluffs.push(tokens[i].id.match(/.*(?=_token_)/)[0])
+          }
+        }
+        var places = document.getElementById("playerinfo_character_landing").children
+        for (i = 0; i<places.length; i++) {
+          if (bluffs.length != 0) {
+            select_playerinfo_character(i, bluffs.pop())
+          }
+        }
+        break;
+        case 5:
+          select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
+          break;
+    }
+  }
+  let cards = {0:{"title":"Use Your Ability?", "players":0},
+               1:{"title":"Make A Choice", "players":0},
+               2:{"title":"These Characters are Not In Play", "players":3},
+               3:{"title":"This Is Your Demon", "players":0},
+               4:{"title":"These Are Your Minions", "players":0},
+               5:{"title":"You Are", "players":1},
+               6:{"title":"This Player Is", "players":1},
+               7:{"title":"Character Selected You", "players":1},
+               8:{"title":"Did You Vote Today?", "players":0},
+               9:{"title":"Did You Nominate Today?", "players":0}
+              }
+  document.getElementById("playerinfo_shoud").style.display = "inherit";
+  document.getElementById("playerinfo_title").innerHTML = cards[typeId]["title"];
+  document.getElementById("playerinfo_character_landing").innerHTML = "";
+  for (i = 0; i<cards[typeId]["players"]; i++) {
+    var div = document.createElement("div");
+    div.id = "playerinfo_character_" + i;
+    div.classList = "playerinfo_character";
+    div.setAttribute("onclick", "javascript:trigger_playerinfo_character_select("+i+")")
+    document.getElementById("playerinfo_character_landing").appendChild(div);
+  }
+  mapped_specials(typeId);
+  document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight/2 + "px)";
+}
+function trigger_playerinfo_character_select(id) {
+  var town = document.getElementById("mutate_menu_TOWN").children;
+  for (i=0; i<town.length; i++) {
+    town[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+town[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  for (i=0; i<outsiders.length; i++) {
+    outsiders[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+outsiders[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var minions = document.getElementById("mutate_menu_MIN").children;
+  for (i=0; i<minions.length; i++) {
+    minions[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+minions[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var demons = document.getElementById("mutate_menu_DEM").children;
+  for (i=0; i<demons.length; i++) {
+    demons[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+demons[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  for (i=0; i<travellers.length; i++) {
+    travellers[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+travellers[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  document.getElementById("mutate_menu_main").style.display = "inherit";
+}
+function select_playerinfo_character(id, selection) {
+  document.getElementById("playerinfo_character_" + id).style.backgroundImage = "url('assets/roles/"+selection+"_token.png')"
+}
+function close_playerinfo_shroud() {
+  document.getElementById("playerinfo_shoud").style.display = "none";
 }
 
 
@@ -673,7 +750,6 @@ function player_count_change() {
       break;
     }
   }
-  console.log(makeup);
   document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + table[number][0];
   document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + table[number][1];
   document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + table[number][2];

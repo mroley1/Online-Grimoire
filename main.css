@@ -119,6 +119,11 @@ html, body {overscroll-behavior: none;}
 #script_upload_feedback:is([used="select"]) {color: rgb(0, 36, 199); text-shadow: 0 0 1px white;}
 #script_upload_feedback:is([used="error"]) {color: rgb(131, 0, 0); text-shadow: 0 0 3px white;}
 
+#playerinfo_close {position: absolute; top: 5px; right: 5px; width: 85px; height: 85px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png");}
+#playerinfo_close:hover {opacity: 0.6;}
+#playerinfo_character_landing {text-align: center; width: 100%;}
+.playerinfo_character {margin: 10px; width: 250px; height: 200px; background-color: #44444494; border-radius: 25px; display: inline-block; cursor: pointer; background-image: url(assets/person_add.png); background-position: center; background-size: auto 90%; background-repeat: no-repeat;}
+
 .alignment_token {position: static; display: inline-block; margin: 5px; width: 75px; height: 75px;}
 
 #body_actual[night="true"] #night_order_landing_container {display: none;}
