@@ -36,7 +36,7 @@ function generate_game_state_json() {
     state.players[i] = new Object();
     state.players[i].character = players[i].id.substring(0,players[i].id.length-UID_LENGTH-7);
     state.players[i].uid = players[i].getAttribute("uid");
-    state.players[i].hide = players[i].getAttribute("hide");
+    state.players[i].visiblity = players[i].getAttribute("visiblity");
     state.players[i].viability = players[i].getAttribute("viability");
     state.players[i].cat = players[i].getAttribute("cat");
     state.players[i].show_face = players[i].getAttribute("show_face");
@@ -74,7 +74,7 @@ function load_game_state_json(state) {
   document.getElementById("body_actual").setAttribute("night", state.night);
   populate_script(state.script);
   for (let i = 0; i < state.players.length; i++) {
-    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].hide, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visiblity, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
   for (let i = 0; i < state.reminders.length; i++) {
     spawnReminder(state.reminders[i].id, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
@@ -94,7 +94,7 @@ function loaded() {
   dragPipLayerSpawnDefault("reminder_pip");
 }
 
-// corner toggles
+// corner toggles and night functions
 function visibility_toggle() {
   tokens = document.getElementById("token_layer").getElementsByClassName("role_token");
   if (document.getElementById("body_actual").getAttribute("night")=="false") { // ! nighttime
@@ -171,7 +171,7 @@ async function infoCall(id, uid) {
     update_info_death_cycle(id, uid);
     document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
     document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('"+id+"', '"+ uid +"')");
-    if (data_token.getAttribute("hide")=="true"){
+    if (data_token.getAttribute("visiblity")=="show"){
       document.getElementById("info_box").setAttribute("hidden", "true");
     } else {
       document.getElementById("info_box").setAttribute("hidden", "false");
@@ -215,11 +215,11 @@ function nameIn(id, uid) {
 }
 function cycle_token_visibility_toggle(id, uid) {
   clear_night_order()
-  if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true") {
-    document.getElementById(id+"_token_"+uid).setAttribute("hide", "false");
+  if (document.getElementById(id+"_token_"+uid).getAttribute("visiblity")=="show") {
+    document.getElementById(id+"_token_"+uid).setAttribute("visiblity", "hide");
     document.getElementById("info_box").setAttribute("hidden", "false");
   } else {
-    document.getElementById(id+"_token_"+uid).setAttribute("hide", "true");
+    document.getElementById(id+"_token_"+uid).setAttribute("visiblity", "show");
     document.getElementById("info_box").setAttribute("hidden", "true");
   }
 }
@@ -260,7 +260,7 @@ function update_info_death_cycle(id, uid) {
 
 
 //token functions
-function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameText) {
+function spawnToken(id, uid,  visiblity, cat, hide_face, viability, left, top, nameText) {
   if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
   var div = document.createElement("div");
   div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
@@ -269,7 +269,7 @@ function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameTe
   div.id = id+"_token_"+uid;
   div.setAttribute("viability", viability);
   div.setAttribute("uid", uid);
-  div.setAttribute("hide", hide);
+  div.setAttribute("visiblity", visiblity);
   div.setAttribute("cat", cat);
   div.setAttribute("show_face", !hide_face);
   var death = document.createElement("img");
@@ -304,10 +304,10 @@ function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameTe
   dragInit();
   clear_night_order();
 }
-function spawnTokenDefault(id, hide, cat, hide_face) {
+function spawnTokenDefault(id, visiblity, cat, hide_face) {
   var time = new Date();
   var uid = time.getTime()
-  spawnToken(id, uid, hide, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
+  spawnToken(id, uid, visiblity, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid) {
   var tokens = document.getElementById("info_token_landing").children;
@@ -383,14 +383,14 @@ function shuffle_roles() {
   var tokens = document.getElementById("token_layer").children;
   var ids = [];
   for (i = 0, j = 0; i < tokens.length; i++) {
-    if (tokens[i].getAttribute("hide")!="true") {
+    if (tokens[i].getAttribute("visiblity")!="show") {
       ids[j++] = tokens[i].id.match(/.*(?=_token_)/)[0];
     }
   }
   shuffle(ids);
   var offset = 0
   for (i = 0, j = 0; i < tokens.length; i++) {
-    if (tokens[i].getAttribute("hide")!="true") {
+    if (tokens[i].getAttribute("visiblity")!="show") {
       mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
     }
   }
@@ -511,7 +511,7 @@ function populate_script(script){
         var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
         outer_div.title = tokenJSON["description"];
-        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +", 'alive')");
+        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('"+ tokenJSON["id"] +"', "+ (tokenJSON["hide_token"]=="true" ? "'hidden'" : "'show'") +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +", 'alive')");
         var label = document.createElement("label");
         label.classList = "menu_list";
         label.innerHTML = tokenJSON["name"];
@@ -738,8 +738,8 @@ async function populate_night_order(night) {
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-    if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("hide")=="false"){alive.add(id);}
-    if (tokens[i].getAttribute("hide")=="false") {inPlay.add(id);}
+    if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("visiblity")!="show"){alive.add(id);}
+    if (tokens[i].getAttribute("visiblity")!="show") {inPlay.add(id);}
   }
   for (i = 0;i<order.length;i++) {
     if (inPlay.has(order[i])) {

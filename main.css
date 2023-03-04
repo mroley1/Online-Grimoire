@@ -104,6 +104,8 @@ html, body {overscroll-behavior: none;}
 
 .alignment_token {position: static; display: inline-block; margin: 5px; width: 75px; height: 75px;}
 
+#body_actual[night="true"] #night_order_landing_container {display: none;}
+
 .toggle_menu       {position: absolute; top: 5px; left: 5px; width: 70px; height: 70px; opacity: 0.4; transition: opacity linear 0.1s; background-color: lightslategrey; cursor: pointer; border-radius: 10px; background-image: url("assets/menu_open.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
 .toggle_menu:hover {opacity: 0.6;}
 .close_menu        {position: absolute; top: 5px; right: 5px; width: 55px; height: 55px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
