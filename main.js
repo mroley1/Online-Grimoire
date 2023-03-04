@@ -36,7 +36,7 @@ function generate_game_state_json() {
     state.players[i] = new Object();
     state.players[i].character = players[i].id.substring(0,players[i].id.length-UID_LENGTH-7);
     state.players[i].uid = players[i].getAttribute("uid");
-    state.players[i].visiblity = players[i].getAttribute("visiblity");
+    state.players[i].visibility = players[i].getAttribute("visibility");
     state.players[i].viability = players[i].getAttribute("viability");
     state.players[i].cat = players[i].getAttribute("cat");
     state.players[i].show_face = players[i].getAttribute("show_face");
@@ -74,7 +74,7 @@ function load_game_state_json(state) {
   document.getElementById("body_actual").setAttribute("night", state.night);
   populate_script(state.script);
   for (let i = 0; i < state.players.length; i++) {
-    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visiblity, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
   for (let i = 0; i < state.reminders.length; i++) {
     spawnReminder(state.reminders[i].id, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
@@ -171,11 +171,7 @@ async function infoCall(id, uid) {
     update_info_death_cycle(id, uid);
     document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
     document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('"+id+"', '"+ uid +"')");
-    if (data_token.getAttribute("visiblity")=="show"){
-      document.getElementById("info_box").setAttribute("hidden", "true");
-    } else {
-      document.getElementById("info_box").setAttribute("hidden", "false");
-    }
+    document.getElementById("info_box").setAttribute("hidden", data_token.getAttribute("visibility"));
     document.getElementById("info_name_input").value = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
     document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
     document.getElementById("info_box").style.display = "inherit";
@@ -215,13 +211,22 @@ function nameIn(id, uid) {
 }
 function cycle_token_visibility_toggle(id, uid) {
   clear_night_order()
-  if (document.getElementById(id+"_token_"+uid).getAttribute("visiblity")=="show") {
-    document.getElementById(id+"_token_"+uid).setAttribute("visiblity", "hide");
-    document.getElementById("info_box").setAttribute("hidden", "false");
-  } else {
-    document.getElementById(id+"_token_"+uid).setAttribute("visiblity", "show");
-    document.getElementById("info_box").setAttribute("hidden", "true");
+  switch (document.getElementById(id+"_token_"+uid).getAttribute("visibility")) {
+    case "show":
+      document.getElementById(id+"_token_"+uid).setAttribute("visibility", "bluff");
+      document.getElementById("info_box").setAttribute("hidden", "bluff");
+      break;
+    case "bluff":
+      document.getElementById(id+"_token_"+uid).setAttribute("visibility", "hide");
+      document.getElementById("info_box").setAttribute("hidden", "hide");
+      break;
+    case "hide":
+      document.getElementById(id+"_token_"+uid).setAttribute("visibility", "show");
+      document.getElementById("info_box").setAttribute("hidden", "show");
+      break;
   }
+  update_role_counts();
+  player_count_change()
 }
 function expand_info_tab(tab) {
   document.getElementById("info_desc").setAttribute("focus", "false");
@@ -260,7 +265,7 @@ function update_info_death_cycle(id, uid) {
 
 
 //token functions
-function spawnToken(id, uid,  visiblity, cat, hide_face, viability, left, top, nameText) {
+function spawnToken(id, uid,  visibility, cat, hide_face, viability, left, top, nameText) {
   if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
   var div = document.createElement("div");
   div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
@@ -269,7 +274,7 @@ function spawnToken(id, uid,  visiblity, cat, hide_face, viability, left, top, n
   div.id = id+"_token_"+uid;
   div.setAttribute("viability", viability);
   div.setAttribute("uid", uid);
-  div.setAttribute("visiblity", visiblity);
+  div.setAttribute("visibility", visibility);
   div.setAttribute("cat", cat);
   div.setAttribute("show_face", !hide_face);
   var death = document.createElement("img");
@@ -304,10 +309,10 @@ function spawnToken(id, uid,  visiblity, cat, hide_face, viability, left, top, n
   dragInit();
   clear_night_order();
 }
-function spawnTokenDefault(id, visiblity, cat, hide_face) {
+function spawnTokenDefault(id, visibility, cat, hide_face) {
   var time = new Date();
   var uid = time.getTime()
-  spawnToken(id, uid, visiblity, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
+  spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid) {
   var tokens = document.getElementById("info_token_landing").children;
@@ -383,14 +388,14 @@ function shuffle_roles() {
   var tokens = document.getElementById("token_layer").children;
   var ids = [];
   for (i = 0, j = 0; i < tokens.length; i++) {
-    if (tokens[i].getAttribute("visiblity")!="show") {
+    if (tokens[i].getAttribute("visibility")=="show") {
       ids[j++] = tokens[i].id.match(/.*(?=_token_)/)[0];
     }
   }
   shuffle(ids);
   var offset = 0
   for (i = 0, j = 0; i < tokens.length; i++) {
-    if (tokens[i].getAttribute("visiblity")!="show") {
+    if (tokens[i].getAttribute("visibility")=="show") {
       mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
     }
   }
@@ -474,6 +479,7 @@ async function script_select() {
   var script_names = await get_JSON("scripts/scripts.json");
   var script = await get_JSON("scripts/"+script_names[document.getElementById("script_options").options.selectedIndex]["file"]+".json");
   document.getElementById("script_upload_feedback").setAttribute("used", "select");
+  document.getElementById("script_upload").value = "";
   populate_script(script);
 }
 async function script_upload() {
@@ -582,16 +588,16 @@ function player_count_change() {
   for (i = 0; i<tokens.length; i++) {
     switch (tokens[i].getAttribute("cat")) {
       case "TOWN":
-        counts[0]++;
+        if (tokens[i].getAttribute("visibility") == "show") {counts[0]++;}
       break;
       case "OUT":
-        counts[1]++;
+        if (tokens[i].getAttribute("visibility") == "show") {counts[1]++;}
       break;
       case "MIN":
-        counts[2]++;
+        if (tokens[i].getAttribute("visibility") == "show") {counts[2]++;}
       break;
       case "DEM":
-        counts[3]++;
+        if (tokens[i].getAttribute("visibility") == "show") {counts[3]++;}
       break;
     }
   }
@@ -608,7 +614,11 @@ function update_role_counts(){
   var tokens = document.getElementsByClassName("role_token");
   for (let i = 0; i<tokens.length; i++) {
     id = tokens[i].getAttribute("id").match(/.*(?=_token)/)[0];
-    try {document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1}
+    try {
+      if (tokens[i].getAttribute("visibility") == "show") {
+        document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1;
+      }
+    }
     catch (e) {}
     
   }
@@ -738,8 +748,8 @@ async function populate_night_order(night) {
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-    if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("visiblity")!="show"){alive.add(id);}
-    if (tokens[i].getAttribute("visiblity")!="show") {inPlay.add(id);}
+    if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("visibility")!="bluff"){alive.add(id);}
+    if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
   }
   for (i = 0;i<order.length;i++) {
     if (inPlay.has(order[i])) {
