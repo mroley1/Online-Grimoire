@@ -56,7 +56,7 @@ html, body {overscroll-behavior: none;}
 
 #info_list {width: 100px; transition: width ease-in-out 0.2s;}
 #info_list:is([focus="true"]) {width: calc(100% - 465px);}
-#info_list_scroll {position: absolute; top: 0px; left: 100px; height: 190; width: calc(100vw - 625px); text-align: left; overflow-wrap: break-word; white-space: normal; margin: 30px; overflow-y: scroll;}
+#info_list_scroll {position: absolute; top: 0px; left: 100px; height: 100%; width: calc(100vw - 625px); text-align: center; overflow-wrap: break-word; white-space: normal; margin: 0px 30px 0px 30px; overflow-y: scroll;}
 #info_list_scroll::-webkit-scrollbar {display: none;}
 .info_list_scroll_option {width: calc(100% - 5px); height: 80px; background-size: 100% 100%; margin: 5px; cursor: pointer; color: white; font-family: PiratesBay; text-align: center; position: relative;}
 .info_list_scroll_option span {font-size: 30pt; position: absolute; top: calc(50% - 20pt); left: 0px; width: 100%;}
@@ -68,7 +68,7 @@ html, body {overscroll-behavior: none;}
 
 #info_powr {width: 100px; transition: width ease-in-out 0.2s;}
 #info_powr:is([focus="true"]) {width: calc(100% - 465px);}
-#power_options_container {position: absolute; top: 0px; left: 100px; height: 190; width: calc(100vw - 625px); text-align: center; overflow-wrap: break-word; white-space: normal; margin: 30px;}
+#power_options_container {position: absolute; top: 0px; left: 100px; height: 190px; width: calc(100vw - 625px); text-align: center; overflow-wrap: break-word; white-space: normal; margin: 30px;}
 .info_name_input {height: 40px; width: 100%; color:black; font-size: 20pt; background-color: #afafaf;}
 .info_power_options {display:inline-block; width: 80px; height: 80px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
 #info_box:is([hidden="show"]) #info_visibility_toggle {background-image: url('assets/bluff.png');}
