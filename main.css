@@ -121,8 +121,10 @@ html, body {overscroll-behavior: none;}
 
 #playerinfo_close {position: absolute; top: 5px; right: 5px; width: 85px; height: 85px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png");}
 #playerinfo_close:hover {opacity: 0.6;}
-#playerinfo_character_landing {text-align: center; width: 100%;}
+#playerinfo_character_landing {text-align: center; width: 100%; pointer-events: all;}
 .playerinfo_character {margin: 10px; width: 250px; height: 200px; background-color: #44444494; border-radius: 25px; display: inline-block; cursor: pointer; background-image: url(assets/person_add.png); background-position: center; background-size: auto 90%; background-repeat: no-repeat;}
+#playerinfo_input {height: 70px; width: 65%; font-size: 40pt; text-align: center;}
+#playerinfo_body {pointer-events: none;}
 
 .alignment_token {position: static; display: inline-block; margin: 5px; width: 75px; height: 75px;}
 

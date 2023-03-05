@@ -3,9 +3,9 @@ const UID_LENGTH = 13
 
 
 // TODO make reminders draggable from info
-// ! TODO implement cast makeup to be responsive to script
+// TODO implement cast makeup to be responsive to script
 // TODO implement scrolling on night order tab's overflow
-// ! TODO background change
+// TODO background change
 
 function generate_game_state_json() {
   var state = new Object();
@@ -269,6 +269,16 @@ function load_playerinfo_shroud(typeId) {
         case 5:
           select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
           break;
+        case 10:
+          var input = document.createElement("textarea");
+          function recalcHeight() {
+            document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight/2 + "px)";
+          }
+          new ResizeObserver(recalcHeight).observe(input);
+          input.id = "playerinfo_input"
+          document.getElementById("playerinfo_character_landing").prepend(document.createElement("br"));
+          document.getElementById("playerinfo_character_landing").prepend(input);
+          break;
     }
   }
   let cards = {0:{"title":"Use Your Ability?", "players":0},
@@ -280,7 +290,8 @@ function load_playerinfo_shroud(typeId) {
                6:{"title":"This Player Is", "players":1},
                7:{"title":"Character Selected You", "players":1},
                8:{"title":"Did You Vote Today?", "players":0},
-               9:{"title":"Did You Nominate Today?", "players":0}
+               9:{"title":"Did You Nominate Today?", "players":0},
+               10:{"title":"Info", "players":5}
               }
   document.getElementById("playerinfo_shoud").style.display = "inherit";
   document.getElementById("playerinfo_title").innerHTML = cards[typeId]["title"];
