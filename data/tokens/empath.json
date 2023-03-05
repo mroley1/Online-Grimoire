@@ -6,7 +6,7 @@
     "class":"TOWN",
     "tokens":[],
     "first_night_desc":"Show the finger signal (0, 1, 2) for the number of evil alive neighbours of the Empath.",
-    "other_night_desc":"Show the finger signal (0, 1, 2) for the number of evil neighbours.",
+    "other_night_desc":"Show the finger signal (0, 1, 2) for the number of evil alive neighbours of the Empath.",
     "change_makeup":[],
     "hide_token":false,
     "hide_face":true

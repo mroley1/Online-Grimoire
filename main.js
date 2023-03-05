@@ -1,29 +1,11 @@
 
 const UID_LENGTH = 13
 
-// * TODO use token in menu as toggle for visibility of represented token
-// * TODO implement shuffle feature: swap pictures not names.
-// * TODO allow tokens to be individually mutated
-// TODO make reminders draggable from info
-// ! TODO implement cast makeup to be responsive to script
-// TODO implement scrolling on night order tab's overflow
-// * TODO handle cast makeup on changing script (dont rely on DOM inner values)
-// * TODO implement travelers
-// * TODO have good/evil token underneith existing ones to prevent cascading element creation
-// * TODO game state json import/ export
-// * TODO script upload
-// // ? TODO shift to reliance on database instead of json heap
-// ! TODO background change
 
-// *  UI upgrade
-// *
-// * make travelers still visible when others are invisible (upper left just icon) *redisign javascript(or css) to be more robust and handle spawning during hidden
-// * make death tokens look less shitty
-// * make hitboxes more accurate in menu
-// * ? redesign info to look less like the hellscape it is at this point
-// * ? ? Three tabs {description, reminders, power} power: kill, remove, visibility, edit, name
-// * spruce up top menu
-// *
+// TODO make reminders draggable from info
+// TODO implement cast makeup to be responsive to script
+// TODO implement scrolling on night order tab's overflow
+// TODO background change
 
 function generate_game_state_json() {
   var state = new Object();
@@ -36,7 +18,7 @@ function generate_game_state_json() {
     state.players[i] = new Object();
     state.players[i].character = players[i].id.substring(0,players[i].id.length-UID_LENGTH-7);
     state.players[i].uid = players[i].getAttribute("uid");
-    state.players[i].hide = players[i].getAttribute("hide");
+    state.players[i].visibility = players[i].getAttribute("visibility");
     state.players[i].viability = players[i].getAttribute("viability");
     state.players[i].cat = players[i].getAttribute("cat");
     state.players[i].show_face = players[i].getAttribute("show_face");
@@ -68,13 +50,12 @@ function generate_game_state_json() {
   return JSON.stringify(state);
 }
 
-function load_game_state_json(state) {
-  document.getElementById("script_options").value = state.script;
+async function load_game_state_json(state) {
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
-  populate_script(state.script);
+  populate_script(await get_JSON("scripts/Gang's All Here.json"));
   for (let i = 0; i < state.players.length; i++) {
-    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].hide, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
   for (let i = 0; i < state.reminders.length; i++) {
     spawnReminder(state.reminders[i].id, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
@@ -94,7 +75,7 @@ function loaded() {
   dragPipLayerSpawnDefault("reminder_pip");
 }
 
-// corner toggles
+// corner toggles and night functions
 function visibility_toggle() {
   tokens = document.getElementById("token_layer").getElementsByClassName("role_token");
   if (document.getElementById("body_actual").getAttribute("night")=="false") { // ! nighttime
@@ -150,6 +131,7 @@ async function infoCall(id, uid) {
     document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
     document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
     document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
+    document.getElementById("info_list").setAttribute("current_player", id);
     document.getElementById("info_token_landing").innerHTML = "";
     for (var i = 0; i < roleJSON["tokens"].length;i++){
       var div = document.createElement("div");
@@ -171,11 +153,7 @@ async function infoCall(id, uid) {
     update_info_death_cycle(id, uid);
     document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
     document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('"+id+"', '"+ uid +"')");
-    if (data_token.getAttribute("hide")=="true"){
-      document.getElementById("info_box").setAttribute("hidden", "true");
-    } else {
-      document.getElementById("info_box").setAttribute("hidden", "false");
-    }
+    document.getElementById("info_box").setAttribute("hidden", data_token.getAttribute("visibility"));
     document.getElementById("info_name_input").value = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
     document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
     document.getElementById("info_box").style.display = "inherit";
@@ -215,21 +193,34 @@ function nameIn(id, uid) {
 }
 function cycle_token_visibility_toggle(id, uid) {
   clear_night_order()
-  if (document.getElementById(id+"_token_"+uid).getAttribute("hide")=="true") {
-    document.getElementById(id+"_token_"+uid).setAttribute("hide", "false");
-    document.getElementById("info_box").setAttribute("hidden", "false");
-  } else {
-    document.getElementById(id+"_token_"+uid).setAttribute("hide", "true");
-    document.getElementById("info_box").setAttribute("hidden", "true");
+  switch (document.getElementById(id+"_token_"+uid).getAttribute("visibility")) {
+    case "show":
+      document.getElementById(id+"_token_"+uid).setAttribute("visibility", "bluff");
+      document.getElementById("info_box").setAttribute("hidden", "bluff");
+      break;
+    case "bluff":
+      document.getElementById(id+"_token_"+uid).setAttribute("visibility", "hide");
+      document.getElementById("info_box").setAttribute("hidden", "hide");
+      break;
+    case "hide":
+      document.getElementById(id+"_token_"+uid).setAttribute("visibility", "show");
+      document.getElementById("info_box").setAttribute("hidden", "show");
+      break;
   }
+  update_role_counts();
+  player_count_change()
 }
 function expand_info_tab(tab) {
   document.getElementById("info_desc").setAttribute("focus", "false");
+  document.getElementById("info_list").setAttribute("focus", "false");
   document.getElementById("info_rmnd").setAttribute("focus", "false");
   document.getElementById("info_powr").setAttribute("focus", "false");
   switch (tab) {
     case 'desc':
       document.getElementById("info_desc").setAttribute("focus", "true");
+    break;
+    case 'list':
+      document.getElementById("info_list").setAttribute("focus", "true");
     break;
     case 'rmnd':
       document.getElementById("info_rmnd").setAttribute("focus", "true");
@@ -257,10 +248,97 @@ function update_info_death_cycle(id, uid) {
     break;
   }
 }
+function load_playerinfo_shroud(typeId) {
+  function mapped_specials(typeId) {
+    switch (typeId) {
+      case 2:
+        var bluffs = [];
+        var tokens = document.getElementById("token_layer").children;
+        for (i = 0; i<tokens.length; i++) {
+          if (tokens[i].getAttribute("visibility") == "bluff") {
+            bluffs.push(tokens[i].id.match(/.*(?=_token_)/)[0])
+          }
+        }
+        var places = document.getElementById("playerinfo_character_landing").children
+        for (i = 0; i<places.length; i++) {
+          if (bluffs.length != 0) {
+            select_playerinfo_character(i, bluffs.pop())
+          }
+        }
+        break;
+        case 5:
+          select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
+          break;
+        case 10:
+          var input = document.createElement("textarea");
+          function recalcHeight() {
+            document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight/2 + "px)";
+          }
+          new ResizeObserver(recalcHeight).observe(input);
+          input.id = "playerinfo_input"
+          document.getElementById("playerinfo_character_landing").prepend(document.createElement("br"));
+          document.getElementById("playerinfo_character_landing").prepend(input);
+          break;
+    }
+  }
+  let cards = {0:{"title":"Use Your Ability?", "players":0},
+               1:{"title":"Make A Choice", "players":0},
+               2:{"title":"These Characters are Not In Play", "players":3},
+               3:{"title":"This Is Your Demon", "players":0},
+               4:{"title":"These Are Your Minions", "players":0},
+               5:{"title":"You Are", "players":1},
+               6:{"title":"This Player Is", "players":1},
+               7:{"title":"Character Selected You", "players":1},
+               8:{"title":"Did You Vote Today?", "players":0},
+               9:{"title":"Did You Nominate Today?", "players":0},
+               10:{"title":"Info", "players":5}
+              }
+  document.getElementById("playerinfo_shoud").style.display = "inherit";
+  document.getElementById("playerinfo_title").innerHTML = cards[typeId]["title"];
+  document.getElementById("playerinfo_character_landing").innerHTML = "";
+  for (i = 0; i<cards[typeId]["players"]; i++) {
+    var div = document.createElement("div");
+    div.id = "playerinfo_character_" + i;
+    div.classList = "playerinfo_character";
+    div.setAttribute("onclick", "javascript:trigger_playerinfo_character_select("+i+")")
+    document.getElementById("playerinfo_character_landing").appendChild(div);
+  }
+  mapped_specials(typeId);
+  document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight/2 + "px)";
+}
+function trigger_playerinfo_character_select(id) {
+  var town = document.getElementById("mutate_menu_TOWN").children;
+  for (i=0; i<town.length; i++) {
+    town[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+town[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  for (i=0; i<outsiders.length; i++) {
+    outsiders[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+outsiders[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var minions = document.getElementById("mutate_menu_MIN").children;
+  for (i=0; i<minions.length; i++) {
+    minions[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+minions[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var demons = document.getElementById("mutate_menu_DEM").children;
+  for (i=0; i<demons.length; i++) {
+    demons[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+demons[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  for (i=0; i<travellers.length; i++) {
+    travellers[i].setAttribute("onclick", "select_playerinfo_character('"+id+"', '"+travellers[i].id.match(/(?<=mutate_menu_).*/)+"')")
+  }
+  document.getElementById("mutate_menu_main").style.display = "inherit";
+}
+function select_playerinfo_character(id, selection) {
+  document.getElementById("playerinfo_character_" + id).style.backgroundImage = "url('assets/roles/"+selection+"_token.png')"
+}
+function close_playerinfo_shroud() {
+  document.getElementById("playerinfo_shoud").style.display = "none";
+}
 
 
 //token functions
-function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameText) {
+function spawnToken(id, uid,  visibility, cat, hide_face, viability, left, top, nameText) {
   if (document.getElementById("body_actual").getAttribute("night") == "true") {visibility_toggle()}
   var div = document.createElement("div");
   div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
@@ -269,7 +347,7 @@ function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameTe
   div.id = id+"_token_"+uid;
   div.setAttribute("viability", viability);
   div.setAttribute("uid", uid);
-  div.setAttribute("hide", hide);
+  div.setAttribute("visibility", visibility);
   div.setAttribute("cat", cat);
   div.setAttribute("show_face", !hide_face);
   var death = document.createElement("img");
@@ -304,10 +382,10 @@ function spawnToken(id, uid,  hide, cat, hide_face, viability, left, top, nameTe
   dragInit();
   clear_night_order();
 }
-function spawnTokenDefault(id, hide, cat, hide_face) {
+function spawnTokenDefault(id, visibility, cat, hide_face) {
   var time = new Date();
   var uid = time.getTime()
-  spawnToken(id, uid, hide, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
+  spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid) {
   var tokens = document.getElementById("info_token_landing").children;
@@ -383,14 +461,14 @@ function shuffle_roles() {
   var tokens = document.getElementById("token_layer").children;
   var ids = [];
   for (i = 0, j = 0; i < tokens.length; i++) {
-    if (tokens[i].getAttribute("hide")!="true") {
+    if (tokens[i].getAttribute("visibility")=="show") {
       ids[j++] = tokens[i].id.match(/.*(?=_token_)/)[0];
     }
   }
   shuffle(ids);
   var offset = 0
   for (i = 0, j = 0; i < tokens.length; i++) {
-    if (tokens[i].getAttribute("hide")!="true") {
+    if (tokens[i].getAttribute("visibility")=="show") {
       mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
     }
   }
@@ -474,6 +552,7 @@ async function script_select() {
   var script_names = await get_JSON("scripts/scripts.json");
   var script = await get_JSON("scripts/"+script_names[document.getElementById("script_options").options.selectedIndex]["file"]+".json");
   document.getElementById("script_upload_feedback").setAttribute("used", "select");
+  document.getElementById("script_upload").value = "";
   populate_script(script);
 }
 async function script_upload() {
@@ -511,7 +590,7 @@ function populate_script(script){
         var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
         outer_div.title = tokenJSON["description"];
-        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('"+ tokenJSON["id"] +"', "+ tokenJSON["hide_token"] +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +", 'alive')");
+        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('"+ tokenJSON["id"] +"', "+ (tokenJSON["hide_token"]=="true" ? "'hidden'" : "'show'") +", '"+ tokenJSON["class"] +"', "+ tokenJSON["hide_face"] +", 'alive')");
         var label = document.createElement("label");
         label.classList = "menu_list";
         label.innerHTML = tokenJSON["name"];
@@ -578,20 +657,107 @@ function player_count_change() {
   number = parseInt(number)-5;
   var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
   var counts = [0, 0, 0, 0];
+  var makeup = new Object;
+  makeup.TOWN = {"hardMod":0, "softModPos":0, "softModNeg":0}
+  makeup.OUT = {"hardMod":0, "softModPos":0, "softModNeg":0}
+  makeup.MIN = {"hardMod":0, "softModPos":0, "softModNeg":0}
+  makeup.DEM = {"hardMod":0, "softModPos":0, "softModNeg":0}
+  makeup.REQ = []
   tokens = document.getElementsByClassName("role_token");
+  async function makeup_mod(id) {
+    let json = await get_JSON("tokens/" + id + ".json")
+    for (i = 0; i<json["change_makeup"].length; i++) {
+      if (Object.keys(json["change_makeup"][i]).includes("TOWN")) {
+        if (json["change_makeup"][i].TOWN == "NONE" || makeup.TOWN["hardMod"] == "NONE") {
+          makeup.TOWN["hardMod"] = "NONE";
+        } else if (json["change_makeup"][i].TOWN == "ANY" || makeup.TOWN["hardMod"] == "ANY") {
+          makeup.TOWN["hardMod"] = "ANY";
+        } else {
+          makeup.TOWN["hardMod"] += json["change_makeup"][i].TOWN;
+        }
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OPTTOWNPOS")) {
+        makeup.TOWN["softModPos"] += json["change_makeup"][i].OPTTOWNPOS;
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OPTTOWNNEG")) {
+        makeup.TOWN["softModNeg"] += json["change_makeup"][i].OPTTOWNNEG;
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OUT")) {
+        if (json["change_makeup"][i].OUT == "NONE" || makeup.OUT["hardMod"] == "NONE") {
+          makeup.OUT["hardMod"] = "NONE";
+        } else if (json["change_makeup"][i].OUT == "ANY" || makeup.OUT["hardMod"] == "ANY") {
+          makeup.OUT["hardMod"] = "ANY";
+        } else {
+          makeup.OUT["hardMod"] += json["change_makeup"][i].OUT;
+        }
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OPTOUTPOS")) {
+        makeup.OUT["softModPos"] += json["change_makeup"][i].OPTOUTPOS;
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OPTOUTNEG")) {
+        makeup.OUT["softModNeg"] += json["change_makeup"][i].OPTOUTNEG;
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("MIN")) {
+        if (json["change_makeup"][i].MIN == "NONE" || makeup.MIN["hardMod"] == "NONE") {
+          makeup.MIN["hardMod"] = "NONE";
+        } else if (json["change_makeup"][i].MIN == "ANY" || makeup.MIN["hardMod"] == "ANY") {
+          makeup.MIN["hardMod"] = "ANY";
+        } else {
+          makeup.MIN["hardMod"] += json["change_makeup"][i].MIN;
+        }
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OPTMINPOS")) {
+        makeup.MIN["softModPos"] += json["change_makeup"][i].OPTMINPOS;
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OPTMINNEG")) {
+        makeup.MIN["softModNeg"] += json["change_makeup"][i].OPTMINNEG;
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("DEM")) {
+        if (json["change_makeup"][i].DEM == "NONE" || makeup.DEM["hardMod"] == "NONE") {
+          makeup.DEM["hardMod"] = "NONE";
+        } else if (json["change_makeup"][i].DEM == "ANY" || makeup.DEM["hardMod"] == "ANY") {
+          makeup.DEM["hardMod"] = "ANY";
+        } else {
+          makeup.DEM["hardMod"] += json["change_makeup"][i].DEM;
+        }
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OPTDEMPOS")) {
+        makeup.DEM["softModPos"] += json["change_makeup"][i].OPTDEMPOS;
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("OPTDEMNEG")) {
+        makeup.DEM["softModNeg"] += json["change_makeup"][i].OPTDEMNEG;
+      }
+      if (Object.keys(json["change_makeup"][i]).includes("REQ")) {
+        makeup.REQ[makeup.REQ.length] = json["change_makeup"][i].REQ;
+      }
+    }
+  }
   for (i = 0; i<tokens.length; i++) {
+    let visibility = tokens[i].getAttribute("visibility");
     switch (tokens[i].getAttribute("cat")) {
       case "TOWN":
-        counts[0]++;
+        if (visibility == "show") {counts[0]++;}
+        if (visibility != "bluff") {
+          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+        }
       break;
       case "OUT":
-        counts[1]++;
+        if (tokens[i].getAttribute("visibility") == "show") {counts[1]++;}
+        if (visibility != "bluff") {
+          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+        }
       break;
       case "MIN":
-        counts[2]++;
+        if (tokens[i].getAttribute("visibility") == "show") {counts[2]++;}
+        if (visibility != "bluff") {
+          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+        }
       break;
       case "DEM":
-        counts[3]++;
+        if (tokens[i].getAttribute("visibility") == "show") {counts[3]++;}
+        if (visibility != "bluff") {
+          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+        }
       break;
     }
   }
@@ -608,7 +774,11 @@ function update_role_counts(){
   var tokens = document.getElementsByClassName("role_token");
   for (let i = 0; i<tokens.length; i++) {
     id = tokens[i].getAttribute("id").match(/.*(?=_token)/)[0];
-    try {document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1}
+    try {
+      if (tokens[i].getAttribute("visibility") == "show") {
+        document.getElementById(id+"_count").innerHTML = parseInt(document.getElementById(id+"_count").innerHTML)+1;
+      }
+    }
     catch (e) {}
     
   }
@@ -738,8 +908,8 @@ async function populate_night_order(night) {
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-    if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("hide")=="false"){alive.add(id);}
-    if (tokens[i].getAttribute("hide")=="false") {inPlay.add(id);}
+    if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("visibility")!="bluff"){alive.add(id);}
+    if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
   }
   for (i = 0;i<order.length;i++) {
     if (inPlay.has(order[i])) {

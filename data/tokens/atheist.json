@@ -7,7 +7,7 @@
     "tokens":[],
     "first_night_desc":"",
     "other_night_desc":"",
-    "change_makeup":[{"DEM":0},{"MIN":0}],
+    "change_makeup":[{"DEM":"NONE"},{"MIN":"NONE"},{"TOWN":"ALL"}],
     "hide_token":false,
     "hide_face":true
 }

@@ -36,28 +36,44 @@ html, body {overscroll-behavior: none;}
 .info_tab {height: 250px; top: 0px; display: inline-block; color: white; text-align: center; left: 0px; position: relative; overflow: hidden;}
 .info_tab_header {height: 250px; cursor: pointer;}
 .info_tab_img {width: 100%; margin-top: 75px;}
+
 #info_desc {width: 250px; transition: width ease-in-out 0.2s;}
-#info_desc:is([focus="true"]) {width: calc(100% - 200px);}
-#info_img {width: 250px; height: 250px; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s;}
+#info_desc:is([focus="true"]) {width: calc(100% - 315px);}
 #info_desc:not([focus="true"]) #info_img {width: 200px; height: 200px;}
+#info_img {width: 250px; height: 250px; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s;}
+#info_visibility_shade {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-color: black; opacity: 0.5; border-radius: 100%; display: none; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s;}
+#info_visibility_img {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-position: center; background-repeat: no-repeat; background-size: 60%; display: none; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s, padding ease-in-out 0.2s;}
+#info_desc:not([focus="true"]) #info_visibility_shade {width: 200px; height: 200px; left: 25px;}
+#info_box:is([hidden="hide"]) #info_visibility_shade {display: inherit;}
+#info_box:is([hidden="bluff"]) #info_visibility_shade {display: inherit;}
+#info_desc:not([focus="true"]) #info_visibility_img {width: 200px; height: 200px; left: 25px;}
+#info_box:is([hidden="hide"]) #info_visibility_img {display: inherit; background-image: url(assets/visibility_off_red.png);}
+#info_box:is([hidden="bluff"]) #info_visibility_img {display: inherit; background-image: url(assets/visibility_off_yellow.png);}
+
 #info_title_field {height: 100px; position: absolute; top: 0px; left: 0px; color:rgb(211, 211, 211); font-size: 50pt; font-family: PiratesBay;}
 #info_name_field {position: absolute; top: 70px; left: 30px; color:rgb(192, 72, 72); font-size: 17pt; font-family: PiratesBay;}
-#info_desc_field {position: absolute; width: calc(100vw - 500px); top: 100px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
-#info_visibility_shade {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-color: black; opacity: 0.5; border-radius: 100%; display: none; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s;}
-#info_desc:not([focus="true"]) #info_visibility_shade {width: 200px; height: 200px; left: 25px;}
-#info_box:is([hidden="true"]) #info_visibility_shade {display: inherit;}
-#info_visibility_img {position: absolute; top: 0px; left: 0px; height: 125px; width: 125px; pointer-events: none; padding: 62.5; display: none; border-radius: 100%; transition: width ease-in-out 0.2s, height ease-in-out 0.2s, left ease-in-out 0.2s, padding ease-in-out 0.2s;}
-#info_desc:not([focus="true"]) #info_visibility_img {width: 100px; height: 100px; left: 25px; padding: 50;}
-#info_box:is([hidden="true"]) #info_visibility_img {display: inherit;}
+#info_desc_field {position: absolute; width: calc(100vw - 600px); top: 95px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
+
+#info_list {width: 100px; transition: width ease-in-out 0.2s;}
+#info_list:is([focus="true"]) {width: calc(100% - 465px);}
+#info_list_scroll {position: absolute; top: 0px; left: 100px; height: 100%; width: calc(100vw - 625px); text-align: center; overflow-wrap: break-word; white-space: normal; margin: 0px 30px 0px 30px; overflow-y: scroll;}
+#info_list_scroll::-webkit-scrollbar {display: none;}
+.info_list_scroll_option {width: calc(100% - 5px); height: 80px; background-size: 100% 100%; margin: 5px; cursor: pointer; color: white; font-family: PiratesBay; text-align: center; position: relative;}
+.info_list_scroll_option span {font-size: 30pt; position: absolute; top: calc(50% - 20pt); left: 0px; width: 100%;}
+
 #info_rmnd {width: 100px; transition: width ease-in-out 0.2s;}
-#info_rmnd:is([focus="true"]) {width: calc(100% - 350px);}
+#info_rmnd:is([focus="true"]) {width: calc(100% - 465px);}
+#info_token_landing {position: absolute; top: 0px; left: 100px; height: 220; width: calc(100vw - 595px); text-align: left; overflow-wrap: break-word; white-space: normal; margin: 15px;}
 .info_tokens {display:inline-block; width: 100px; height: 100px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
+
 #info_powr {width: 100px; transition: width ease-in-out 0.2s;}
-#info_powr:is([focus="true"]) {width: calc(100% - 350px);}
+#info_powr:is([focus="true"]) {width: calc(100% - 465px);}
+#power_options_container {position: absolute; top: 0px; left: 100px; height: 190px; width: calc(100vw - 625px); text-align: center; overflow-wrap: break-word; white-space: normal; margin: 30px;}
 .info_name_input {height: 40px; width: 100%; color:black; font-size: 20pt; background-color: #afafaf;}
 .info_power_options {display:inline-block; width: 80px; height: 80px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
-#info_visibility_toggle {background-image: url('assets/visibility_off.png');}
-#info_box:is([hidden="true"]) #info_visibility_toggle {background-image: url('assets/visibility.png');}
+#info_box:is([hidden="show"]) #info_visibility_toggle {background-image: url('assets/bluff.png');}
+#info_box:is([hidden="bluff"]) #info_visibility_toggle {background-image: url('assets/visibility_off.png');}
+#info_box:is([hidden="hide"]) #info_visibility_toggle {background-image: url('assets/visibility.png');}
 
 .night_order_tab {width: 90px; height: 90px; display: inline-block; background-position: center; background-repeat: no-repeat; background-size: contain; border-bottom: 2px solid black; cursor: pointer; position:static; transform: translateX(0px); transition: all ease-in-out 0.2s; text-align: left; min-height: 90px; overflow: hidden;}
 .night_order_img {width: 90px; height: 90px; display: inline; pointer-events: none; position: absolute; left: 0px; top: 0px;}
@@ -69,13 +85,14 @@ html, body {overscroll-behavior: none;}
 
 .role_token {height: 150px; width: 150px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px; border-radius: 100%; background-image: url(assets/alive_token.png);}
 .role_token[viability*="dead"] {background-image: url(assets/dead_token.png);}
-#body_actual[night="true"] .role_token[hide="true"] {display: none;}
+#body_actual[night="true"] .role_token:not([visibility="show"]) {display: none;}
 .token_death {width: 50px; pointer-events: none; position: absolute; left: 50px; top: 7px; display: none;}
 #body_actual[night="false"] .role_token[viability*="dead"] .token_death {display: inherit;}
 .token_vote {width: 100px; pointer-events: none; position: absolute; left: 25px; top: 25px; display: none;}
 #body_actual[night="true"] .role_token[viability="dead_vote"] .token_vote {display: inherit;}
-.token_visibility_pip {width: 35%; height: 35%; background-image: url(assets/visibility_off_red.png); position: absolute; right: 25px; bottom: 25px; pointer-events: none; display: none;}
-.role_token[hide="true"] .token_visibility_pip {display: inherit;}
+.token_visibility_pip {width: 35%; height: 35%; position: absolute; right: 25px; bottom: 25px; pointer-events: none; display: none;}
+.role_token[visibility="hide"] .token_visibility_pip {display: inherit; background-image: url(assets/visibility_off_red.png);}
+.role_token[visibility="bluff"] .token_visibility_pip {display: inherit; background-image: url(assets/visibility_off_yellow.png);}
 .token_oursider_betray {width: 80%; height: 80%; position: absolute; top: -15px; left: -15px; pointer-events: none; display: none;}
 #body_actual[night="true"] .token_oursider_betray {display: inherit;}
 
@@ -102,7 +119,16 @@ html, body {overscroll-behavior: none;}
 #script_upload_feedback:is([used="select"]) {color: rgb(0, 36, 199); text-shadow: 0 0 1px white;}
 #script_upload_feedback:is([used="error"]) {color: rgb(131, 0, 0); text-shadow: 0 0 3px white;}
 
+#playerinfo_close {position: absolute; top: 5px; right: 5px; width: 85px; height: 85px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png");}
+#playerinfo_close:hover {opacity: 0.6;}
+#playerinfo_character_landing {text-align: center; width: 100%; pointer-events: all;}
+.playerinfo_character {margin: 10px; width: 250px; height: 200px; background-color: #44444494; border-radius: 25px; display: inline-block; cursor: pointer; background-image: url(assets/person_add.png); background-position: center; background-size: auto 90%; background-repeat: no-repeat;}
+#playerinfo_input {height: 70px; width: 65%; font-size: 40pt; text-align: center;}
+#playerinfo_body {pointer-events: none;}
+
 .alignment_token {position: static; display: inline-block; margin: 5px; width: 75px; height: 75px;}
+
+#body_actual[night="true"] #night_order_landing_container {display: none;}
 
 .toggle_menu       {position: absolute; top: 5px; left: 5px; width: 70px; height: 70px; opacity: 0.4; transition: opacity linear 0.1s; background-color: lightslategrey; cursor: pointer; border-radius: 10px; background-image: url("assets/menu_open.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
 .toggle_menu:hover {opacity: 0.6;}
