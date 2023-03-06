@@ -2,7 +2,6 @@
 const UID_LENGTH = 13
 
 
-// TODO make reminders draggable from info
 // TODO implement cast makeup to be responsive to script
 // TODO implement scrolling on night order tab's overflow
 // TODO background change
@@ -1014,7 +1013,7 @@ async function toggle_populate_jinx() {
     var inPlay = new Set();
     for (i = 0; i<tokens.length;i++) {
       var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-      inPlay.add(id);
+      if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
     }
     for (const token of inPlay) {
       for (i=0;i<jinxes.length;i++){
