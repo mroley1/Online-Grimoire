@@ -27,7 +27,7 @@ function generate_game_state_json() {
     state.players[i].name = players[i].getElementsByClassName("token_text")[0].innerHTML;
   }
   state.reminders = [];
-  reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
+  reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
   for (i = 0; i < reminders.length; i++) {
     state.reminders[i] = new Object();
     state.reminders[i].id = reminders[i].id.substring(0,reminders[i].id.length-UID_LENGTH-1);
@@ -182,10 +182,10 @@ function remove_token(id, uid) {
   clear_night_order();
 }
 function clean_tokens(uid) {
-  let reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
+  let reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
   for (i=reminders.length-1; i!=-1; --i) {
     if (reminders[i].getAttribute("uid")==uid) {
-      document.getElementById("reminder_layer").removeChild(reminders[i]);
+      document.getElementById("remainerLayer").removeChild(reminders[i]);
     }
   }
 }
@@ -308,7 +308,7 @@ function unprompt_reminders() {
     element.setAttribute("onclick", null);
     element.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+element.id+"')");
   }
-  tokens = document.getElementById("reminder_layer").children;
+  tokens = document.getElementById("remainerLayer").children;
   for (var i = 0; i < tokens.length; i++){
     var element = tokens[i];
     document.getElementById(element.id + "_img").style.display = "none";
@@ -655,7 +655,7 @@ function spawnReminder(id, uid, left, top) {
     img.id = id + "_" + uid + "_img";
     div.appendChild(img);
     div.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+div.id+"')");
-    document.getElementById("reminder_layer").appendChild(div);
+    document.getElementById("remainerLayer").appendChild(div);
     dragInit();
 }
 function hideInfo() {
@@ -854,7 +854,7 @@ function dragEnd(e) {
     e.target.style.cursor = "pointer";
   }
   if (e.target.getAttribute("ghost") == "true") {
-    spawnReminder(e.target.id.substring(5, e.target.id.length-(2*UID_LENGTH)-2), e.target.id.substring(e.target.id.length-(2*UID_LENGTH)-1, e.target.id.length-(UID_LENGTH)-1), e.target.getBoundingClientRect().left+10, e.target.getBoundingClientRect().top+10);
+    spawnReminder(e.target.id.substring(5, e.target.id.length-(2*UID_LENGTH)-2), e.target.id.substring(e.target.id.length-(2*UID_LENGTH)-1, e.target.id.length), e.target.getBoundingClientRect().left+10, e.target.getBoundingClientRect().top+10);
     let x = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
     let y = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
     spawnReminderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
