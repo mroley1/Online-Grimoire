@@ -5,6 +5,7 @@ const UID_LENGTH = 13
 // TODO implement cast makeup to be responsive to script
 // TODO implement scrolling on night order tab's overflow
 // TODO background change
+// TODO be able to keep track of days
 
 function generate_game_state_json() {
   var state = new Object();
