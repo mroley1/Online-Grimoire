@@ -30,7 +30,7 @@ function generate_game_state_json() {
   reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
   for (i = 0; i < reminders.length; i++) {
     state.reminders[i] = new Object();
-    state.reminders[i].id = reminders[i].id.substring(0,reminders[i].id.length-UID_LENGTH-1);
+    state.reminders[i].id = reminders[i].id.substring(0,reminders[i].id.length-(UID_LENGTH*2)-2);
     state.reminders[i].uid = reminders[i].getAttribute("uid");
     state.reminders[i].left = reminders[i].style.left;
     state.reminders[i].top = reminders[i].style.top;
@@ -184,7 +184,7 @@ function remove_token(id, uid) {
 function clean_tokens(uid) {
   let reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
   for (i=reminders.length-1; i!=-1; --i) {
-    if (reminders[i].getAttribute("uid")==uid) {
+    if (reminders[i].getAttribute("uid").substring(0, UID_LENGTH)==uid) {
       document.getElementById("remainerLayer").removeChild(reminders[i]);
     }
   }
