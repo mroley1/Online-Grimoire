@@ -298,10 +298,17 @@ function prompt_delete_reminder(id) {
 }
 function delete_reminder(id) {
   document.getElementById(id).setAttribute("onmouseup", null);
-  document.getElementById("dragPipLayer").removeChild(document.getElementById(id));
+  document.getElementById(id).parentNode.removeChild(document.getElementById(id));
 }
 function unprompt_reminders() {
   tokens = document.getElementById("dragPipLayer").children;
+  for (var i = 0; i < tokens.length; i++){
+    var element = tokens[i];
+    document.getElementById(element.id + "_img").style.display = "none";
+    element.setAttribute("onclick", null);
+    element.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+element.id+"')");
+  }
+  tokens = document.getElementById("reminder_layer").children;
   for (var i = 0; i < tokens.length; i++){
     var element = tokens[i];
     document.getElementById(element.id + "_img").style.display = "none";
@@ -589,28 +596,12 @@ async function infoCall(id, uid) {
   let data_token = document.getElementById(id + "_token_" + uid);
   document.getElementById("info_img").src = "assets/roles/"+id+"_token.png";
   var roleJSON = await get_JSON("tokens/"+id+".json")
-  console.log()
   document.getElementById("info_title_field").innerHTML = roleJSON["name"];
   document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
   document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
   document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
   document.getElementById("info_list").setAttribute("current_player", id);
   document.getElementById("info_token_landing").innerHTML = "";
-  function spawnGhost(x, y, imgUrl, longId) {
-    var time = new Date();
-    var uid = time.getTime();
-    var div = document.createElement("div");
-    div.classList = "reminder drag";
-    div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 100px; height 100px;";
-    div.id = longId + "_" + uid;
-    var img = document.createElement("img");
-    img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
-    img.src = "assets/delete.png";
-    img.id = longId + "_" + uid + "_img";
-    div.appendChild(img);
-    document.getElementById("info_token_dragbox").prepend(div);
-    dragInit();
-  }
   for (var i = 0; i < roleJSON["tokens"].length;i++){
     var div = document.createElement("div");
     div.className = "info_tokens";
@@ -628,13 +619,29 @@ async function infoCall(id, uid) {
   document.getElementById("info_name_input").value = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
   document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
   document.getElementById("info_box").style.display = "inherit";
+  document.getElementById("info_token_dragbox").innerHTML = "";
   var tokens = document.getElementById("info_token_landing").children;
   for (i = 0; i < tokens.length; i++) {
-    console.log(tokens[i])
     let x = tokens[i].getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
     let y = tokens[i].getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
-    spawnGhost(x, y, tokens[i].style.backgroundImage, tokens[i].id)
+    spawnReminderGhost(x, y, tokens[i].style.backgroundImage, tokens[i].id)
   }
+}
+function spawnReminderGhost(x, y, imgUrl, longId) {
+  var time = new Date();
+  var uid = time.getTime();
+  var div = document.createElement("div");
+  div.classList = "info_tokens_drag drag";
+  div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 100px; height 100px;";
+  div.id = longId + "_" + uid;
+  div.setAttribute("ghost", "true");
+  var img = document.createElement("img");
+  img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
+  img.src = "assets/delete.png";
+  img.id = longId + "_" + uid + "_img";
+  div.appendChild(img);
+  document.getElementById("info_token_dragbox").prepend(div);
+  dragInit();
 }
 function spawnReminder(id, uid, left, top) {
     var div = document.createElement("div");
@@ -642,23 +649,14 @@ function spawnReminder(id, uid, left, top) {
     div.style = "background-image: url('assets/reminders/"+id+".png'); left: "+left+"; top: "+top;
     div.id = id + "_" + uid;
     div.setAttribute("uid", uid);
+    var img = document.createElement("img");
+    img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
+    img.src = "assets/delete.png";
+    img.id = id + "_" + uid + "_img";
+    div.appendChild(img);
+    div.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+div.id+"')");
     document.getElementById("reminder_layer").appendChild(div);
-    // try{
-    //   var reminder = document.getElementById("info_"+id+"_"+uid)
-    //   reminder.style.opacity = 0.7;
-    //   reminder.setAttribute("onclick", "javascript:recall_reminder_button('"+ id +"', "+ uid +")")
-    // } catch {}
     dragInit();
-}
-function spawnReminderDefault(id, uid) {
-  spawnReminder(id, uid, (parseInt(window.visualViewport.width/2)-37)+"px", "calc(50% - 37.5px)");
-}
-function recall_reminder_button(id, uid) {
-  var reminder = document.getElementById("info_"+id+"_"+uid)
-  reminder.style.opacity = 1;
-  reminder.setAttribute("onclick", "javascript:spawnReminderDefault('"+ id +"', "+ uid +")")
-  rm = document.getElementById(id+"_"+uid);
-  rm.parentNode.removeChild(rm);
 }
 function hideInfo() {
     document.getElementById("info_box").style.display = "none";
@@ -854,6 +852,13 @@ function dragEnd(e) {
     e.target.setAttribute("stacked", false);
     e.target.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+e.target.id+"')");
     e.target.style.cursor = "pointer";
+  }
+  if (e.target.getAttribute("ghost") == "true") {
+    spawnReminder(e.target.id.substring(5, e.target.id.length-(2*UID_LENGTH)-2), e.target.id.substring(e.target.id.length-(2*UID_LENGTH)-1, e.target.id.length-(UID_LENGTH)-1), e.target.getBoundingClientRect().left+10, e.target.getBoundingClientRect().top+10);
+    let x = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
+    let y = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
+    spawnReminderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
+    e.target.parentNode.removeChild(e.target);
   }
   active = false;
 }

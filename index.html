@@ -14,7 +14,7 @@
             <div id="genPipSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/reminder_pip.png');"></div>
         </div>
 
-        <div onclick="javascript:neutralClick()" id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;">
+        <div onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;">
             <div id="reminder_layer"></div>
             <div onclick="javascript:unprompt_reminders()" id="token_layer"></div>
         </div>
