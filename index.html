@@ -14,12 +14,13 @@
             <div id="genPipSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/reminder_pip.png');"></div>
         </div>
 
-        <div onclick="javascript:neutralClick()" id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;">
-            <div id="reminder_layer"></div>
+        <div onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;">
+            <!--<div id="reminder_layer"></div>-->
             <div onclick="javascript:unprompt_reminders()" id="token_layer"></div>
         </div>
         <div id="interactivePlane" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
             <div id="dragPipLayer"></div>
+            <div id="remainerLayer"></div>
         </div>
 
         <div id="visibility_toggle" onclick="javascript:visibility_toggle()" class="bottom_buttons"></div>
@@ -62,6 +63,7 @@
                     <img class="info_tab_img" src="assets/reminders.png">
                 </div>
                 <div id="info_token_landing"></div>
+                <div id="info_token_dragbox"></div>
             </div>
             <div id="info_powr" class="info_tab">
                 <div onclick="javascript:expand_info_tab('powr')" class="info_tab_header" style="width: 100px; background-image: url('assets/yellow_swirls.webp'); background-position: 25%; position: absolute; left: 0px; top: 0px;">
