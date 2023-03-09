@@ -51,9 +51,10 @@ function generate_game_state_json() {
 }
 
 async function load_game_state_json(state) {
+  state = JSON.parse(state)
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
-  populate_script(await get_JSON("scripts/Gang's All Here.json"));
+  await populate_script(await get_JSON("scripts/Gang's All Here.json"));
   for (let i = 0; i < state.players.length; i++) {
     spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
@@ -65,14 +66,23 @@ async function load_game_state_json(state) {
   }
 }
 
+function save_game_state() {
+  localStorage.clear();
+  localStorage.setItem("state", generate_game_state_json())
+}
+
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 
-function loaded() {
+async function loaded() {
   dragPipLayerSpawnDefault("good");
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
+  load_scripts().then((m) => {
+    setTimeout(() => {load_game_state_json(localStorage.getItem("state"))}, 200);
+  })
+    
 }
 
 // corner toggles and night functions
@@ -357,7 +367,7 @@ async function script_upload() {
     document.getElementById("script_upload_feedback").setAttribute("used", "error");
   }
 }
-function populate_script(script){
+async function populate_script(script) {
   document.getElementById("script_upload_feedback").innerHTML = script[0]["name"];
   function header(text, landing_name, color) {
       var div = document.createElement("div");
@@ -430,6 +440,7 @@ function populate_script(script){
       populate_mutate_menu(scriptTokens);
     }
   })
+  return Promise.resolve("success")
 }
 function increment_player_count(x) {
   document.getElementById("player_count").value = parseInt(document.getElementById("player_count").value) + parseInt(x);
@@ -1054,4 +1065,3 @@ function gen_jinxes_tab(id1, id2, reason) {
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
 
-load_scripts()
