@@ -7,6 +7,7 @@ var loading = false;
 // TODO implement scrolling on night order tab's overflow
 // TODO background change
 // TODO be able to keep track of days
+// TODO automatically translate tokens between portrait and landscape by swapping left and top.
 
 function generate_game_state_json() {
   var state = new Object();
@@ -52,6 +53,7 @@ function generate_game_state_json() {
 }
 
 async function load_game_state_json(state) {
+  loading = true;
   state = JSON.parse(state)
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
@@ -63,11 +65,13 @@ async function load_game_state_json(state) {
     spawnReminder(state.reminders[i].id, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
   }
   for (let i = 0; i < state.pips.length; i++) {
-    dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top)
+    dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top, "false")
   }
+  loading = false;
 }
 
 function save_game_state() {
+  //throw Error("lol");
   localStorage.setItem("state", generate_game_state_json())
   console.log(localStorage.getItem("state"))
 }
@@ -85,7 +89,6 @@ async function loaded() {
     load_game_state_json(localStorage.getItem("state"))
   })
   setTimeout(function() {
-    loading = false;
     player_count_change();
   }, 2000)
 }
@@ -190,7 +193,6 @@ function spawnTokenDefault(id, visibility, cat, hide_face) {
   spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid) {
-  var tokens = document.getElementById("info_token_landing").children;
   rm = document.getElementById(id+"_token_"+uid);
   rm.parentNode.removeChild(rm);
   clean_tokens(uid);
@@ -288,7 +290,7 @@ function populate_mutate_menu(tokens) {
 
 
 //good/evil reminders
-function dragPipLayerSpawn(type, left, top) {
+function dragPipLayerSpawn(type, left, top, stacked) {
   var time = new Date();
   var uid = time.getTime();
   var div = document.createElement("div");
@@ -297,7 +299,7 @@ function dragPipLayerSpawn(type, left, top) {
   div.id = type + "_" + uid;
   div.setAttribute("disposable-reminder", true);
   div.setAttribute("alignment", type);
-  div.setAttribute("stacked", true);
+  div.setAttribute("stacked", stacked);
   var img = document.createElement("img");
   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
   img.src = "assets/delete.png";
@@ -309,7 +311,7 @@ function dragPipLayerSpawn(type, left, top) {
 }
 function dragPipLayerSpawnDefault(type) {
   const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
-  dragPipLayerSpawn(type, "5px", ref[type]);
+  dragPipLayerSpawn(type, "5px", ref[type], "true");
 }
 function prompt_delete_reminder(id) {
   document.getElementById(id + "_img").style.display = "inherit";
@@ -613,7 +615,41 @@ function toggle_menu_collapse() {
     document.getElementById("menu_settings_dropdown").setAttribute("expand", "true");
   }
 }
-
+function clean_board() {
+  neutralClick();
+  const tokens = document.getElementById("token_layer").children;
+  for (let it = tokens.length-1; it>=0; it--) {
+    remove_token(tokens[it].id.match(/.*(?=_token_)/)[0], tokens[it].getAttribute("uid"))
+  }
+  const pips = document.getElementById("dragPipLayer").children;
+  console.log(pips)
+  for (let it = pips.length-1; it>=0; it--) {
+    if (pips[it].getAttribute("stacked") == "false") {
+      console.log(pips[it])
+      delete_reminder(pips[it].id);
+    }
+  }
+  clear_night_order();
+  save_game_state();
+}
+async function game_state_upload() {
+  let json = await document.getElementById("game_state_upload").files[0].text();
+  load_game_state_json(json).then(() => {
+    save_game_state();
+  })
+}
+function download_game_state() {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(generate_game_state_json()));
+  element.setAttribute('download', "game_state.json");
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+function change_background_menu() {
+  alert("lol");
+}
 
 //info functions
 async function infoCall(id, uid) {
