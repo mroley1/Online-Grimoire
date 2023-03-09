@@ -1,5 +1,6 @@
 
 const UID_LENGTH = 13
+var loading = false;
 
 
 // TODO implement cast makeup to be responsive to script
@@ -67,8 +68,8 @@ async function load_game_state_json(state) {
 }
 
 function save_game_state() {
-  localStorage.clear();
   localStorage.setItem("state", generate_game_state_json())
+  console.log(localStorage.getItem("state"))
 }
 
 async function get_JSON(path) {
@@ -76,13 +77,17 @@ async function get_JSON(path) {
 }
 
 async function loaded() {
+  loading = true;
   dragPipLayerSpawnDefault("good");
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
-  load_scripts().then((m) => {
-    setTimeout(() => {load_game_state_json(localStorage.getItem("state"))}, 200);
+  load_scripts().then(() => {
+    load_game_state_json(localStorage.getItem("state"))
   })
-    
+  setTimeout(function() {
+    loading = false;
+    player_count_change();
+  }, 2000)
 }
 
 // corner toggles and night functions
@@ -120,6 +125,8 @@ function deathCycle(id, uid) {
     break;
   default: token.setAttribute("viability", "alive");
   }
+  clear_night_order();
+  if (!loading) {save_game_state();}
 }
 function move_toggle() {
     var self = document.getElementById("move_toggle")
@@ -175,6 +182,7 @@ function spawnToken(id, uid,  visibility, cat, hide_face, viability, left, top, 
   player_count_change();
   dragInit();
   clear_night_order();
+  if (!loading) {save_game_state();}
 }
 function spawnTokenDefault(id, visibility, cat, hide_face) {
   var time = new Date();
@@ -241,6 +249,7 @@ async function mutate_token(idFrom, uid, idTo) {
     document.getElementById(idFrom + "_name_" + uid).id = idTo + "_name_" + uid;
     clean_tokens(uid);
     if (document.getElementById("info_box").style.display == "inherit") {infoCall(idTo, uid);}
+    if (!loading) {save_game_state();}
   });
 }
 function shuffle_roles() {
@@ -296,6 +305,7 @@ function dragPipLayerSpawn(type, left, top) {
   div.appendChild(img);
   document.getElementById("dragPipLayer").prepend(div);
   dragInit();
+  if (!loading) {save_game_state();}
 }
 function dragPipLayerSpawnDefault(type) {
   const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
@@ -309,6 +319,7 @@ function prompt_delete_reminder(id) {
 function delete_reminder(id) {
   document.getElementById(id).setAttribute("onmouseup", null);
   document.getElementById(id).parentNode.removeChild(document.getElementById(id));
+  if (!loading) {save_game_state();}
 }
 function unprompt_reminders() {
   tokens = document.getElementById("dragPipLayer").children;
@@ -534,39 +545,41 @@ function player_count_change() {
       }
     }
   }
-  for (i = 0; i<tokens.length; i++) {
-    let visibility = tokens[i].getAttribute("visibility");
-    switch (tokens[i].getAttribute("cat")) {
-      case "TOWN":
-        if (visibility == "show") {counts[0]++;}
-        if (visibility != "bluff") {
-          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-        }
-      break;
-      case "OUT":
-        if (tokens[i].getAttribute("visibility") == "show") {counts[1]++;}
-        if (visibility != "bluff") {
-          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-        }
-      break;
-      case "MIN":
-        if (tokens[i].getAttribute("visibility") == "show") {counts[2]++;}
-        if (visibility != "bluff") {
-          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-        }
-      break;
-      case "DEM":
-        if (tokens[i].getAttribute("visibility") == "show") {counts[3]++;}
-        if (visibility != "bluff") {
-          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-        }
-      break;
+  if (!loading) { //dont try to update player counts before menu is loaded
+    for (i = 0; i<tokens.length; i++) {
+      let visibility = tokens[i].getAttribute("visibility");
+      switch (tokens[i].getAttribute("cat")) {
+        case "TOWN":
+          if (visibility == "show") {counts[0]++;}
+          if (visibility != "bluff") {
+            makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+          }
+        break;
+        case "OUT":
+          if (tokens[i].getAttribute("visibility") == "show") {counts[1]++;}
+          if (visibility != "bluff") {
+            makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+          }
+        break;
+        case "MIN":
+          if (tokens[i].getAttribute("visibility") == "show") {counts[2]++;}
+          if (visibility != "bluff") {
+            makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+          }
+        break;
+        case "DEM":
+          if (tokens[i].getAttribute("visibility") == "show") {counts[3]++;}
+          if (visibility != "bluff") {
+            makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+          }
+        break;
+      }
     }
+    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + table[number][0];
+    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + table[number][1];
+    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + table[number][2];
+    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + table[number][3];
   }
-  document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + table[number][0];
-  document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + table[number][1];
-  document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + table[number][2];
-  document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + table[number][3];
 }
 function update_role_counts(){
   var counts = document.getElementsByClassName("menu_token_count");
@@ -668,6 +681,7 @@ function spawnReminder(id, uid, left, top) {
     div.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+div.id+"')");
     document.getElementById("remainerLayer").appendChild(div);
     dragInit();
+    if (!loading) {save_game_state();}
 }
 function hideInfo() {
     document.getElementById("info_box").style.display = "none";
@@ -695,7 +709,8 @@ function cycle_token_visibility_toggle(id, uid) {
       break;
   }
   update_role_counts();
-  player_count_change()
+  player_count_change();
+  if (!loading) {save_game_state();}
 }
 function expand_info_tab(tab) {
   document.getElementById("info_desc").setAttribute("focus", "false");
@@ -872,6 +887,7 @@ function dragEnd(e) {
     e.target.parentNode.removeChild(e.target);
   }
   active = false;
+  if (!loading) {save_game_state();}
 }
 function drag(e) {
   if (active) {
