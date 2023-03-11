@@ -8,6 +8,8 @@ var loading = false;
 // TODO background change
 // TODO be able to keep track of days
 // TODO automatically translate tokens between portrait and landscape by swapping left and top.
+// TODO store script in game_info for so it can be loaded back without errors.
+// TODO reorder night order to be below info 
 
 function generate_game_state_json() {
   var state = new Object();
