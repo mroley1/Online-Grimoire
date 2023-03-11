@@ -99,6 +99,11 @@ html, body {overscroll-behavior: none;}
 .token_oursider_betray {width: 80%; height: 80%; position: absolute; top: -15px; left: -15px; pointer-events: none; display: none;}
 #body_actual[night="true"] .token_oursider_betray {display: inherit;}
 
+#nightorder_button_container {position: absolute; top: 0px; right: 0px; width: 300px; height: 45px; display: inline-block;}
+#nightorder_button_container[nightOrder="jinx"] #jinx_toggle {color: rgb(244, 244, 244);}
+#nightorder_button_container[nightOrder="firstnight"] #first_night {color: rgb(244, 244, 244);} 
+#nightorder_button_container[nightOrder="othernight"] #other_night {color: rgb(244, 244, 244);} 
+
 .mutate_menu_main {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-color: #000000b7; display: none;}
 .mutate_menu_scroll_body {display: inline-block; height: 100%; width: 70%; pointer-events: all; background-color: #000000b7; border-radius: 100px; padding: 50px; overflow-y: scroll; scrollbar-width: none;}
 .mutate_menu_scroll_body::-webkit-scrollbar {display: none;}

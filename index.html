@@ -23,6 +23,15 @@
             <div id="remainerLayer"></div>
         </div>
 
+        <div id="nightorder_button_container" nightOrder="none">
+            <div id="jinx_toggle" class="night_select" style="left: 0px;" onclick="javascript:toggle_night_order_buttons('jinx')">jinxes</div>
+            <div id="first_night" class="night_select" style="left: 100px;" onclick="javascript:toggle_night_order_buttons('firstnight')">first</div>
+            <div id="other_night" class="night_select" style="right: 0px;" onclick="javascript:toggle_night_order_buttons('othernight')">other</div>
+        </div>
+        <div id="night_order_landing_container" style="position: absolute; width: 520px; right: 0px; top: 45px; word-wrap: normal; text-align: right; height: calc(100% - 41px); pointer-events: none;">
+            <div id="night_order_tab_landing" style="width: 90px; position: absolute; right: 0px; pointer-events: all;"></div>
+        </div>
+
         <div id="visibility_toggle" onclick="javascript:visibility_toggle()" class="bottom_buttons"></div>
         <div id="move_toggle" onclick="javascript:move_toggle()" class="bottom_buttons" style="background-image: url(assets/move.png); right: 120px; background-color: rgb(66, 66, 66); cursor: pointer;"></div>
         
@@ -134,15 +143,6 @@
                 <div id="DEM"></div><br>
                 <div id="TRAV"></div>
             </div>
-        </div>
-
-        <div style="position: absolute; top: 0px; right: 0px; width: 300px; height: 45px; display: inline-block;">
-            <div id="jinx_toggle" class="night_select" style="left: 0px;" onclick="javascript:toggle_populate_jinx()">jinxes</div>
-            <div id="first_night" class="night_select" style="left: 100px;" onclick="javascript:toggle_night_order('firstnight')">first</div>
-            <div id="other_night" class="night_select" style="right: 0px;" onclick="javascript:toggle_night_order('othernight')">other</div>
-        </div>
-        <div id="night_order_landing_container" style="position: absolute; width: 520px; right: 0px; top: 45px; word-wrap: normal; text-align: right; height: calc(100% - 41px); pointer-events: none;">
-            <div id="night_order_tab_landing" style="width: 90px; position: absolute; right: 0px; pointer-events: all;"></div>
         </div>
         
         <div id="playerinfo_shoud" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-image: url(assets/background-img2.webp); display: none;">

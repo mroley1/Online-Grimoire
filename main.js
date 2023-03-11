@@ -9,7 +9,8 @@ var CURRENT_SCRIPT;
 // TODO be able to keep track of days
 // TODO automatically translate tokens between portrait and landscape by swapping left and top.
 // * TODO store script in game_info for so it can be loaded back without errors.
-// TODO reorder night order to be below info 
+// * TODO reorder night order to be below info 
+// TODO convert nightorder and info to flex
 
 function generate_game_state_json() {
   var state = new Object();
@@ -130,7 +131,7 @@ function deathCycle(id, uid) {
     break;
   default: token.setAttribute("viability", "alive");
   }
-  clear_night_order();
+  populate_night_order();
   if (!loading) {save_game_state();}
 }
 function move_toggle() {
@@ -186,7 +187,7 @@ function spawnToken(id, uid,  visibility, cat, hide_face, viability, left, top, 
   update_role_counts();
   player_count_change();
   dragInit();
-  clear_night_order();
+  populate_night_order();
   if (!loading) {save_game_state();}
 }
 function spawnTokenDefault(id, visibility, cat, hide_face) {
@@ -201,7 +202,7 @@ function remove_token(id, uid) {
   update_role_counts();
   player_count_change();
   hideInfo();
-  clear_night_order();
+  populate_night_order();
 }
 function clean_tokens(uid) {
   let reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
@@ -733,7 +734,7 @@ function nameIn(id, uid) {
   document.getElementById("info_img_name").innerHTML = value;
 }
 function cycle_token_visibility_toggle(id, uid) {
-  clear_night_order()
+  clear_night_order();
   switch (document.getElementById(id+"_token_"+uid).getAttribute("visibility")) {
     case "show":
       document.getElementById(id+"_token_"+uid).setAttribute("visibility", "bluff");
@@ -961,24 +962,25 @@ function neutralClick() {
 
 
 //night order and jinx
-function toggle_night_order(night) {
-  first = document.getElementById("first_night")
-  other = document.getElementById("other_night")
-  if (night == "firstnight" && first.style.color == "rgb(244, 244, 244)") {
+function toggle_night_order_buttons(type) {
+  if (document.getElementById("nightorder_button_container").getAttribute("nightOrder") == type) {
     clear_night_order();
-    return;
-  } else if (night == "othernight" && other.style.color == "rgb(244, 244, 244)") {
-    clear_night_order();
-    return;
+    document.getElementById("nightorder_button_container").setAttribute("nightOrder", "none");
   } else {
-    clear_night_order();
-    if (night == "firstnight") {
-      first.style.color = "#f4f4f4";
+    switch (type) {
+      case "jinx":
+        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "jinx");
+        populate_jinx();
+        break;
+      case "firstnight":
+        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "firstnight");
+        populate_night_order();
+        break;
+      case "othernight":
+        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "othernight");
+        populate_night_order();
+        break;
     }
-    if (night == "othernight") {
-      other.style.color = "#f4f4f4";
-    }
-    populate_night_order(night);
   }
 }
 function clear_night_order() {
@@ -987,9 +989,12 @@ function clear_night_order() {
   document.getElementById("other_night").style.color = "";
   document.getElementById("jinx_toggle").style.color = "";
 }
-async function populate_night_order(night) {
+async function populate_night_order() {
+  night = document.getElementById("nightorder_button_container").getAttribute("nightOrder");
+  clear_night_order();
+  if (night == "none") {return;}
   var order = await get_JSON("nightsheet.json")
-  order = order[night]
+  order = order[night];
   tokens = document.getElementById("token_layer").children;
   var inPlay = new Set();
   var alive = new Set();
@@ -1068,33 +1073,27 @@ function collapse_night_order_tab(id) {
   tab.style.height = "90px";
   tab.setAttribute("onclick", "javascript:expand_night_order_tab('"+id+"')")
 }
-async function toggle_populate_jinx() {
-  jinxBtn = document.getElementById("jinx_toggle")
-  if (jinxBtn.style.color == "rgb(244, 244, 244)") {
-    clear_night_order();
-    return;
-  } else {
-    clear_night_order();
-    jinxBtn.style.color = "rgb(244, 244, 244)"
-    jinxes = await get_JSON("jinx.json");
-    tokens = document.getElementById("token_layer").children;
-    var inPlay = new Set();
-    for (i = 0; i<tokens.length;i++) {
-      var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-      if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
-    }
-    for (const token of inPlay) {
-      for (i=0;i<jinxes.length;i++){
-        if (jinxes[i].id == token) {
-          for (j=0;j<jinxes[i].jinx.length;j++) {
-            if (inPlay.has(jinxes[i].jinx[j].id)) {
-              gen_jinxes_tab(jinxes[i].id, jinxes[i].jinx[j].id, jinxes[i].jinx[j].reason)
-            }
+async function populate_jinx() {
+  clear_night_order();
+  jinxes = await get_JSON("jinx.json");
+  tokens = document.getElementById("token_layer").children;
+  var inPlay = new Set();
+  for (i = 0; i<tokens.length;i++) {
+    var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
+    if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
+  }
+  for (const token of inPlay) {
+    for (i=0;i<jinxes.length;i++){
+      if (jinxes[i].id == token) {
+        for (j=0;j<jinxes[i].jinx.length;j++) {
+          if (inPlay.has(jinxes[i].jinx[j].id)) {
+            gen_jinxes_tab(jinxes[i].id, jinxes[i].jinx[j].id, jinxes[i].jinx[j].reason)
           }
         }
       }
     }
   }
+  
 }
 function gen_jinxes_tab(id1, id2, reason) {
   div = document.createElement("div");
