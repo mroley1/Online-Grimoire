@@ -1,19 +1,19 @@
 
 const UID_LENGTH = 13
 var loading = false;
-
+var CURRENT_SCRIPT;
 
 // TODO implement cast makeup to be responsive to script
 // TODO implement scrolling on night order tab's overflow
 // TODO background change
 // TODO be able to keep track of days
 // TODO automatically translate tokens between portrait and landscape by swapping left and top.
-// TODO store script in game_info for so it can be loaded back without errors.
+// * TODO store script in game_info for so it can be loaded back without errors.
 // TODO reorder night order to be below info 
 
 function generate_game_state_json() {
   var state = new Object();
-  state.script = document.getElementById("script_options").value;
+  state.script = CURRENT_SCRIPT;
   state.playercount = document.getElementById("player_count").value;
   state.night = document.getElementById("body_actual").getAttribute("night");
   state.players = [];
@@ -56,10 +56,10 @@ function generate_game_state_json() {
 
 async function load_game_state_json(state) {
   loading = true;
-  state = JSON.parse(state)
+  state = JSON.parse(state);
+  await populate_script(state.script);
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
-  await populate_script(await get_JSON("scripts/Gang's All Here.json"));
   for (let i = 0; i < state.players.length; i++) {
     spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
@@ -383,6 +383,7 @@ async function script_upload() {
   }
 }
 async function populate_script(script) {
+  CURRENT_SCRIPT = script;
   document.getElementById("script_upload_feedback").innerHTML = script[0]["name"];
   function header(text, landing_name, color) {
       var div = document.createElement("div");
@@ -455,6 +456,7 @@ async function populate_script(script) {
       populate_mutate_menu(scriptTokens);
     }
   })
+  if (!loading) {save_game_state();}
   return Promise.resolve("success")
 }
 function increment_player_count(x) {
