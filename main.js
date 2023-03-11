@@ -1017,6 +1017,13 @@ async function populate_night_order() {
     }
   }
 }
+function nightOrderScroll(enable) {
+  if (enable == "true") {
+    document.getElementById("night_order_landing_container").style.pointerEvents = "all";
+  } else if (enable == "false") {
+    document.getElementById("night_order_landing_container").style.pointerEvents = "none";
+  }
+}
 function gen_night_order_tab_role(token_JSON, night, dead) {
   var color;
   switch (token_JSON.class) {
@@ -1039,6 +1046,8 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
   img = document.createElement("img");
   img.classList = "night_order_img";
   img.src = "assets/icons/"+token_JSON.id+".png";
+  div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
+  div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"_night_order_tab')");
   div.appendChild(img);
   document.getElementById("night_order_tab_landing").appendChild(div);

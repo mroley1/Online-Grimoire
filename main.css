@@ -105,7 +105,7 @@ html, body {overscroll-behavior: none;}
 #night_order_landing_container::-webkit-scrollbar {display: none;}
 #night_order_tab_landing {width: 90px; position: absolute; right: 0px; pointer-events: all; display: flex; flex-flow: column; pointer-events: all;}
 .night_order_tab {width: 90px; height: 90px; display: block; background-position: center; background-repeat: no-repeat; background-size: contain; border-bottom: 2px solid black; cursor: pointer; position:static; transform: translateX(0px); transition: all ease-in-out 0.2s; text-align: left; min-height: 90px; overflow: hidden;}
-#night_order_landing_container:has(.night_order_tab:hover) {pointer-events: all;}
+#night_order_landing_container:has(.night_order_tab:hover) {pointer-events: all;} /* also implemented in JS because touch >:| */
 .night_order_img {width: 90px; height: 90px; display: inline; pointer-events: none; position: absolute; left: 0px; top: 0px;}
 .night_order_span {width: 399px; height: calc(max-content + 10px); display: inline-block; transform: translateX(81px); padding: 10px; font-size: 15pt; font-family: PiratesBay; color: white; pointer-events: none;}
 
