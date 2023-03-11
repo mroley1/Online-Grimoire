@@ -6,6 +6,7 @@ var CURRENT_SCRIPT;
 // TODO implement cast makeup to be responsive to script
 // TODO background change
 // TODO be able to keep track of days
+// TODO make settings dropdown in menu react to long script titles
 
 function generate_game_state_json() {
   var state = new Object();
@@ -1001,7 +1002,7 @@ function neutralClick() {
 //night order and jinx
 function toggle_night_order_buttons(type) {
   if (document.getElementById("nightorder_button_container").getAttribute("nightOrder") == type) {
-    clear_night_order();
+    clean_night_order();
     document.getElementById("nightorder_button_container").setAttribute("nightOrder", "none");
   } else {
     switch (type) {
@@ -1020,7 +1021,7 @@ function toggle_night_order_buttons(type) {
     }
   }
 }
-function clear_night_order() {
+function clean_night_order() {
   document.getElementById("night_order_tab_landing").innerHTML = ""
   document.getElementById("first_night").style.color = "";
   document.getElementById("other_night").style.color = "";
@@ -1032,7 +1033,7 @@ async function populate_night_order() {
     populate_jinx();
     return;
   }
-  clear_night_order();
+  clean_night_order();
   if (night == "none") {return;}
   var order = await get_JSON("nightsheet.json")
   order = order[night];
@@ -1052,6 +1053,10 @@ async function populate_night_order() {
       gen_night_order_tab_info(order[i])
     }
   }
+}
+function clear_night_order() {
+  clean_night_order();
+  document.getElementById("nightorder_button_container").setAttribute("nightOrder", "none");
 }
 function nightOrderScroll(enable) {
   if (enable == "true") {
@@ -1130,7 +1135,7 @@ function collapse_night_order_tab(id) {
   tab.setAttribute("onclick", "javascript:expand_night_order_tab('"+id+"')")
 }
 async function populate_jinx() {
-  clear_night_order();
+  clean_night_order();
   jinxes = await get_JSON("jinx.json");
   tokens = document.getElementById("token_layer").children;
   var inPlay = new Set();

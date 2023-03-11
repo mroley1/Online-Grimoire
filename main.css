@@ -133,6 +133,8 @@ html, body {overscroll-behavior: none;}
 #script_upload_feedback:is([used="select"]) {color: rgb(0, 36, 199); text-shadow: 0 0 1px white;}
 #script_upload_feedback:is([used="error"]) {color: rgb(131, 0, 0); text-shadow: 0 0 3px white;}
 .menu_settings_duo {border-radius: 25px; background-size: contain; cursor: pointer; margin: 5px;}
+#source_link {color: white;}
+#source_link:visited {color: white;}
 
 #playerinfo_close {position: absolute; top: 5px; right: 5px; width: 85px; height: 85px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png");}
 #playerinfo_close:hover {opacity: 0.6;}
