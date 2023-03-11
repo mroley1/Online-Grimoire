@@ -4,7 +4,7 @@ var loading = false;
 var CURRENT_SCRIPT;
 
 // TODO implement cast makeup to be responsive to script
-// TODO implement scrolling on night order tab's overflow
+// * TODO implement scrolling on night order tab's overflow
 // TODO background change
 // TODO be able to keep track of days
 // TODO automatically translate tokens between portrait and landscape by swapping left and top.
@@ -1048,6 +1048,8 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
   img.src = "assets/icons/"+token_JSON.id+".png";
   div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
   div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
+  div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
+  div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"_night_order_tab')");
   div.appendChild(img);
   document.getElementById("night_order_tab_landing").appendChild(div);
@@ -1065,6 +1067,10 @@ function gen_night_order_tab_info(info) {
   div.appendChild(img);
   div.id = info + "_night_order_tab";
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , #999999)";
+  div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
+  div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
+  div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
+  div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+info+"_night_order_tab')");
   span = document.createElement("span");
   span.classList = "night_order_span"
@@ -1130,6 +1136,10 @@ function gen_jinxes_tab(id1, id2, reason) {
   imgDiv.appendChild(img1);
   imgDiv.appendChild(img2);
   div.appendChild(imgDiv);
+  div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
+  div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
+  div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
+  div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+id1+"_"+id2+"_jinx_tab"+"')");
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
