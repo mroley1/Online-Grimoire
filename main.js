@@ -116,6 +116,7 @@ function visibility_toggle() {
       tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
     }
   }
+  clear_night_order();
 }
 function deathCycle(id, uid) {
   let token = document.getElementById(id+"_token_"+uid);
@@ -734,7 +735,6 @@ function nameIn(id, uid) {
   document.getElementById("info_img_name").innerHTML = value;
 }
 function cycle_token_visibility_toggle(id, uid) {
-  clear_night_order();
   switch (document.getElementById(id+"_token_"+uid).getAttribute("visibility")) {
     case "show":
       document.getElementById(id+"_token_"+uid).setAttribute("visibility", "bluff");
@@ -751,6 +751,7 @@ function cycle_token_visibility_toggle(id, uid) {
   }
   update_role_counts();
   player_count_change();
+  populate_night_order();
   if (!loading) {save_game_state();}
 }
 function expand_info_tab(tab) {
@@ -991,6 +992,10 @@ function clear_night_order() {
 }
 async function populate_night_order() {
   night = document.getElementById("nightorder_button_container").getAttribute("nightOrder");
+  if (night == "jinx") {
+    populate_jinx();
+    return;
+  }
   clear_night_order();
   if (night == "none") {return;}
   var order = await get_JSON("nightsheet.json")

@@ -82,7 +82,6 @@ html, body {overscroll-behavior: none;}
 .night_order_img {width: 90px; height: 90px; display: inline; pointer-events: none; position: absolute; left: 0px; top: 0px;}
 .night_order_span {width: 399px; height: calc(max-content + 10px); display: inline-block; transform: translateX(81px); padding: 10px; font-size: 15pt; font-family: PiratesBay; color: white; pointer-events: none;}
 
-.night_select {width: 96px; height: 41px; position: absolute; text-align: center; font-family: PiratesBay; font-size: 28pt; border: black 2px solid; background-image: url("assets/vines.png"); color: #afafaf; cursor: pointer; user-select: none;}
 .trashcan {position: absolute; bottom: 5px; left: 5px; width: 70px; height: 70px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; border-radius: 10px; background-image: url("assets/delete.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
 .trashcan:hover {opacity: 0.7;}
 
@@ -99,7 +98,8 @@ html, body {overscroll-behavior: none;}
 .token_oursider_betray {width: 80%; height: 80%; position: absolute; top: -15px; left: -15px; pointer-events: none; display: none;}
 #body_actual[night="true"] .token_oursider_betray {display: inherit;}
 
-#nightorder_button_container {position: absolute; top: 0px; right: 0px; width: 300px; height: 45px; display: inline-block;}
+#nightorder_button_container {position: absolute; top: 0px; right: 0px; width: 300px; height: 45px; display: inline-block; display: flex;}
+.night_select {width: 100px; display: block; height: 41px; text-align: center; font-family: PiratesBay; font-size: 28pt; border: black 2px solid; background-image: url("assets/vines.png"); color: #afafaf; cursor: pointer; user-select: none;}
 #nightorder_button_container[nightOrder="jinx"] #jinx_toggle {color: rgb(244, 244, 244);}
 #nightorder_button_container[nightOrder="firstnight"] #first_night {color: rgb(244, 244, 244);} 
 #nightorder_button_container[nightOrder="othernight"] #other_night {color: rgb(244, 244, 244);} 
