@@ -7,7 +7,7 @@ var CURRENT_SCRIPT;
 // * TODO implement scrolling on night order tab's overflow
 // TODO background change
 // TODO be able to keep track of days
-// TODO automatically translate tokens between portrait and landscape by swapping left and top.
+// * TODO automatically translate tokens between portrait and landscape by swapping left and top.
 // * TODO store script in game_info for so it can be loaded back without errors.
 // * TODO reorder night order to be below info 
 // TODO convert nightorder and info to flex
@@ -17,6 +17,7 @@ function generate_game_state_json() {
   state.script = CURRENT_SCRIPT;
   state.playercount = document.getElementById("player_count").value;
   state.night = document.getElementById("body_actual").getAttribute("night");
+  state.orientation = document.getElementById("body_actual").getAttribute("orientation");
   state.players = [];
   players = document.getElementById("token_layer").getElementsByClassName("role_token");
   for (i = 0; i < players.length; i++) {
@@ -70,6 +71,9 @@ async function load_game_state_json(state) {
   for (let i = 0; i < state.pips.length; i++) {
     dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top, "false")
   }
+  if (state.orientation != getOrientation()) {
+    orientationChange();
+  }
   loading = false;
 }
 
@@ -83,6 +87,41 @@ async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 
+function getOrientation() {
+  if (window.innerHeight>window.innerWidth) {
+    return "portrait";
+  } else {
+    return "landscape";
+  }
+}
+function resized() {
+  if (document.getElementById("body_actual").getAttribute("orientation") != getOrientation()) {
+    orientationChange();
+  }
+  document.getElementById("body_actual").setAttribute("orientation", getOrientation())
+}
+function swapObjectOrientation(HTMLobj) {
+  tmp = HTMLobj.style.top;
+  HTMLobj.style.top = HTMLobj.style.left;
+  HTMLobj.style.left = tmp;
+}
+function orientationChange() {
+  players = document.getElementById("token_layer").getElementsByClassName("role_token");
+  for (i = 0; i < players.length; i++) {
+    swapObjectOrientation(players[i]);
+  }
+  reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
+  for (i = 0; i < reminders.length; i++) {
+    swapObjectOrientation(reminders[i]);
+  }
+  pips = document.getElementById("interactivePlane").getElementsByClassName("reminder");
+  for (i = 0; i < pips.length; i++) {
+    if (pips[i].getAttribute("stacked") == "false") {
+      swapObjectOrientation(pips[i]);
+    }
+  }
+}
+
 async function loaded() {
   loading = true;
   dragPipLayerSpawnDefault("good");
@@ -94,6 +133,8 @@ async function loaded() {
   setTimeout(function() {
     player_count_change();
   }, 2000)
+  document.getElementById("body_actual").setAttribute("orientation", getOrientation())
+  window.onresize = resized;
 }
 
 // corner toggles and night functions
