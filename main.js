@@ -4,13 +4,8 @@ var loading = false;
 var CURRENT_SCRIPT;
 
 // TODO implement cast makeup to be responsive to script
-// * TODO implement scrolling on night order tab's overflow
 // TODO background change
 // TODO be able to keep track of days
-// * TODO automatically translate tokens between portrait and landscape by swapping left and top.
-// * TODO store script in game_info for so it can be loaded back without errors.
-// * TODO reorder night order to be below info 
-// TODO convert nightorder and info to flex
 
 function generate_game_state_json() {
   var state = new Object();
@@ -78,9 +73,7 @@ async function load_game_state_json(state) {
 }
 
 function save_game_state() {
-  //throw Error("lol");
   localStorage.setItem("state", generate_game_state_json())
-  console.log(localStorage.getItem("state"))
 }
 
 async function get_JSON(path) {
@@ -800,6 +793,7 @@ function expand_info_tab(tab) {
   document.getElementById("info_list").setAttribute("focus", "false");
   document.getElementById("info_rmnd").setAttribute("focus", "false");
   document.getElementById("info_powr").setAttribute("focus", "false");
+  document.getElementById("info_rmnd").style.overflow = "hidden";
   switch (tab) {
     case 'desc':
       document.getElementById("info_desc").setAttribute("focus", "true");
@@ -809,6 +803,7 @@ function expand_info_tab(tab) {
     break;
     case 'rmnd':
       document.getElementById("info_rmnd").setAttribute("focus", "true");
+      setTimeout((() => {document.getElementById("info_rmnd").style.overflow = "visible";}), 200) // because overflow needs to be visible/ delays until after animation
     break;
     case 'powr':
       document.getElementById("info_powr").setAttribute("focus", "true");

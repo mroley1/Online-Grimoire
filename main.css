@@ -63,7 +63,7 @@ html, body {overscroll-behavior: none;}
 
 
 #info_rmnd {width: 100px; transition: width ease-in-out 0.2s;}
-#info_rmnd:is([focus="true"]) {width: calc(100% - 465px); overflow: visible;}
+#info_rmnd:is([focus="true"]) {width: calc(100% - 465px);}
 #info_token_landing {position: absolute; top: 0px; left: 100px; height: 220; width: calc(100vw - 595px); text-align: left; overflow-wrap: break-word; white-space: normal; margin: 15px;}
 #info_token_dragbox {position: absolute; top: 0px; left: 100px; height: 220; width: calc(100vw - 595px); text-align: left; overflow-wrap: break-word; white-space: normal; margin: 15px;}
 .info_tokens {display:inline-block; width: 100px; height: 100px; background-position: left; background-repeat: no-repeat; background-size: contain; margin: 5px; border-radius: 5px;}
