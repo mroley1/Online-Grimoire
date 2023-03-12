@@ -114,7 +114,7 @@ html, body {overscroll-behavior: none;}
 .mutate_menu_scroll_body::-webkit-scrollbar {display: none;}
 .mutate_menu_token {display: inline-block; height: 120px; width: 120px; cursor: pointer;}
 #menu_settings_dropdown{height: 40px; overflow: hidden; border-radius: 20px; transition: height ease-in-out 0.2s; background-color: #ffffff2c;}
-#menu_settings_dropdown:is([expand="true"]) {height: 535px;}
+/*#menu_settings_dropdown:is([expand="true"]) {height: 535px;}*/
 #menu_settings_dropdown_button {width: 100%; height: 40px; position: relative; text-align: center; border-radius: 40px; background-image: url(assets/steel_bg.png); cursor: pointer; background-position: 50% 50%; background-size: cover; background-repeat: no-repeat;}
 #menu_settings_dropdown_button::before {content: ""; width: 100%; height: 100%; border-radius: 20px; position: absolute; left: 0px; top: 0px; transition: background-color ease-in-out 0.2s; background-color: #00000000;}
 #menu_settings_dropdown:is([expand="true"]) #menu_settings_dropdown_button::before {background-color: #66666692;}
@@ -122,7 +122,7 @@ html, body {overscroll-behavior: none;}
 #menu_settings_dropdown_img{height: 100%; pointer-events: none; transition: transform ease-in-out 0.2s; display: inline-block;}
 #menu_settings_dropdown:is([expand="true"]) #menu_settings_dropdown_img{transform: rotate(180deg);}
 .menu_settings_dropdown_trio {height: calc(100% - 10px); width: calc(calc(100% / 3) - 10px); margin: 5px; border-radius: 15px; background-size: 70%; cursor: pointer;}
-#menu_settings_dropdown_body {width: 90%; margin: 5%; height: calc(calc(100% - 20px) * 0.9); text-align: center;}
+#menu_settings_dropdown_body {width: 90%; margin: 5%; height: min-content; text-align: center;}
 #player_count {font-size: 40px; width: 80px; text-align: center; display: inline-block; position: static;}
 #player_count_wrapper {position:relative;}
 .player_count_increment { width: 51px; height: 51px; display: inline-block; position: relative; top: -6px; line-height: 2; cursor: pointer; user-select: none;}

@@ -6,7 +6,9 @@ var CURRENT_SCRIPT;
 // TODO implement cast makeup to be responsive to script
 // TODO background change
 // TODO be able to keep track of days
-// TODO make settings dropdown in menu react to long script titles
+// * TODO make settings dropdown in menu react to long script titles
+// TODO make clean board more thorough
+// TODO make better detection for what script is selected
 
 function generate_game_state_json() {
   var state = new Object();
@@ -407,6 +409,7 @@ async function script_select() {
   document.getElementById("script_upload_feedback").setAttribute("used", "select");
   document.getElementById("script_upload").value = "";
   populate_script(script);
+  document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
 }
 async function script_upload() {
   let json = JSON.parse(await document.getElementById("script_upload").files[0].text());
@@ -418,6 +421,7 @@ async function script_upload() {
     document.getElementById("script_upload_feedback").innerHTML = "Error Processing File";
     document.getElementById("script_upload_feedback").setAttribute("used", "error");
   }
+  document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
 }
 async function populate_script(script) {
   CURRENT_SCRIPT = script;
@@ -650,10 +654,14 @@ function clear_mutate_menu() {
   document.getElementById("mutate_menu_TRAV").innerHTML = "";
 }
 function toggle_menu_collapse() {
-  if (document.getElementById("menu_settings_dropdown").getAttribute("expand") == "true") {
-    document.getElementById("menu_settings_dropdown").setAttribute("expand", "false");
+  const dropdown = document.getElementById("menu_settings_dropdown");
+  if (dropdown.getAttribute("expand") == "true") {
+    dropdown.setAttribute("expand", "false");
+    dropdown.style.height = "40px";
   } else {
-    document.getElementById("menu_settings_dropdown").setAttribute("expand", "true");
+    dropdown.setAttribute("expand", "true");
+    console.log(document.getElementById("menu_settings_dropdown_body").scrollHeight)
+    dropdown.style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
   }
 }
 function clean_board() {
