@@ -3,14 +3,18 @@
     src: url(assets/fonts/piratesbay.ttf);
 }
 :root {
-    --BG-IMG:url('assets/backgrounds/green_circle_large.webp');
+    --BG-IMG:url('assets/backgrounds/blue_circle_large.webp');
 }
 
 @media screen and (orientation:portrait) {
     .body_background_image::before {transform: rotate(90deg); width: 100vh; height: 100vw; left: calc(50% - calc(100vh / 2)); top: calc(50% - calc(100vw / 2));}
+    .background_select_scroll_item {width: 148px; height: 300px; margin: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer;}
+    .background_select_scroll_item_image {transform: rotate(90deg); width: 300px; height: 148px;}
 }
 @media screen and (orientation:landscape) {
     .body_background_image::before {transform: rotate(0deg); width: 100vw; height: 100vh; left: calc(50% - calc(100vw / 2)); top: calc(50% - calc(100vh / 2));}
+    .background_select_scroll_item {width: 300px; height: 148px; margin: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer;}
+    .background_select_scroll_item_image {width: 300px; height: 148px;}
 }
 
 body {overflow: hidden;}
@@ -139,7 +143,6 @@ html, body {overscroll-behavior: none;}
 #background_select_menu {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-image: url(assets/background-img2.webp); display: none; text-align: center;}
 .background_select_scroll_body {display: inline-flex; width: 70%; height: calc(100% - 100px); pointer-events: all; padding: 50px; overflow-y: scroll; scrollbar-width: none; display: inline-flex; flex-flow: wrap; justify-content: center;}
 .background_select_scroll_body::-webkit-scrollbar {display: none;}
-.background_select_scroll_item {width: 300px; height: 150px; margin: 10px; background-color: #00639c;}
 
 #playerinfo_close {position: absolute; top: 5px; right: 5px; width: 85px; height: 85px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png");}
 #playerinfo_close:hover {opacity: 0.6;}

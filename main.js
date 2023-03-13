@@ -4,7 +4,7 @@ var loading = false;
 var CURRENT_SCRIPT;
 
 // TODO implement cast makeup to be responsive to script
-// TODO background change
+// ? TODO background change
 // TODO be able to keep track of days
 // * TODO make settings dropdown in menu react to long script titles
 // TODO make better detection for what script is selected
@@ -82,6 +82,10 @@ async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 
+function background_image_change(file_name) {
+  document.querySelector(":root").style.setProperty("--BG-IMG", "url('assets/backgrounds/"+file_name+".webp')")
+}
+
 function getOrientation() {
   if (window.innerHeight>window.innerWidth) {
     return "portrait";
@@ -93,7 +97,7 @@ function resized() {
   if (document.getElementById("body_actual").getAttribute("orientation") != getOrientation()) {
     orientationChange();
   }
-  document.getElementById("body_actual").setAttribute("orientation", getOrientation())
+  document.getElementById("body_actual").setAttribute("orientation", getOrientation());
 }
 function swapObjectOrientation(HTMLobj) {
   tmp = HTMLobj.style.top;
@@ -696,7 +700,10 @@ function download_game_state() {
   document.body.removeChild(element);
 }
 function change_background_menu() {
-  alert("lol");
+  document.getElementById("background_select_menu").style.display = "inherit";
+}
+function change_background_menu_hide() {
+  document.getElementById("background_select_menu").style.display = "none";
 }
 
 //info functions
