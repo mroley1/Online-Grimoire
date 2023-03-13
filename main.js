@@ -7,7 +7,6 @@ var CURRENT_SCRIPT;
 // TODO background change
 // TODO be able to keep track of days
 // * TODO make settings dropdown in menu react to long script titles
-// TODO make clean board more thorough
 // TODO make better detection for what script is selected
 
 function generate_game_state_json() {
