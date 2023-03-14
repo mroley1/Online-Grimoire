@@ -90,6 +90,25 @@
                 </div>
             </div>
         </div>
+        
+        <div id="night_wedge_container">
+            <div id="night_wedge_rotate" style="transform: rotate(180deg);">
+                <div id="night_wedge_circle" onclick="javascript:night_wedge_next_day()">
+                    <div class="night_wedge_circle_bg" id="night_wedge_circle_day"></div>
+                    <div class="night_wedge_circle_bg" id="night_wedge_circle_night"></div>
+                </div>
+                <div class="night_wedge_back" onclick="javascript:night_wedge_prev_day()" id="night_wedge_day_back"></div>
+                <div class="night_wedge_text" id="night_wedge_day_text">
+                    <div class="night_wedge_text_pre" id="night_wedge_day_text_pre"></div>
+                    <div class="night_wedge_text_num" id="night_wedge_day_text_num">setup</div>
+                </div>
+                <div class="night_wedge_back" onclick="javascript:night_wedge_prev_day()" id="night_wedge_night_back"></div>
+                <div class="night_wedge_text" id="night_wedge_night_text">
+                    <div class="night_wedge_text_pre" id="night_wedge_night_text_pre"></div>
+                    <div class="night_wedge_text_num" id="night_wedge_night_text_num"></div>
+                </div>
+            </div>
+        </div>
 
         <div class="toggle_menu" onclick="javascript:open_menu()"></div>
 
