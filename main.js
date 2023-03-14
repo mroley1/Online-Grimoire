@@ -1,17 +1,64 @@
 
 const UID_LENGTH = 13
-
+var loading = false;
+var CURRENT_SCRIPT;
+class NightCounter{
+  constructor() {
+    this.gameplace = 1;
+  }
+  isNight() {
+    return this.gameplace%2 == 0;
+  }
+  isSetup() {
+    return this.gameplace == 1;
+  }
+  nextNight() {
+    this.gameplace++;
+  }
+  prevNight() {
+    if (this.gameplace>1) {
+      this.gameplace--;
+    }
+  }
+  getRot() {
+    return this.gameplace*180;
+  }
+  getcurrText() {
+    if (this.isSetup()) {
+      return "";
+    } else {
+      if (this.isNight()) {
+        return "night";
+      } else {
+        return "day"
+      }
+    }
+  }
+  getCurrNumber() {
+    if (this.isSetup()) {
+      return "setup";
+    } else {
+      return Math.floor(this.gameplace/2);
+    }
+  }
+  toString() {
+    return "gameplace: " + this.gameplace + ", " + this.getcurrText() + " " + this.getCurrNumber();
+  }
+}
+var counter = new NightCounter();
 
 // TODO implement cast makeup to be responsive to script
-// TODO implement scrolling on night order tab's overflow
-// TODO background change
-// TODO be able to keep track of days
+// * TODO background change
+// * TODO be able to keep track of days
+// * TODO make settings dropdown in menu react to long script titles
+// TODO make better detection for what script is selected
 
 function generate_game_state_json() {
   var state = new Object();
-  state.script = document.getElementById("script_options").value;
+  state.script = CURRENT_SCRIPT;
   state.playercount = document.getElementById("player_count").value;
   state.night = document.getElementById("body_actual").getAttribute("night");
+  state.orientation = document.getElementById("body_actual").getAttribute("orientation");
   state.players = [];
   players = document.getElementById("token_layer").getElementsByClassName("role_token");
   for (i = 0; i < players.length; i++) {
@@ -51,9 +98,15 @@ function generate_game_state_json() {
 }
 
 async function load_game_state_json(state) {
+  state = JSON.parse(state);
+  if (state == null) {
+    loading = false;
+    return;
+  }
+  loading = true;
+  await populate_script(state.script);
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
-  populate_script(await get_JSON("scripts/Gang's All Here.json"));
   for (let i = 0; i < state.players.length; i++) {
     spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
@@ -61,18 +114,74 @@ async function load_game_state_json(state) {
     spawnReminder(state.reminders[i].id, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
   }
   for (let i = 0; i < state.pips.length; i++) {
-    dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top)
+    dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top, "false")
   }
+  if (state.orientation != getOrientation()) {
+    orientationChange();
+  }
+  loading = false;
+}
+
+function save_game_state() {
+  localStorage.setItem("state", generate_game_state_json())
 }
 
 async function get_JSON(path) {
   return await (await fetch("./data/"+path)).json();
 }
 
-function loaded() {
+function background_image_change(file_name) {
+  document.querySelector(":root").style.setProperty("--BG-IMG", "url('assets/backgrounds/"+file_name+".webp')")
+}
+
+function getOrientation() {
+  if (window.innerHeight>window.innerWidth) {
+    return "portrait";
+  } else {
+    return "landscape";
+  }
+}
+function resized() {
+  if (document.getElementById("body_actual").getAttribute("orientation") != getOrientation()) {
+    orientationChange();
+  }
+  document.getElementById("body_actual").setAttribute("orientation", getOrientation());
+}
+function swapObjectOrientation(HTMLobj) {
+  tmp = HTMLobj.style.top;
+  HTMLobj.style.top = HTMLobj.style.left;
+  HTMLobj.style.left = tmp;
+}
+function orientationChange() {
+  players = document.getElementById("token_layer").getElementsByClassName("role_token");
+  for (i = 0; i < players.length; i++) {
+    swapObjectOrientation(players[i]);
+  }
+  reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
+  for (i = 0; i < reminders.length; i++) {
+    swapObjectOrientation(reminders[i]);
+  }
+  pips = document.getElementById("interactivePlane").getElementsByClassName("reminder");
+  for (i = 0; i < pips.length; i++) {
+    if (pips[i].getAttribute("stacked") == "false") {
+      swapObjectOrientation(pips[i]);
+    }
+  }
+}
+
+async function loaded() {
+  loading = true;
   dragPipLayerSpawnDefault("good");
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
+  load_scripts().then(() => {
+    load_game_state_json(localStorage.getItem("state"))
+  })
+  setTimeout(function() {
+    player_count_change();
+  }, 2000)
+  document.getElementById("body_actual").setAttribute("orientation", getOrientation())
+  window.onresize = resized;
 }
 
 // corner toggles and night functions
@@ -95,6 +204,7 @@ function visibility_toggle() {
       tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
     }
   }
+  clear_night_order();
 }
 function deathCycle(id, uid) {
   let token = document.getElementById(id+"_token_"+uid);
@@ -110,6 +220,8 @@ function deathCycle(id, uid) {
     break;
   default: token.setAttribute("viability", "alive");
   }
+  populate_night_order();
+  if (!loading) {save_game_state();}
 }
 function move_toggle() {
     var self = document.getElementById("move_toggle")
@@ -119,7 +231,25 @@ function move_toggle() {
         self.style.backgroundColor = "green";
     }
 }
-
+function night_wedge_next_day() {
+  counter.nextNight();
+  document.getElementById("night_wedge_rotate").style.transform = "rotate("+ counter.getRot() +"deg)";
+  update_night_wedge_text();
+}
+function night_wedge_prev_day() {
+  counter.prevNight();
+  document.getElementById("night_wedge_rotate").style.transform = "rotate("+ counter.getRot() +"deg)";
+  update_night_wedge_text();
+}
+function update_night_wedge_text() {
+  if (counter.isNight()) {
+    document.getElementById("night_wedge_night_text_pre").innerHTML = counter.getcurrText();
+    document.getElementById("night_wedge_night_text_num").innerHTML = counter.getCurrNumber();
+  } else {
+    document.getElementById("night_wedge_day_text_pre").innerHTML = counter.getcurrText();
+    document.getElementById("night_wedge_day_text_num").innerHTML = counter.getCurrNumber();
+  }
+}
 
 //token functions
 function spawnToken(id, uid,  visibility, cat, hide_face, viability, left, top, nameText) {
@@ -164,7 +294,8 @@ function spawnToken(id, uid,  visibility, cat, hide_face, viability, left, top, 
   update_role_counts();
   player_count_change();
   dragInit();
-  clear_night_order();
+  populate_night_order();
+  if (!loading) {save_game_state();}
 }
 function spawnTokenDefault(id, visibility, cat, hide_face) {
   var time = new Date();
@@ -172,14 +303,13 @@ function spawnTokenDefault(id, visibility, cat, hide_face) {
   spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid) {
-  var tokens = document.getElementById("info_token_landing").children;
   rm = document.getElementById(id+"_token_"+uid);
   rm.parentNode.removeChild(rm);
   clean_tokens(uid);
   update_role_counts();
   player_count_change();
   hideInfo();
-  clear_night_order();
+  populate_night_order();
 }
 function clean_tokens(uid) {
   let reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
@@ -231,6 +361,7 @@ async function mutate_token(idFrom, uid, idTo) {
     document.getElementById(idFrom + "_name_" + uid).id = idTo + "_name_" + uid;
     clean_tokens(uid);
     if (document.getElementById("info_box").style.display == "inherit") {infoCall(idTo, uid);}
+    if (!loading) {save_game_state();}
   });
 }
 function shuffle_roles() {
@@ -269,7 +400,7 @@ function populate_mutate_menu(tokens) {
 
 
 //good/evil reminders
-function dragPipLayerSpawn(type, left, top) {
+function dragPipLayerSpawn(type, left, top, stacked) {
   var time = new Date();
   var uid = time.getTime();
   var div = document.createElement("div");
@@ -278,7 +409,7 @@ function dragPipLayerSpawn(type, left, top) {
   div.id = type + "_" + uid;
   div.setAttribute("disposable-reminder", true);
   div.setAttribute("alignment", type);
-  div.setAttribute("stacked", true);
+  div.setAttribute("stacked", stacked);
   var img = document.createElement("img");
   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
   img.src = "assets/delete.png";
@@ -286,10 +417,11 @@ function dragPipLayerSpawn(type, left, top) {
   div.appendChild(img);
   document.getElementById("dragPipLayer").prepend(div);
   dragInit();
+  if (!loading) {save_game_state();}
 }
 function dragPipLayerSpawnDefault(type) {
   const ref = {"good":"90px", "evil":"175px", "reminder_pip": "260px"}
-  dragPipLayerSpawn(type, "5px", ref[type]);
+  dragPipLayerSpawn(type, "5px", ref[type], "true");
 }
 function prompt_delete_reminder(id) {
   document.getElementById(id + "_img").style.display = "inherit";
@@ -299,6 +431,7 @@ function prompt_delete_reminder(id) {
 function delete_reminder(id) {
   document.getElementById(id).setAttribute("onmouseup", null);
   document.getElementById(id).parentNode.removeChild(document.getElementById(id));
+  if (!loading) {save_game_state();}
 }
 function unprompt_reminders() {
   tokens = document.getElementById("dragPipLayer").children;
@@ -345,6 +478,7 @@ async function script_select() {
   document.getElementById("script_upload_feedback").setAttribute("used", "select");
   document.getElementById("script_upload").value = "";
   populate_script(script);
+  document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
 }
 async function script_upload() {
   let json = JSON.parse(await document.getElementById("script_upload").files[0].text());
@@ -356,8 +490,10 @@ async function script_upload() {
     document.getElementById("script_upload_feedback").innerHTML = "Error Processing File";
     document.getElementById("script_upload_feedback").setAttribute("used", "error");
   }
+  document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
 }
-function populate_script(script){
+async function populate_script(script) {
+  CURRENT_SCRIPT = script;
   document.getElementById("script_upload_feedback").innerHTML = script[0]["name"];
   function header(text, landing_name, color) {
       var div = document.createElement("div");
@@ -430,12 +566,59 @@ function populate_script(script){
       populate_mutate_menu(scriptTokens);
     }
   })
+  if (!loading) {save_game_state();}
+  return Promise.resolve("success")
 }
 function increment_player_count(x) {
   document.getElementById("player_count").value = parseInt(document.getElementById("player_count").value) + parseInt(x);
   player_count_change()
 }
 function player_count_change() {
+  var player_count_tmp = document.getElementById("player_count").value;
+  tableIndex = 0;
+  if (player_count_tmp < 5) {
+    document.getElementById("player_count").value = 5;
+    player_count_tmp = 5
+  }
+  if (player_count_tmp > 15) {
+    document.getElementById("player_count").value = 15;
+    player_count_tmp = 15
+  }
+  let player_count = player_count_tmp;
+  tableIndex = parseInt(player_count_tmp)-5;
+  var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
+  var counts = [0, 0, 0, 0];
+  tokens = document.getElementsByClassName("role_token");
+  if (!loading) { //dont try to update player counts before menu is loaded
+    for (i = 0; i<tokens.length; i++) {
+      let visibility = tokens[i].getAttribute("visibility");
+      switch (tokens[i].getAttribute("cat")) {
+        case "TOWN":
+          if (visibility == "show") {counts[0]++;}
+        break;
+        case "OUT":
+          if (visibility == "show") {counts[1]++;}
+        break;
+        case "MIN":
+          if (visibility == "show") {counts[2]++;}
+        break;
+        case "DEM":
+          if (visibility == "show") {counts[3]++;}
+        break;
+      }
+    }
+    var townExpected = table[tableIndex][0];
+    var outExpected = table[tableIndex][1];
+    var minExpected = table[tableIndex][2];
+    var demExpected = table[tableIndex][3];
+    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + townExpected;
+    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + outExpected;
+    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + minExpected;
+    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + demExpected;
+  }
+}
+/*
+function player_count_change_old() {
   number = document.getElementById("player_count").value;
   if (number < 5) {
     document.getElementById("player_count").value = 5;
@@ -461,8 +644,8 @@ function player_count_change() {
       if (Object.keys(json["change_makeup"][i]).includes("TOWN")) {
         if (json["change_makeup"][i].TOWN == "NONE" || makeup.TOWN["hardMod"] == "NONE") {
           makeup.TOWN["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].TOWN == "ANY" || makeup.TOWN["hardMod"] == "ANY") {
-          makeup.TOWN["hardMod"] = "ANY";
+        } else if (json["change_makeup"][i].TOWN == "ALL" || makeup.TOWN["hardMod"] == "ANY") {
+          makeup.TOWN["hardMod"] = "ALL";
         } else {
           makeup.TOWN["hardMod"] += json["change_makeup"][i].TOWN;
         }
@@ -476,8 +659,8 @@ function player_count_change() {
       if (Object.keys(json["change_makeup"][i]).includes("OUT")) {
         if (json["change_makeup"][i].OUT == "NONE" || makeup.OUT["hardMod"] == "NONE") {
           makeup.OUT["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].OUT == "ANY" || makeup.OUT["hardMod"] == "ANY") {
-          makeup.OUT["hardMod"] = "ANY";
+        } else if (json["change_makeup"][i].OUT == "ALL" || makeup.OUT["hardMod"] == "ANY") {
+          makeup.OUT["hardMod"] = "ALL";
         } else {
           makeup.OUT["hardMod"] += json["change_makeup"][i].OUT;
         }
@@ -491,8 +674,8 @@ function player_count_change() {
       if (Object.keys(json["change_makeup"][i]).includes("MIN")) {
         if (json["change_makeup"][i].MIN == "NONE" || makeup.MIN["hardMod"] == "NONE") {
           makeup.MIN["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].MIN == "ANY" || makeup.MIN["hardMod"] == "ANY") {
-          makeup.MIN["hardMod"] = "ANY";
+        } else if (json["change_makeup"][i].MIN == "ALL" || makeup.MIN["hardMod"] == "ANY") {
+          makeup.MIN["hardMod"] = "ALL";
         } else {
           makeup.MIN["hardMod"] += json["change_makeup"][i].MIN;
         }
@@ -506,8 +689,8 @@ function player_count_change() {
       if (Object.keys(json["change_makeup"][i]).includes("DEM")) {
         if (json["change_makeup"][i].DEM == "NONE" || makeup.DEM["hardMod"] == "NONE") {
           makeup.DEM["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].DEM == "ANY" || makeup.DEM["hardMod"] == "ANY") {
-          makeup.DEM["hardMod"] = "ANY";
+        } else if (json["change_makeup"][i].DEM == "ALL" || makeup.DEM["hardMod"] == "ANY") {
+          makeup.DEM["hardMod"] = "ALL";
         } else {
           makeup.DEM["hardMod"] += json["change_makeup"][i].DEM;
         }
@@ -523,40 +706,48 @@ function player_count_change() {
       }
     }
   }
-  for (i = 0; i<tokens.length; i++) {
-    let visibility = tokens[i].getAttribute("visibility");
-    switch (tokens[i].getAttribute("cat")) {
-      case "TOWN":
-        if (visibility == "show") {counts[0]++;}
-        if (visibility != "bluff") {
-          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-        }
-      break;
-      case "OUT":
-        if (tokens[i].getAttribute("visibility") == "show") {counts[1]++;}
-        if (visibility != "bluff") {
-          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-        }
-      break;
-      case "MIN":
-        if (tokens[i].getAttribute("visibility") == "show") {counts[2]++;}
-        if (visibility != "bluff") {
-          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-        }
-      break;
-      case "DEM":
-        if (tokens[i].getAttribute("visibility") == "show") {counts[3]++;}
-        if (visibility != "bluff") {
-          makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-        }
-      break;
+  if (!loading) { //dont try to update player counts before menu is loaded
+    for (i = 0; i<tokens.length; i++) {
+      let visibility = tokens[i].getAttribute("visibility");
+      switch (tokens[i].getAttribute("cat")) {
+        case "TOWN":
+          if (visibility == "show") {counts[0]++;}
+        break;
+        case "OUT":
+          if (visibility == "show") {counts[1]++;}
+        break;
+        case "MIN":
+          if (visibility == "show") {counts[2]++;}
+        break;
+        case "DEM":
+          if (visibility == "show") {counts[3]++;}
+        break;
+      }
+      if (visibility != "bluff") {
+        makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+      }
     }
+    console.log(makeup)
+    console.log(makeup["TOWN"]["hardMod"]);
+    let expectedPlayerCount = document.getElementById("player_count").value;
+    var townExpected = table[number][0];
+    if (makeup["TOWN"]["hardMod"] == "ALL"){townExpected = expectedPlayerCount;}
+    if (makeup["TOWN"]["hardMod"] == "NONE"){townExpected = 0;}
+    var outExpected = table[number][1];
+    if (makeup["OUT"]["hardMod"] == "ALL"){outExpected = expectedPlayerCount;}
+    if (makeup["OUT"]["hardMod"] == "NONE"){outExpected = 0;}
+    var minExpected = table[number][2];
+    if (makeup["MIN"]["hardMod"] == "ALL"){minExpected = expectedPlayerCount;}
+    if (makeup["MIN"]["hardMod"] == "NONE"){minExpected = 0;}
+    var demExpected = table[number][3];
+    if (makeup["DEM"]["hardMod"] == "ALL"){demExpected = expectedPlayerCount;}
+    if (makeup["DEM"]["hardMod"] == "NONE"){demExpected = 0;}
+    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + townExpected;
+    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + outExpected;
+    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + minExpected;
+    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + demExpected;
   }
-  document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + table[number][0];
-  document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + table[number][1];
-  document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + table[number][2];
-  document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + table[number][3];
-}
+}*/
 function update_role_counts(){
   var counts = document.getElementsByClassName("menu_token_count");
   for (let i = 0; i<counts.length; i++) {
@@ -583,13 +774,53 @@ function clear_mutate_menu() {
   document.getElementById("mutate_menu_TRAV").innerHTML = "";
 }
 function toggle_menu_collapse() {
-  if (document.getElementById("menu_settings_dropdown").getAttribute("expand") == "true") {
-    document.getElementById("menu_settings_dropdown").setAttribute("expand", "false");
+  const dropdown = document.getElementById("menu_settings_dropdown");
+  if (dropdown.getAttribute("expand") == "true") {
+    dropdown.setAttribute("expand", "false");
+    dropdown.style.height = "40px";
   } else {
-    document.getElementById("menu_settings_dropdown").setAttribute("expand", "true");
+    dropdown.setAttribute("expand", "true");
+    dropdown.style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
   }
 }
-
+function clean_board() {
+  neutralClick();
+  const tokens = document.getElementById("token_layer").children;
+  for (let it = tokens.length-1; it>=0; it--) {
+    remove_token(tokens[it].id.match(/.*(?=_token_)/)[0], tokens[it].getAttribute("uid"))
+  }
+  const pips = document.getElementById("dragPipLayer").children;
+  console.log(pips)
+  for (let it = pips.length-1; it>=0; it--) {
+    if (pips[it].getAttribute("stacked") == "false") {
+      console.log(pips[it])
+      delete_reminder(pips[it].id);
+    }
+  }
+  clear_night_order();
+  save_game_state();
+}
+async function game_state_upload() {
+  let json = await document.getElementById("game_state_upload").files[0].text();
+  load_game_state_json(json).then(() => {
+    save_game_state();
+  })
+}
+function download_game_state() {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(generate_game_state_json()));
+  element.setAttribute('download', "game_state.json");
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+function change_background_menu() {
+  document.getElementById("background_select_menu").style.display = "inherit";
+}
+function change_background_menu_hide() {
+  document.getElementById("background_select_menu").style.display = "none";
+}
 
 //info functions
 async function infoCall(id, uid) {
@@ -657,6 +888,7 @@ function spawnReminder(id, uid, left, top) {
     div.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+div.id+"')");
     document.getElementById("remainerLayer").appendChild(div);
     dragInit();
+    if (!loading) {save_game_state();}
 }
 function hideInfo() {
     document.getElementById("info_box").style.display = "none";
@@ -668,7 +900,6 @@ function nameIn(id, uid) {
   document.getElementById("info_img_name").innerHTML = value;
 }
 function cycle_token_visibility_toggle(id, uid) {
-  clear_night_order()
   switch (document.getElementById(id+"_token_"+uid).getAttribute("visibility")) {
     case "show":
       document.getElementById(id+"_token_"+uid).setAttribute("visibility", "bluff");
@@ -684,13 +915,16 @@ function cycle_token_visibility_toggle(id, uid) {
       break;
   }
   update_role_counts();
-  player_count_change()
+  player_count_change();
+  populate_night_order();
+  if (!loading) {save_game_state();}
 }
 function expand_info_tab(tab) {
   document.getElementById("info_desc").setAttribute("focus", "false");
   document.getElementById("info_list").setAttribute("focus", "false");
   document.getElementById("info_rmnd").setAttribute("focus", "false");
   document.getElementById("info_powr").setAttribute("focus", "false");
+  document.getElementById("info_rmnd").style.overflow = "hidden";
   switch (tab) {
     case 'desc':
       document.getElementById("info_desc").setAttribute("focus", "true");
@@ -700,6 +934,7 @@ function expand_info_tab(tab) {
     break;
     case 'rmnd':
       document.getElementById("info_rmnd").setAttribute("focus", "true");
+      setTimeout((() => {document.getElementById("info_rmnd").style.overflow = "visible";}), 200) // because overflow needs to be visible/ delays until after animation
     break;
     case 'powr':
       document.getElementById("info_powr").setAttribute("focus", "true");
@@ -861,6 +1096,7 @@ function dragEnd(e) {
     e.target.parentNode.removeChild(e.target);
   }
   active = false;
+  if (!loading) {save_game_state();}
 }
 function drag(e) {
   if (active) {
@@ -894,35 +1130,43 @@ function neutralClick() {
 
 
 //night order and jinx
-function toggle_night_order(night) {
-  first = document.getElementById("first_night")
-  other = document.getElementById("other_night")
-  if (night == "firstnight" && first.style.color == "rgb(244, 244, 244)") {
-    clear_night_order();
-    return;
-  } else if (night == "othernight" && other.style.color == "rgb(244, 244, 244)") {
-    clear_night_order();
-    return;
+function toggle_night_order_buttons(type) {
+  if (document.getElementById("nightorder_button_container").getAttribute("nightOrder") == type) {
+    clean_night_order();
+    document.getElementById("nightorder_button_container").setAttribute("nightOrder", "none");
   } else {
-    clear_night_order();
-    if (night == "firstnight") {
-      first.style.color = "#f4f4f4";
+    switch (type) {
+      case "jinx":
+        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "jinx");
+        populate_jinx();
+        break;
+      case "firstnight":
+        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "firstnight");
+        populate_night_order();
+        break;
+      case "othernight":
+        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "othernight");
+        populate_night_order();
+        break;
     }
-    if (night == "othernight") {
-      other.style.color = "#f4f4f4";
-    }
-    populate_night_order(night);
   }
 }
-function clear_night_order() {
+function clean_night_order() {
   document.getElementById("night_order_tab_landing").innerHTML = ""
   document.getElementById("first_night").style.color = "";
   document.getElementById("other_night").style.color = "";
   document.getElementById("jinx_toggle").style.color = "";
 }
-async function populate_night_order(night) {
+async function populate_night_order() {
+  night = document.getElementById("nightorder_button_container").getAttribute("nightOrder");
+  if (night == "jinx") {
+    populate_jinx();
+    return;
+  }
+  clean_night_order();
+  if (night == "none") {return;}
   var order = await get_JSON("nightsheet.json")
-  order = order[night]
+  order = order[night];
   tokens = document.getElementById("token_layer").children;
   var inPlay = new Set();
   var alive = new Set();
@@ -938,6 +1182,17 @@ async function populate_night_order(night) {
     if (order[i].toUpperCase() == order[i]) {
       gen_night_order_tab_info(order[i])
     }
+  }
+}
+function clear_night_order() {
+  clean_night_order();
+  document.getElementById("nightorder_button_container").setAttribute("nightOrder", "none");
+}
+function nightOrderScroll(enable) {
+  if (enable == "true") {
+    document.getElementById("night_order_landing_container").style.pointerEvents = "all";
+  } else if (enable == "false") {
+    document.getElementById("night_order_landing_container").style.pointerEvents = "none";
   }
 }
 function gen_night_order_tab_role(token_JSON, night, dead) {
@@ -962,6 +1217,10 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
   img = document.createElement("img");
   img.classList = "night_order_img";
   img.src = "assets/icons/"+token_JSON.id+".png";
+  div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
+  div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
+  div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
+  div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"_night_order_tab')");
   div.appendChild(img);
   document.getElementById("night_order_tab_landing").appendChild(div);
@@ -979,6 +1238,10 @@ function gen_night_order_tab_info(info) {
   div.appendChild(img);
   div.id = info + "_night_order_tab";
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , #999999)";
+  div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
+  div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
+  div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
+  div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+info+"_night_order_tab')");
   span = document.createElement("span");
   span.classList = "night_order_span"
@@ -1001,33 +1264,27 @@ function collapse_night_order_tab(id) {
   tab.style.height = "90px";
   tab.setAttribute("onclick", "javascript:expand_night_order_tab('"+id+"')")
 }
-async function toggle_populate_jinx() {
-  jinxBtn = document.getElementById("jinx_toggle")
-  if (jinxBtn.style.color == "rgb(244, 244, 244)") {
-    clear_night_order();
-    return;
-  } else {
-    clear_night_order();
-    jinxBtn.style.color = "rgb(244, 244, 244)"
-    jinxes = await get_JSON("jinx.json");
-    tokens = document.getElementById("token_layer").children;
-    var inPlay = new Set();
-    for (i = 0; i<tokens.length;i++) {
-      var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
-      if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
-    }
-    for (const token of inPlay) {
-      for (i=0;i<jinxes.length;i++){
-        if (jinxes[i].id == token) {
-          for (j=0;j<jinxes[i].jinx.length;j++) {
-            if (inPlay.has(jinxes[i].jinx[j].id)) {
-              gen_jinxes_tab(jinxes[i].id, jinxes[i].jinx[j].id, jinxes[i].jinx[j].reason)
-            }
+async function populate_jinx() {
+  clean_night_order();
+  jinxes = await get_JSON("jinx.json");
+  tokens = document.getElementById("token_layer").children;
+  var inPlay = new Set();
+  for (i = 0; i<tokens.length;i++) {
+    var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
+    if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
+  }
+  for (const token of inPlay) {
+    for (i=0;i<jinxes.length;i++){
+      if (jinxes[i].id == token) {
+        for (j=0;j<jinxes[i].jinx.length;j++) {
+          if (inPlay.has(jinxes[i].jinx[j].id)) {
+            gen_jinxes_tab(jinxes[i].id, jinxes[i].jinx[j].id, jinxes[i].jinx[j].reason)
           }
         }
       }
     }
   }
+  
 }
 function gen_jinxes_tab(id1, id2, reason) {
   div = document.createElement("div");
@@ -1050,8 +1307,11 @@ function gen_jinxes_tab(id1, id2, reason) {
   imgDiv.appendChild(img1);
   imgDiv.appendChild(img2);
   div.appendChild(imgDiv);
+  div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
+  div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
+  div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
+  div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+id1+"_"+id2+"_jinx_tab"+"')");
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
 
-load_scripts()

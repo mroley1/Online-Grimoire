@@ -23,6 +23,15 @@
             <div id="remainerLayer"></div>
         </div>
 
+        <div id="nightorder_button_container" nightOrder="none">
+            <div id="jinx_toggle" class="night_select" onclick="javascript:toggle_night_order_buttons('jinx')">jinxes</div>
+            <div id="first_night" class="night_select" onclick="javascript:toggle_night_order_buttons('firstnight')">first</div>
+            <div id="other_night" class="night_select" onclick="javascript:toggle_night_order_buttons('othernight')">other</div>
+        </div>
+        <div id="night_order_landing_container">
+            <div id="night_order_tab_landing"></div>
+        </div>
+
         <div id="visibility_toggle" onclick="javascript:visibility_toggle()" class="bottom_buttons"></div>
         <div id="move_toggle" onclick="javascript:move_toggle()" class="bottom_buttons" style="background-image: url(assets/move.png); right: 120px; background-color: rgb(66, 66, 66); cursor: pointer;"></div>
         
@@ -81,6 +90,25 @@
                 </div>
             </div>
         </div>
+        
+        <div id="night_wedge_container">
+            <div id="night_wedge_rotate" style="transform: rotate(180deg);">
+                <div id="night_wedge_circle" onclick="javascript:night_wedge_next_day()">
+                    <div class="night_wedge_circle_bg" id="night_wedge_circle_day"></div>
+                    <div class="night_wedge_circle_bg" id="night_wedge_circle_night"></div>
+                </div>
+                <div class="night_wedge_back" onclick="javascript:night_wedge_prev_day()" id="night_wedge_day_back"></div>
+                <div class="night_wedge_text" id="night_wedge_day_text">
+                    <div class="night_wedge_text_pre" id="night_wedge_day_text_pre"></div>
+                    <div class="night_wedge_text_num" id="night_wedge_day_text_num">setup</div>
+                </div>
+                <div class="night_wedge_back" onclick="javascript:night_wedge_prev_day()" id="night_wedge_night_back"></div>
+                <div class="night_wedge_text" id="night_wedge_night_text">
+                    <div class="night_wedge_text_pre" id="night_wedge_night_text_pre"></div>
+                    <div class="night_wedge_text_num" id="night_wedge_night_text_num"></div>
+                </div>
+            </div>
+        </div>
 
         <div class="toggle_menu" onclick="javascript:open_menu()"></div>
 
@@ -95,8 +123,14 @@
                         <img id="menu_settings_dropdown_img" src="assets/expand_more.png">
                     </div>
                     <div id="menu_settings_dropdown_body">
+                        <div style="width: 100%; height: 70px; display: flex; flex-flow: nowrap;">
+                            <div onclick="(() => document.getElementById('game_state_upload').click())()" class="menu_settings_dropdown_trio background_image" style="background-color: #888888; background-image: url(assets/upload.svg);"></div>
+                            <div onclick="javascript:change_background_menu()" class="menu_settings_dropdown_trio background_image" style="background-color: #78258d; background-image: url(assets/wallpaper.svg);"></div>
+                            <div onclick="javascript:download_game_state()" class="menu_settings_dropdown_trio background_image" style="background-color: #888888; background-image: url(assets/download.svg);"></div>
+                        </div>
+                        <input style="opacity: 0;" type="file" id="game_state_upload" accept=".json" onchange="javascript:game_state_upload()">
                         <span style="color: white; text-shadow: 0 0 10px black; font-size: 35pt;">Script</span><br>
-                        <select id="script_options" style="margin-top: 5px; box-shadow: 0 0 5px rgb(0, 36, 199); background-color: rgb(46, 72, 189); color: white;" onchange="javascript:script_select()"></select>
+                        <select id="script_options" style="margin-top: 5px; box-shadow: 0 0 5px rgb(0, 36, 199); background-color: rgb(46, 72, 189); color: white;" onclick="javascript:script_select()" onchange="javascript:script_select()"></select>
                         <br><br>
                         <label for="script_upload" id="script_upload_label">Upload Script</label><br>
                         <input style="opacity: 0;" type="file" id="script_upload" accept=".json" onchange="javascript:script_upload()">
@@ -112,7 +146,12 @@
                                 <div class="player_count_increment" style="background-color: rgb(0, 129, 0);" onclick="javascript:increment_player_count(1)">+</div>
                             </div>
                         </div>
-                        <br><br>
+                    </div>
+                </div>
+                <div style="width: 100%; text-align: center; margin-top: 30px; height: 80px; display: flex; ">
+                    <div class="menu_settings_duo background_image" style="background-image: url(assets/clean.svg); background-size: 50%; background-color: #ff0000c5; width: 100px;" onclick="javascript:clean_board()">
+                    </div>
+                    <div class="menu_settings_duo background_image" style="background-image: url(assets/shuffle.svg); background-color: #585858e7; flex-grow: 1;" onclick="javascript:shuffle_roles()">
                     </div>
                 </div>
                 <br>
@@ -120,22 +159,13 @@
                 <div id="OUT"></div><br>
                 <div id="MIN"></div><br>
                 <div id="DEM"></div><br>
-                <div id="TRAV"></div>
-                <div style="width: 100%; text-align: center; margin-top: 30px;">
-                    <div style="width: 200px; height: 80px; border-radius: 25px; background-color: #44444494; display: inline-block; text-align: center; cursor: pointer;" onclick="javascript:shuffle_roles()">
-                        <img src="assets/shuffle.png" style="height: 100%; display: inline-block;">
-                    </div>
+                <div id="TRAV"></div><br>
+                <div style="color: white; text-align: center; width: 100%; margin-right: 5px;">Made with &#9825; @ RIT</div>
+                <div style="text-align: center; width: 100%; font-size: 10pt;">
+                    <a id="source_link" href="https://github.com/mroley1/Online-Grimoire" target="_blank">source</a>
                 </div>
+                <br>
             </div>
-        </div>
-
-        <div style="position: absolute; top: 0px; right: 0px; width: 300px; height: 45px; display: inline-block;">
-            <div id="jinx_toggle" class="night_select" style="left: 0px;" onclick="javascript:toggle_populate_jinx()">jinxes</div>
-            <div id="first_night" class="night_select" style="left: 100px;" onclick="javascript:toggle_night_order('firstnight')">first</div>
-            <div id="other_night" class="night_select" style="right: 0px;" onclick="javascript:toggle_night_order('othernight')">other</div>
-        </div>
-        <div id="night_order_landing_container" style="position: absolute; width: 520px; right: 0px; top: 45px; word-wrap: normal; text-align: right; height: calc(100% - 41px); pointer-events: none;">
-            <div id="night_order_tab_landing" style="width: 90px; position: absolute; right: 0px; pointer-events: all;"></div>
         </div>
         
         <div id="playerinfo_shoud" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-image: url(assets/background-img2.webp); display: none;">
@@ -147,6 +177,30 @@
             
         </div>
         
+        <div id="background_select_menu" style="display: inherit; display: none;" onclick="javascript:change_background_menu_hide()">
+            <div style="height: 70%; width: 100%; position: absolute; top: calc(15% - 50px); pointer-events: none; display: flex; align-items: center; justify-content: center;">
+                <div class="background_select_scroll_body">
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('red_troublebrewing_logo')"><img class="background_select_scroll_item_image" src="assets/backgrounds/red_troublebrewing_logo.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_badmoonrising_logo')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_badmoonrising_logo.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('purple_sectsandviolets_logo')"><img class="background_select_scroll_item_image" src="assets/backgrounds/purple_sectsandviolets_logo.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('blue_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/blue_circle_large.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('blue_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/blue_circle_small.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('blue_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/blue_swirls.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('green_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/green_circle_large.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('green_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/green_circle_small.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('green_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/green_swirls.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('purple_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/purple_circle_large.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('purple_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/purple_circle_small.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('purple_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/purple_swirls.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('red_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/red_circle_large.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('red_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/red_circle_small.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('red_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/red_swirls.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_circle_large.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_circle_small.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_swirls.webp"></div>
+                </div>
+            </div>
+        </div>
         <div id="mutate_menu_main" class="mutate_menu_main" onclick="javascript:close_mutate_menu()">
             <div style="height: 70%; width: 100%; position: absolute; top: calc(15% - 50px); text-align: center; pointer-events: none;">
                 <div class="mutate_menu_scroll_body">
