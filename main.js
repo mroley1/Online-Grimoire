@@ -98,8 +98,12 @@ function generate_game_state_json() {
 }
 
 async function load_game_state_json(state) {
-  loading = true;
   state = JSON.parse(state);
+  if (state == null) {
+    loading = false;
+    return;
+  }
+  loading = true;
   await populate_script(state.script);
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
@@ -570,6 +574,51 @@ function increment_player_count(x) {
   player_count_change()
 }
 function player_count_change() {
+  var player_count_tmp = document.getElementById("player_count").value;
+  tableIndex = 0;
+  if (player_count_tmp < 5) {
+    document.getElementById("player_count").value = 5;
+    player_count_tmp = 5
+  }
+  if (player_count_tmp > 15) {
+    document.getElementById("player_count").value = 15;
+    player_count_tmp = 15
+  }
+  let player_count = player_count_tmp;
+  tableIndex = parseInt(player_count_tmp)-5;
+  var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
+  var counts = [0, 0, 0, 0];
+  tokens = document.getElementsByClassName("role_token");
+  if (!loading) { //dont try to update player counts before menu is loaded
+    for (i = 0; i<tokens.length; i++) {
+      let visibility = tokens[i].getAttribute("visibility");
+      switch (tokens[i].getAttribute("cat")) {
+        case "TOWN":
+          if (visibility == "show") {counts[0]++;}
+        break;
+        case "OUT":
+          if (visibility == "show") {counts[1]++;}
+        break;
+        case "MIN":
+          if (visibility == "show") {counts[2]++;}
+        break;
+        case "DEM":
+          if (visibility == "show") {counts[3]++;}
+        break;
+      }
+    }
+    var townExpected = table[tableIndex][0];
+    var outExpected = table[tableIndex][1];
+    var minExpected = table[tableIndex][2];
+    var demExpected = table[tableIndex][3];
+    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + townExpected;
+    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + outExpected;
+    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + minExpected;
+    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + demExpected;
+  }
+}
+/*
+function player_count_change_old() {
   number = document.getElementById("player_count").value;
   if (number < 5) {
     document.getElementById("player_count").value = 5;
@@ -595,8 +644,8 @@ function player_count_change() {
       if (Object.keys(json["change_makeup"][i]).includes("TOWN")) {
         if (json["change_makeup"][i].TOWN == "NONE" || makeup.TOWN["hardMod"] == "NONE") {
           makeup.TOWN["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].TOWN == "ANY" || makeup.TOWN["hardMod"] == "ANY") {
-          makeup.TOWN["hardMod"] = "ANY";
+        } else if (json["change_makeup"][i].TOWN == "ALL" || makeup.TOWN["hardMod"] == "ANY") {
+          makeup.TOWN["hardMod"] = "ALL";
         } else {
           makeup.TOWN["hardMod"] += json["change_makeup"][i].TOWN;
         }
@@ -610,8 +659,8 @@ function player_count_change() {
       if (Object.keys(json["change_makeup"][i]).includes("OUT")) {
         if (json["change_makeup"][i].OUT == "NONE" || makeup.OUT["hardMod"] == "NONE") {
           makeup.OUT["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].OUT == "ANY" || makeup.OUT["hardMod"] == "ANY") {
-          makeup.OUT["hardMod"] = "ANY";
+        } else if (json["change_makeup"][i].OUT == "ALL" || makeup.OUT["hardMod"] == "ANY") {
+          makeup.OUT["hardMod"] = "ALL";
         } else {
           makeup.OUT["hardMod"] += json["change_makeup"][i].OUT;
         }
@@ -625,8 +674,8 @@ function player_count_change() {
       if (Object.keys(json["change_makeup"][i]).includes("MIN")) {
         if (json["change_makeup"][i].MIN == "NONE" || makeup.MIN["hardMod"] == "NONE") {
           makeup.MIN["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].MIN == "ANY" || makeup.MIN["hardMod"] == "ANY") {
-          makeup.MIN["hardMod"] = "ANY";
+        } else if (json["change_makeup"][i].MIN == "ALL" || makeup.MIN["hardMod"] == "ANY") {
+          makeup.MIN["hardMod"] = "ALL";
         } else {
           makeup.MIN["hardMod"] += json["change_makeup"][i].MIN;
         }
@@ -640,8 +689,8 @@ function player_count_change() {
       if (Object.keys(json["change_makeup"][i]).includes("DEM")) {
         if (json["change_makeup"][i].DEM == "NONE" || makeup.DEM["hardMod"] == "NONE") {
           makeup.DEM["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].DEM == "ANY" || makeup.DEM["hardMod"] == "ANY") {
-          makeup.DEM["hardMod"] = "ANY";
+        } else if (json["change_makeup"][i].DEM == "ALL" || makeup.DEM["hardMod"] == "ANY") {
+          makeup.DEM["hardMod"] = "ALL";
         } else {
           makeup.DEM["hardMod"] += json["change_makeup"][i].DEM;
         }
@@ -663,36 +712,42 @@ function player_count_change() {
       switch (tokens[i].getAttribute("cat")) {
         case "TOWN":
           if (visibility == "show") {counts[0]++;}
-          if (visibility != "bluff") {
-            makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-          }
         break;
         case "OUT":
-          if (tokens[i].getAttribute("visibility") == "show") {counts[1]++;}
-          if (visibility != "bluff") {
-            makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-          }
+          if (visibility == "show") {counts[1]++;}
         break;
         case "MIN":
-          if (tokens[i].getAttribute("visibility") == "show") {counts[2]++;}
-          if (visibility != "bluff") {
-            makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-          }
+          if (visibility == "show") {counts[2]++;}
         break;
         case "DEM":
-          if (tokens[i].getAttribute("visibility") == "show") {counts[3]++;}
-          if (visibility != "bluff") {
-            makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-          }
+          if (visibility == "show") {counts[3]++;}
         break;
       }
+      if (visibility != "bluff") {
+        makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
+      }
     }
-    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + table[number][0];
-    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + table[number][1];
-    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + table[number][2];
-    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + table[number][3];
+    console.log(makeup)
+    console.log(makeup["TOWN"]["hardMod"]);
+    let expectedPlayerCount = document.getElementById("player_count").value;
+    var townExpected = table[number][0];
+    if (makeup["TOWN"]["hardMod"] == "ALL"){townExpected = expectedPlayerCount;}
+    if (makeup["TOWN"]["hardMod"] == "NONE"){townExpected = 0;}
+    var outExpected = table[number][1];
+    if (makeup["OUT"]["hardMod"] == "ALL"){outExpected = expectedPlayerCount;}
+    if (makeup["OUT"]["hardMod"] == "NONE"){outExpected = 0;}
+    var minExpected = table[number][2];
+    if (makeup["MIN"]["hardMod"] == "ALL"){minExpected = expectedPlayerCount;}
+    if (makeup["MIN"]["hardMod"] == "NONE"){minExpected = 0;}
+    var demExpected = table[number][3];
+    if (makeup["DEM"]["hardMod"] == "ALL"){demExpected = expectedPlayerCount;}
+    if (makeup["DEM"]["hardMod"] == "NONE"){demExpected = 0;}
+    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + townExpected;
+    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + outExpected;
+    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + minExpected;
+    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + demExpected;
   }
-}
+}*/
 function update_role_counts(){
   var counts = document.getElementsByClassName("menu_token_count");
   for (let i = 0; i<counts.length; i++) {

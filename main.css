@@ -88,7 +88,7 @@ html, body {overscroll-behavior: none;}
 .night_wedge_circle_bg {width: 150px; height: 75px; position: absolute; cursor: pointer; background-position: center; background-repeat: no-repeat; background-size: cover;}
 #night_wedge_circle_day {background-image: url(assets/sky.png); top: 0px; transform: rotate(180deg);}
 #night_wedge_circle_night {background-image: url(assets/night.png); bottom: 0px;}
-.night_wedge_back { width: 40px; height: 40px; clip-path: polygon(0% 50%, 100% 0%, 100% 100%); background-color: rgb(52, 52, 52); position: absolute;}
+.night_wedge_back { width: 40px; height: 40px; clip-path: polygon(0% 50%, 100% 0%, 100% 100%); background-color: rgb(52, 52, 52); position: absolute; cursor: pointer;}
 #night_wedge_day_back    {left: calc(50% + 53px);    top: 25px; transform: rotate(180deg);}
 #night_wedge_night_back {right: calc(50% + 53px); bottom: 25px;}
 .night_wedge_text {position: absolute; text-align: right; pointer-events: none;}
