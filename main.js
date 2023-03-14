@@ -725,7 +725,6 @@ function toggle_menu_collapse() {
     dropdown.style.height = "40px";
   } else {
     dropdown.setAttribute("expand", "true");
-    console.log(document.getElementById("menu_settings_dropdown_body").scrollHeight)
     dropdown.style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
   }
 }
