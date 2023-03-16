@@ -182,10 +182,6 @@ async function loaded() {
   }, 2000)
   document.getElementById("body_actual").setAttribute("orientation", getOrientation())
   window.onresize = resized;
-  
-  var test = {"a":((pre) => {console.log(pre + "apple")}), "b":(() => {console.log("bapple")})}
-  setTimeout(test["a"]("c"), 0)
-  
 }
 
 // corner toggles and night functions
@@ -571,7 +567,7 @@ async function populate_script(script) {
     }
   })
   if (!loading) {save_game_state();}
-  return Promise.resolve("success")
+  return Promise.resolve()
 }
 function increment_player_count(x) {
   document.getElementById("player_count").value = parseInt(document.getElementById("player_count").value) + parseInt(x);
@@ -622,7 +618,7 @@ async function player_count_change() {
           lambdas[changeKey](element[changeKey][0], element[changeKey][1]);
         }
       });
-      console
+      return Promise.resolve();
     }
     for (i = 0; i<tokens.length; i++) {
       let visibility = tokens[i].getAttribute("visibility");
@@ -642,7 +638,6 @@ async function player_count_change() {
       }
       await makeupMod(tokens[i].id.match(/.*(?=_token_)/)[0])
     }
-    console.log(expected)
     function genSoftModString(pos, neg) {
       var string = " "
       var combined = 0;
@@ -710,7 +705,6 @@ function clean_board() {
     remove_token(tokens[it].id.match(/.*(?=_token_)/)[0], tokens[it].getAttribute("uid"))
   }
   const pips = document.getElementById("dragPipLayer").children;
-  console.log(pips)
   for (let it = pips.length-1; it>=0; it--) {
     if (pips[it].getAttribute("stacked") == "false") {
       console.log(pips[it])
