@@ -48,7 +48,7 @@ class NightCounter{
 var counter = new NightCounter();
 // TODO fabled
 // * TODO fancify night widget
-// TODO higher player limit to include travellers
+// * TODO higher player limit to include travellers
 
 function generate_game_state_json() {
   var state = new Object();
@@ -577,14 +577,13 @@ async function player_count_change() {
     document.getElementById("player_count").value = 5;
     player_count_tmp = 5
   }
+  let player_count = player_count_tmp;
   if (player_count_tmp > 15) {
-    document.getElementById("player_count").value = 15;
     player_count_tmp = 15
   }
-  let player_count = player_count_tmp;
   tableIndex = parseInt(player_count_tmp)-5;
   var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
-  var counts = [0, 0, 0, 0];
+  var counts = [0, 0, 0, 0, 0];
   tokens = document.getElementsByClassName("role_token");
   if (!loading) { //dont try to update player counts before menu is loaded
     var expected = new Object();
@@ -593,6 +592,7 @@ async function player_count_change() {
     expected.out = [table[tableIndex][1], 0, 0, false];
     expected.min = [table[tableIndex][2], 0, 0, false];
     expected.dem = [table[tableIndex][3], 0, 0, false];
+    expected.trav = [0, 0, 0, false];
     async function makeupMod(id) {
       let lambdas = {"HARD":((cat, mod)=>{expected[cat][0]+=mod}),
                      "SOFTPOS":((cat, mod)=>{expected[cat][1]+=mod}),
@@ -632,6 +632,9 @@ async function player_count_change() {
         case "DEM":
           if (visibility == "show") {counts[3]++;}
         break;
+        case "TRAV":
+          if (visibility == "show") {counts[4]++;}
+        break;
       }
       await makeupMod(tokens[i].id.match(/.*(?=_token_)/)[0])
     }
@@ -658,6 +661,8 @@ async function player_count_change() {
     document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
     document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
     document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
+    if (player_count > 15) {expected["trav"][0] += player_count - 15}
+    document.getElementById("ratio_TRAV").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
   }
 }
 function update_role_counts(){
@@ -704,7 +709,6 @@ function clean_board() {
   const pips = document.getElementById("dragPipLayer").children;
   for (let it = pips.length-1; it>=0; it--) {
     if (pips[it].getAttribute("stacked") == "false") {
-      console.log(pips[it])
       delete_reminder(pips[it].id);
     }
   }
