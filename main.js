@@ -46,12 +46,9 @@ class NightCounter{
   }
 }
 var counter = new NightCounter();
-
-// TODO implement cast makeup to be responsive to script
-// * TODO background change
-// * TODO be able to keep track of days
-// * TODO make settings dropdown in menu react to long script titles
-// TODO make better detection for what script is selected
+// TODO fabled
+// * TODO fancify night widget
+// TODO higher player limit to include travellers
 
 function generate_game_state_json() {
   var state = new Object();
