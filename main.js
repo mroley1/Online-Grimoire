@@ -46,6 +46,7 @@ class NightCounter{
   }
 }
 var counter = new NightCounter();
+// TODO better settings menu
 // TODO fabled
 // * TODO fancify night widget
 // * TODO higher player limit to include travellers
