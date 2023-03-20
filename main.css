@@ -2,9 +2,6 @@
     font-family: PiratesBay;
     src: url(assets/fonts/piratesbay.ttf);
 }
-:root {
-    --BG-IMG:url('assets/backgrounds/blue_circle_large.webp');
-}
 
 @media screen and (orientation:portrait) {
     .body_background_image::before {transform: rotate(90deg); width: 100vh; height: 100vw; left: calc(50% - calc(100vh / 2)); top: calc(50% - calc(100vw / 2));}

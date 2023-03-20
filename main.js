@@ -46,7 +46,7 @@ class NightCounter{
   }
 }
 var counter = new NightCounter();
-// TODO better settings menu
+// TODO better scripts menu
 // TODO fabled
 // * TODO fancify night widget
 // * TODO higher player limit to include travellers
@@ -54,9 +54,11 @@ var counter = new NightCounter();
 function generate_game_state_json() {
   var state = new Object();
   state.script = CURRENT_SCRIPT;
+  state.scriptColor = document.getElementById("script_upload_feedback").getAttribute("used");
   state.playercount = document.getElementById("player_count").value;
   state.night = document.getElementById("body_actual").getAttribute("night");
   state.orientation = document.getElementById("body_actual").getAttribute("orientation");
+  state.background = document.getElementById("body_actual").style.getPropertyValue("--BG-IMG");
   state.players = [];
   players = document.getElementById("token_layer").getElementsByClassName("role_token");
   for (i = 0; i < players.length; i++) {
@@ -92,6 +94,7 @@ function generate_game_state_json() {
       j++;
     }
   }
+  console.log(state)
   return JSON.stringify(state);
 }
 
@@ -103,8 +106,10 @@ async function load_game_state_json(state) {
   }
   loading = true;
   await populate_script(state.script);
+  document.getElementById("script_upload_feedback").setAttribute("used", state.scriptColor);
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
+  document.getElementById("body_actual").style.setProperty("--BG-IMG", state.background);
   for (let i = 0; i < state.players.length; i++) {
     spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
@@ -129,7 +134,8 @@ async function get_JSON(path) {
 }
 
 function background_image_change(file_name) {
-  document.querySelector(":root").style.setProperty("--BG-IMG", "url('assets/backgrounds/"+file_name+".webp')")
+  document.getElementById("body_actual").style.setProperty("--BG-IMG", "url('assets/backgrounds/"+file_name+".webp')");
+  if (!loading) {save_game_state();}
 }
 
 function getOrientation() {
@@ -477,6 +483,7 @@ async function script_select() {
   document.getElementById("script_upload").value = "";
   populate_script(script);
   document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
+  if (!loading) {save_game_state();}
 }
 async function script_upload() {
   let json = JSON.parse(await document.getElementById("script_upload").files[0].text());
@@ -489,6 +496,7 @@ async function script_upload() {
     document.getElementById("script_upload_feedback").setAttribute("used", "error");
   }
   document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
+  if (!loading) {save_game_state();}
 }
 async function populate_script(script) {
   CURRENT_SCRIPT = script;
@@ -662,7 +670,7 @@ async function player_count_change() {
     document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
     document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
     document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
-    if (player_count > 15) {expected["trav"][0] += player_count - 15}
+    if (player_count > 15 && !expected["trav"][3]) {expected["trav"][0] += player_count - 15}
     document.getElementById("ratio_TRAV").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
   }
 }
