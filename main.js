@@ -46,7 +46,8 @@ class NightCounter{
   }
 }
 var counter = new NightCounter();
-// TODO better scripts menu
+// ? TODO better scripts menu
+// TODO fullscreeen settings menu
 // TODO fabled
 // * TODO fancify night widget
 // * TODO higher player limit to include travellers
@@ -94,7 +95,6 @@ function generate_game_state_json() {
       j++;
     }
   }
-  console.log(state)
   return JSON.stringify(state);
 }
 
@@ -645,6 +645,8 @@ async function player_count_change() {
           if (visibility == "show") {counts[4]++;}
         break;
       }
+    }
+    for (i = 0; i<tokens.length; i++) {
       await makeupMod(tokens[i].id.match(/.*(?=_token_)/)[0])
     }
     function genSoftModString(pos, neg) {
@@ -710,7 +712,6 @@ function toggle_menu_collapse() {
   }
 }
 function clean_board() {
-  neutralClick();
   const tokens = document.getElementById("token_layer").children;
   for (let it = tokens.length-1; it>=0; it--) {
     remove_token(tokens[it].id.match(/.*(?=_token_)/)[0], tokens[it].getAttribute("uid"))
