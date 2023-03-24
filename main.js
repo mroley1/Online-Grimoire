@@ -918,7 +918,7 @@ function load_playerinfo_shroud(typeId) {
     }
   }
   let cards = {0:{"title":"Use Your Ability?", "players":0},
-               1:{"title":"Make A Choice", "players":0},
+               1:{"title":"Choose a Player", "players":0},
                2:{"title":"These Characters are Not In Play", "players":3},
                3:{"title":"This Is Your Demon", "players":0},
                4:{"title":"These Are Your Minions", "players":0},
@@ -927,7 +927,10 @@ function load_playerinfo_shroud(typeId) {
                7:{"title":"Character Selected You", "players":1},
                8:{"title":"Did You Vote Today?", "players":0},
                9:{"title":"Did You Nominate Today?", "players":0},
-               10:{"title":"Info", "players":5}
+               10:{"title":"Info", "players":3},
+               11:{"title":"Make your Choice", "players":1},
+               12:{"title":"Make your Choices", "players":2},
+               13:{"title":"Make your Choices", "players":3}
               }
   document.getElementById("playerinfo_shoud").style.display = "inherit";
   document.getElementById("playerinfo_title").innerHTML = cards[typeId]["title"];
