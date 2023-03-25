@@ -1,0 +1,13 @@
+{
+    "id": "organ_grinder",
+    "name":"Organ Grinder",
+    "description":"The Organ Grinder stops players from knowing who's voting for who and how many votes anyone got.",
+    "alignment":"EVIL",
+    "class":"MIN",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":false,
+    "hide_face":true
+}

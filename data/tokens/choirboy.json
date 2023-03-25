@@ -7,7 +7,7 @@
     "tokens":[],
     "first_night_desc":"",
     "other_night_desc":"If the King was killed by the Demon, wake the Choirboy and point to the Demon player.",
-    "change_makeup":[{"REQ":"king"}],
+    "change_makeup":[{"REQ":["town", "king"]}],
     "hide_token":false,
     "hide_face":true
 }

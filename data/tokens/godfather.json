@@ -7,7 +7,7 @@
     "tokens":["godfather_died_today", "godfather_dead"],
     "first_night_desc":"Show each of the Outsider tokens in play.",
     "other_night_desc":"If an Outsider died today: The Godfather points to a player. That player dies.",
-    "change_makeup":[{"OPTOUTPOS":1},{"OPTOUTNEG":-1},{"OPTTOWNPOS":1},{"OPTTOWNNEG":-1}],
+    "change_makeup":[{"SOFTPOS":["out", 1]},{"SOFTNEG":["out", 1]},{"SOFTPOS":["town", 1]},{"SOFTNEG":["town", 1]}],
     "hide_token":false,
     "hide_face":true
 }

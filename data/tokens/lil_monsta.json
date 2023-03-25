@@ -7,7 +7,7 @@
     "tokens":["lil_monsta_is_the_demon", "lil_monsta_dead"],
     "first_night_desc":"Wake all Minions together, allow them to vote by pointing at who they want to babysit Lil' Monsta.",
     "other_night_desc":"Wake all Minions together, allow them to vote by pointing at who they want to babysit Lil' Monsta. Choose a player, that player dies.",
-    "change_makeup":[{"MIN":1},{"TOWN":-1}],
+    "change_makeup":[{"HARD":["min", 1]},{"HARD":["min", -1]}],
     "hide_token":false,
     "hide_face":true
 }

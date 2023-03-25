@@ -46,19 +46,20 @@ class NightCounter{
   }
 }
 var counter = new NightCounter();
-
-// TODO implement cast makeup to be responsive to script
-// * TODO background change
-// * TODO be able to keep track of days
-// * TODO make settings dropdown in menu react to long script titles
-// TODO make better detection for what script is selected
+// ? TODO better scripts menu
+// TODO fullscreeen settings menu
+// TODO fabled
+// * TODO fancify night widget
+// * TODO higher player limit to include travellers
 
 function generate_game_state_json() {
   var state = new Object();
   state.script = CURRENT_SCRIPT;
+  state.scriptColor = document.getElementById("script_upload_feedback").getAttribute("used");
   state.playercount = document.getElementById("player_count").value;
   state.night = document.getElementById("body_actual").getAttribute("night");
   state.orientation = document.getElementById("body_actual").getAttribute("orientation");
+  state.background = document.getElementById("body_actual").style.getPropertyValue("--BG-IMG");
   state.players = [];
   players = document.getElementById("token_layer").getElementsByClassName("role_token");
   for (i = 0; i < players.length; i++) {
@@ -105,8 +106,10 @@ async function load_game_state_json(state) {
   }
   loading = true;
   await populate_script(state.script);
+  document.getElementById("script_upload_feedback").setAttribute("used", state.scriptColor);
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
+  document.getElementById("body_actual").style.setProperty("--BG-IMG", state.background);
   for (let i = 0; i < state.players.length; i++) {
     spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
@@ -131,7 +134,8 @@ async function get_JSON(path) {
 }
 
 function background_image_change(file_name) {
-  document.querySelector(":root").style.setProperty("--BG-IMG", "url('assets/backgrounds/"+file_name+".webp')")
+  document.getElementById("body_actual").style.setProperty("--BG-IMG", "url('assets/backgrounds/"+file_name+".webp')");
+  if (!loading) {save_game_state();}
 }
 
 function getOrientation() {
@@ -479,6 +483,7 @@ async function script_select() {
   document.getElementById("script_upload").value = "";
   populate_script(script);
   document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
+  if (!loading) {save_game_state();}
 }
 async function script_upload() {
   let json = JSON.parse(await document.getElementById("script_upload").files[0].text());
@@ -491,6 +496,7 @@ async function script_upload() {
     document.getElementById("script_upload_feedback").setAttribute("used", "error");
   }
   document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
+  if (!loading) {save_game_state();}
 }
 async function populate_script(script) {
   CURRENT_SCRIPT = script;
@@ -567,29 +573,59 @@ async function populate_script(script) {
     }
   })
   if (!loading) {save_game_state();}
-  return Promise.resolve("success")
+  return Promise.resolve()
 }
 function increment_player_count(x) {
   document.getElementById("player_count").value = parseInt(document.getElementById("player_count").value) + parseInt(x);
   player_count_change()
 }
-function player_count_change() {
+async function player_count_change() {
   var player_count_tmp = document.getElementById("player_count").value;
   tableIndex = 0;
   if (player_count_tmp < 5) {
     document.getElementById("player_count").value = 5;
     player_count_tmp = 5
   }
+  let player_count = player_count_tmp;
   if (player_count_tmp > 15) {
-    document.getElementById("player_count").value = 15;
     player_count_tmp = 15
   }
-  let player_count = player_count_tmp;
   tableIndex = parseInt(player_count_tmp)-5;
   var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
-  var counts = [0, 0, 0, 0];
+  var counts = [0, 0, 0, 0, 0];
   tokens = document.getElementsByClassName("role_token");
   if (!loading) { //dont try to update player counts before menu is loaded
+    var expected = new Object();
+    // [hard modifier, soft positive modifier, soft negative modifier, locked?]
+    expected.town = [table[tableIndex][0], 0, 0, false];
+    expected.out = [table[tableIndex][1], 0, 0, false];
+    expected.min = [table[tableIndex][2], 0, 0, false];
+    expected.dem = [table[tableIndex][3], 0, 0, false];
+    expected.trav = [0, 0, 0, false];
+    async function makeupMod(id) {
+      let lambdas = {"HARD":((cat, mod)=>{expected[cat][0]+=mod}),
+                     "SOFTPOS":((cat, mod)=>{expected[cat][1]+=mod}),
+                     "SOFTNEG":((cat, mod)=>{expected[cat][2]+=mod}),
+                     "REQ":((cat, val)=>{}),
+                     "LOCK":((cat, val)=>{
+                      if (val == -1) {
+                        expected[cat][0] = player_count;
+                      } else {
+                        expected[cat][0] = val;
+                      }
+                      expected[cat][3] = true;
+                      expected[cat][1] = 0;
+                      expected[cat][2] = 0;
+                     })}
+      let json = await get_JSON("tokens/" + id + ".json");
+      json["change_makeup"].forEach(element => {
+        let changeKey = Object.keys(element)[0];
+        if (!expected[element[changeKey][0]][3]) {
+          lambdas[changeKey](element[changeKey][0], element[changeKey][1]);
+        }
+      });
+      return Promise.resolve();
+    }
     for (i = 0; i<tokens.length; i++) {
       let visibility = tokens[i].getAttribute("visibility");
       switch (tokens[i].getAttribute("cat")) {
@@ -605,149 +641,41 @@ function player_count_change() {
         case "DEM":
           if (visibility == "show") {counts[3]++;}
         break;
+        case "TRAV":
+          if (visibility == "show") {counts[4]++;}
+        break;
       }
     }
-    var townExpected = table[tableIndex][0];
-    var outExpected = table[tableIndex][1];
-    var minExpected = table[tableIndex][2];
-    var demExpected = table[tableIndex][3];
-    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + townExpected;
-    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + outExpected;
-    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + minExpected;
-    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + demExpected;
+    for (i = 0; i<tokens.length; i++) {
+      await makeupMod(tokens[i].id.match(/.*(?=_token_)/)[0])
+    }
+    function genSoftModString(pos, neg) {
+      var string = " "
+      var combined = 0;
+      while(pos>0&&neg>0){
+        combined++;
+        pos--;
+        neg--;
+      }
+      if (combined>0) {
+        string += String.fromCharCode(177) + combined;
+      }
+      if (pos > 0) {
+        string += " +" + pos;
+      }
+      if (neg > 0) {
+        string += " -" + neg;
+      }
+      return string;
+    }
+    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + expected["town"][0] + genSoftModString(expected["town"][1], expected["town"][2]);
+    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
+    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
+    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
+    if (player_count > 15 && !expected["trav"][3]) {expected["trav"][0] += player_count - 15}
+    document.getElementById("ratio_TRAV").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
   }
 }
-/*
-function player_count_change_old() {
-  number = document.getElementById("player_count").value;
-  if (number < 5) {
-    document.getElementById("player_count").value = 5;
-    number = 5
-  }
-  if (number > 15) {
-    document.getElementById("player_count").value = 15;
-    number = 15
-  }
-  number = parseInt(number)-5;
-  var table = [[3,0,1,1],[3,1,1,1],[5,0,1,1],[5,1,1,1],[5,2,1,1],[7,0,2,1],[7,1,2,1],[7,2,2,1],[9,0,3,1],[9,1,3,1],[9,2,3,1],[10,2,3,1],[11,2,3,1],[11,3,3,1]]
-  var counts = [0, 0, 0, 0];
-  var makeup = new Object;
-  makeup.TOWN = {"hardMod":0, "softModPos":0, "softModNeg":0}
-  makeup.OUT = {"hardMod":0, "softModPos":0, "softModNeg":0}
-  makeup.MIN = {"hardMod":0, "softModPos":0, "softModNeg":0}
-  makeup.DEM = {"hardMod":0, "softModPos":0, "softModNeg":0}
-  makeup.REQ = []
-  tokens = document.getElementsByClassName("role_token");
-  async function makeup_mod(id) {
-    let json = await get_JSON("tokens/" + id + ".json")
-    for (i = 0; i<json["change_makeup"].length; i++) {
-      if (Object.keys(json["change_makeup"][i]).includes("TOWN")) {
-        if (json["change_makeup"][i].TOWN == "NONE" || makeup.TOWN["hardMod"] == "NONE") {
-          makeup.TOWN["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].TOWN == "ALL" || makeup.TOWN["hardMod"] == "ANY") {
-          makeup.TOWN["hardMod"] = "ALL";
-        } else {
-          makeup.TOWN["hardMod"] += json["change_makeup"][i].TOWN;
-        }
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OPTTOWNPOS")) {
-        makeup.TOWN["softModPos"] += json["change_makeup"][i].OPTTOWNPOS;
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OPTTOWNNEG")) {
-        makeup.TOWN["softModNeg"] += json["change_makeup"][i].OPTTOWNNEG;
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OUT")) {
-        if (json["change_makeup"][i].OUT == "NONE" || makeup.OUT["hardMod"] == "NONE") {
-          makeup.OUT["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].OUT == "ALL" || makeup.OUT["hardMod"] == "ANY") {
-          makeup.OUT["hardMod"] = "ALL";
-        } else {
-          makeup.OUT["hardMod"] += json["change_makeup"][i].OUT;
-        }
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OPTOUTPOS")) {
-        makeup.OUT["softModPos"] += json["change_makeup"][i].OPTOUTPOS;
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OPTOUTNEG")) {
-        makeup.OUT["softModNeg"] += json["change_makeup"][i].OPTOUTNEG;
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("MIN")) {
-        if (json["change_makeup"][i].MIN == "NONE" || makeup.MIN["hardMod"] == "NONE") {
-          makeup.MIN["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].MIN == "ALL" || makeup.MIN["hardMod"] == "ANY") {
-          makeup.MIN["hardMod"] = "ALL";
-        } else {
-          makeup.MIN["hardMod"] += json["change_makeup"][i].MIN;
-        }
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OPTMINPOS")) {
-        makeup.MIN["softModPos"] += json["change_makeup"][i].OPTMINPOS;
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OPTMINNEG")) {
-        makeup.MIN["softModNeg"] += json["change_makeup"][i].OPTMINNEG;
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("DEM")) {
-        if (json["change_makeup"][i].DEM == "NONE" || makeup.DEM["hardMod"] == "NONE") {
-          makeup.DEM["hardMod"] = "NONE";
-        } else if (json["change_makeup"][i].DEM == "ALL" || makeup.DEM["hardMod"] == "ANY") {
-          makeup.DEM["hardMod"] = "ALL";
-        } else {
-          makeup.DEM["hardMod"] += json["change_makeup"][i].DEM;
-        }
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OPTDEMPOS")) {
-        makeup.DEM["softModPos"] += json["change_makeup"][i].OPTDEMPOS;
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("OPTDEMNEG")) {
-        makeup.DEM["softModNeg"] += json["change_makeup"][i].OPTDEMNEG;
-      }
-      if (Object.keys(json["change_makeup"][i]).includes("REQ")) {
-        makeup.REQ[makeup.REQ.length] = json["change_makeup"][i].REQ;
-      }
-    }
-  }
-  if (!loading) { //dont try to update player counts before menu is loaded
-    for (i = 0; i<tokens.length; i++) {
-      let visibility = tokens[i].getAttribute("visibility");
-      switch (tokens[i].getAttribute("cat")) {
-        case "TOWN":
-          if (visibility == "show") {counts[0]++;}
-        break;
-        case "OUT":
-          if (visibility == "show") {counts[1]++;}
-        break;
-        case "MIN":
-          if (visibility == "show") {counts[2]++;}
-        break;
-        case "DEM":
-          if (visibility == "show") {counts[3]++;}
-        break;
-      }
-      if (visibility != "bluff") {
-        makeup_mod(tokens[i].id.match(/.*(?=_token_)/)[0])
-      }
-    }
-    console.log(makeup)
-    console.log(makeup["TOWN"]["hardMod"]);
-    let expectedPlayerCount = document.getElementById("player_count").value;
-    var townExpected = table[number][0];
-    if (makeup["TOWN"]["hardMod"] == "ALL"){townExpected = expectedPlayerCount;}
-    if (makeup["TOWN"]["hardMod"] == "NONE"){townExpected = 0;}
-    var outExpected = table[number][1];
-    if (makeup["OUT"]["hardMod"] == "ALL"){outExpected = expectedPlayerCount;}
-    if (makeup["OUT"]["hardMod"] == "NONE"){outExpected = 0;}
-    var minExpected = table[number][2];
-    if (makeup["MIN"]["hardMod"] == "ALL"){minExpected = expectedPlayerCount;}
-    if (makeup["MIN"]["hardMod"] == "NONE"){minExpected = 0;}
-    var demExpected = table[number][3];
-    if (makeup["DEM"]["hardMod"] == "ALL"){demExpected = expectedPlayerCount;}
-    if (makeup["DEM"]["hardMod"] == "NONE"){demExpected = 0;}
-    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + townExpected;
-    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + outExpected;
-    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + minExpected;
-    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + demExpected;
-  }
-}*/
 function update_role_counts(){
   var counts = document.getElementsByClassName("menu_token_count");
   for (let i = 0; i<counts.length; i++) {
@@ -784,16 +712,13 @@ function toggle_menu_collapse() {
   }
 }
 function clean_board() {
-  neutralClick();
   const tokens = document.getElementById("token_layer").children;
   for (let it = tokens.length-1; it>=0; it--) {
     remove_token(tokens[it].id.match(/.*(?=_token_)/)[0], tokens[it].getAttribute("uid"))
   }
   const pips = document.getElementById("dragPipLayer").children;
-  console.log(pips)
   for (let it = pips.length-1; it>=0; it--) {
     if (pips[it].getAttribute("stacked") == "false") {
-      console.log(pips[it])
       delete_reminder(pips[it].id);
     }
   }
@@ -993,7 +918,7 @@ function load_playerinfo_shroud(typeId) {
     }
   }
   let cards = {0:{"title":"Use Your Ability?", "players":0},
-               1:{"title":"Make A Choice", "players":0},
+               1:{"title":"Choose a Player", "players":0},
                2:{"title":"These Characters are Not In Play", "players":3},
                3:{"title":"This Is Your Demon", "players":0},
                4:{"title":"These Are Your Minions", "players":0},
@@ -1002,7 +927,10 @@ function load_playerinfo_shroud(typeId) {
                7:{"title":"Character Selected You", "players":1},
                8:{"title":"Did You Vote Today?", "players":0},
                9:{"title":"Did You Nominate Today?", "players":0},
-               10:{"title":"Info", "players":5}
+               10:{"title":"Info", "players":3},
+               11:{"title":"Make your Choice", "players":1},
+               12:{"title":"Make your Choices", "players":2},
+               13:{"title":"Make your Choices", "players":3}
               }
   document.getElementById("playerinfo_shoud").style.display = "inherit";
   document.getElementById("playerinfo_title").innerHTML = cards[typeId]["title"];

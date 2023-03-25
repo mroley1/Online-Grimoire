@@ -1,7 +1,0 @@
-{
-    "name":"Trouble Brewing",
-    "townsfolk": ["washerwoman", "librarian", "investigator", "chef", "empath", "fortune_teller", "undertaker", "monk", "ravenkeeper", "virgin", "slayer", "soldier", "mayor"],
-    "outsiders": ["butler", "drunk", "recluse", "saint"],
-    "minions":   ["poisoner", "spy", "scarlet_woman", "baron"],
-    "demons":    ["imp"]
-}
