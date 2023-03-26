@@ -113,8 +113,9 @@ html, body {overscroll-behavior: none;}
 .token_oursider_betray {width: 80%; height: 80%; position: absolute; top: -15px; left: -15px; pointer-events: none; display: none;}
 #body_actual[night="true"] .token_oursider_betray {display: inherit;}
 
-#nightorder_button_container {position: absolute; top: 0px; right: 0px; width: 300px; height: 45px; display: inline-block; display: flex;}
+#nightorder_button_container {position: absolute; top: 0px; right: 0px; width: 400px; height: 45px; display: inline-block; display: flex;}
 .night_select {width: 100px; display: block; height: 41px; text-align: center; font-family: PiratesBay; font-size: 28pt; border: black 2px solid; background-image: url("assets/vines.png"); color: #afafaf; cursor: pointer; user-select: none;}
+#nightorder_button_container[nightOrder="fabled"] #fabled_toggle {color: rgb(244, 244, 244);}
 #nightorder_button_container[nightOrder="jinx"] #jinx_toggle {color: rgb(244, 244, 244);}
 #nightorder_button_container[nightOrder="firstnight"] #first_night {color: rgb(244, 244, 244);} 
 #nightorder_button_container[nightOrder="othernight"] #other_night {color: rgb(244, 244, 244);}

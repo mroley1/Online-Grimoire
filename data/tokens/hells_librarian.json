@@ -1,0 +1,13 @@
+{
+    "id": "hells_librarian",
+    "name":"Hell's Librarian",
+    "description":"Something bad might happen to whoever talks when the Storyteller has asked for silence.",
+    "alignment":null,
+    "class":"FAB",
+    "tokens":["hells_librarian_something_bad"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":null,
+    "hide_face":null
+}

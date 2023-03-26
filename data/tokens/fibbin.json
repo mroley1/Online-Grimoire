@@ -1,0 +1,13 @@
+{
+    "id": "fibbin",
+    "name":"Fibbin",
+    "description":"Once per game, 1 good player might get incorrect information.",
+    "alignment":null,
+    "class":"FAB",
+    "tokens":["fibbin_incorrect_info"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":null,
+    "hide_face":null
+}

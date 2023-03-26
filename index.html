@@ -24,6 +24,7 @@
         </div>
 
         <div id="nightorder_button_container" nightOrder="none">
+            <div id="fabled_toggle" class="night_select" onclick="javascript:toggle_night_order_buttons('fabled')">fabled</div>
             <div id="jinx_toggle" class="night_select" onclick="javascript:toggle_night_order_buttons('jinx')">jinxes</div>
             <div id="first_night" class="night_select" onclick="javascript:toggle_night_order_buttons('firstnight')">first</div>
             <div id="other_night" class="night_select" onclick="javascript:toggle_night_order_buttons('othernight')">other</div>
@@ -94,7 +95,7 @@
             </div>
         </div>
         
-        <div id="night_wedge_container">
+        <div id="night_wedge_container" style="display: none;">
             <div id="night_wedge_rotate" style="transform: rotate(180deg);">
                 <div id="night_wedge_circle" onclick="javascript:night_wedge_next_day()">
                     <div class="night_wedge_circle_bg" id="night_wedge_circle_day"></div>

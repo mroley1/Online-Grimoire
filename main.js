@@ -1064,6 +1064,10 @@ function toggle_night_order_buttons(type) {
     document.getElementById("nightorder_button_container").setAttribute("nightOrder", "none");
   } else {
     switch (type) {
+      case "fabled":
+        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "fabled");
+        populate_fabled();
+        break;
       case "jinx":
         document.getElementById("nightorder_button_container").setAttribute("nightOrder", "jinx");
         populate_jinx();
@@ -1241,5 +1245,9 @@ function gen_jinxes_tab(id1, id2, reason) {
   div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+id1+"_"+id2+"_jinx_tab"+"')");
   document.getElementById("night_order_tab_landing").appendChild(div);
+}
+async function populate_fabled() {
+  clear_night_order();
+  console.log(CURRENT_SCRIPT);
 }
 

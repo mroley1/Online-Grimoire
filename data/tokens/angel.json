@@ -1,0 +1,13 @@
+{
+    "id": "angel",
+    "name":"Angel",
+    "description":"Something bad might happen to whoever is most responsible for the death of a new player.",
+    "alignment":null,
+    "class":"FAB",
+    "tokens":["angel_something_bad"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":null,
+    "hide_face":null
+}
