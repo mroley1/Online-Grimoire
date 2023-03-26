@@ -1,5 +1,6 @@
 
 const UID_LENGTH = 13
+const DEFAULT_FABLED = new Set(["doomsayer", "angel", "buddhist", "hells_librarian", "revolutionary", "fiddler", "toymaker"]);
 var loading = false;
 var CURRENT_SCRIPT;
 class NightCounter{
@@ -1247,7 +1248,19 @@ function gen_jinxes_tab(id1, id2, reason) {
   document.getElementById("night_order_tab_landing").appendChild(div);
 }
 async function populate_fabled() {
-  clear_night_order();
-  console.log(CURRENT_SCRIPT);
+  clean_night_order();
+  var fabled = DEFAULT_FABLED;
+  await CURRENT_SCRIPT.forEach(async (entry) => {
+    if (entry.id != "_meta") {
+      var token = await get_JSON("tokens/" + entry.id + ".json");
+      if (token["class"] == "FAB") {
+        fabled.add(entry.id);
+      }
+    }
+    return Promise.resolve()
+  })
+  
+  console.log(fabled);
 }
+function gen_fabled_tab()
 
