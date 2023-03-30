@@ -8,15 +8,16 @@
     <body id="body_actual" style="--BG-IMG:url('assets/backgrounds/blue_circle_large.webp'); overflow: hidden;" onload="javascript:loaded()" night="false">
         <div class="body_background_image"></div>
         
+        <div onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;"></div>
+        
         <div id="alignment_tokens" style="position: absolute; top: 85px; width: 90px; left: 0px;">
             <div id="goodSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/good.png');"></div>
             <div id="evilSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/evil.png');"></div>
             <div id="genPipSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/reminder_pip.png');"></div>
         </div>
-
-        <div onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;">
+        <div id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
             <!--<div id="reminder_layer"></div>-->
-            <div onclick="javascript:unprompt_reminders()" id="token_layer"></div>
+            <div id="token_layer"></div>
         </div>
         <div id="interactivePlane" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
             <div id="dragPipLayer"></div>

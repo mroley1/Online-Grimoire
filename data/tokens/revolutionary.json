@@ -4,7 +4,7 @@
     "description":"2 neighboring players are known to be the same alignment. Once per game, 1 of them registers falsely.",
     "alignment":null,
     "class":"FAB",
-    "tokens":["revolutionary_revolutionary"],
+    "tokens":["revolutionary_revolutionary", "revolutionary_registers_falsely"],
     "first_night_desc":"",
     "other_night_desc":"",
     "change_makeup":[],
