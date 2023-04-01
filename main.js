@@ -112,7 +112,6 @@ async function load_game_state_json(state) {
   loading = true;
   await populate_script(state.script);
   document.getElementById("script_upload_feedback").setAttribute("used", state.scriptColor);
-  console.log(state.selectedIndex)
   document.getElementById("script_options").selectedIndex = state.scriptNumber;
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
@@ -800,6 +799,7 @@ function spawnReminderGhost(x, y, imgUrl, longId) {
   div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 100px; height 100px;";
   div.id = longId + "_" + uid;
   div.setAttribute("ghost", "true");
+  div.setAttribute("token_from", "info");
   var img = document.createElement("img");
   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
   img.src = "assets/delete.png";
@@ -1027,9 +1027,15 @@ function dragEnd(e) {
   }
   if (e.target.getAttribute("ghost") == "true") {
     spawnReminder(e.target.id.substring(5, e.target.id.length-(2*UID_LENGTH)-2), e.target.id.substring(e.target.id.length-(2*UID_LENGTH)-1, e.target.id.length), e.target.getBoundingClientRect().left+10, e.target.getBoundingClientRect().top+10);
-    let x = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
-    let y = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
-    spawnReminderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
+    if (e.target.getAttribute("token_from") == "info") {
+      let x = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
+      let y = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
+      spawnReminderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
+    }// else if (e.target.getAttribute("token_from") == "night_order") {
+    //   let x = document.getElementById("night_order_" + e.target.id.substring(0, e.target.id.length-UID_LENGTH-1))
+    //   let y = document.getElementById("night_order_" + e.target.id.substring(0, e.target.id.length-UID_LENGTH-1))
+    //   spawnNightOrderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
+    // }
     e.target.parentNode.removeChild(e.target);
   }
   active = false;
@@ -1199,12 +1205,10 @@ function expand_night_order_tab(id) {
   tab.setAttribute("onclick", "javascript:collapse_night_order_tab('"+id+"')");
   if (tab.getElementsByClassName("night_order_fabled_token_container").length == 1 && tab.getElementsByClassName("night_order_fabled_token_container")[0].children.length != 0) {
     let container = tab.getElementsByClassName("night_order_fabled_token_container")[0];
+    document.getElementById("token_drag_" + id).style = "position: absolute; height: 80px; left: " + container.offsetLeft + "; top: " + container.offsetTop + ";";
     var tokens = tab.getElementsByClassName("night_order_fabled_token_container")[0].children;
     for (i = 0; i < tokens.length; i++) {
-      let x = tokens[i].getBoundingClientRect().x - container.getBoundingClientRect().x;
-      let y = tokens[i].getBoundingClientRect().y - container.getBoundingClientRect().y;
-      console.log(x, y, tokens[i].style.backgroundImage, container.id.match(/(?<=night_order_).*/)[0]);
-      //spawnNightOrderGhost(x, y, tokens[i].style.backgroundImage, container.id.match(/(?<=night_order_).*/)[0]);
+      spawnNightOrderGhost(tokens[i].offsetLeft, tokens[i].offsetTop, tokens[i].style.backgroundImage, tokens[i].id, container.id.match(/(?<=night_order_).*/)[0]);
     }
   }
 }
@@ -1287,7 +1291,6 @@ function gen_fabled_tab(token_JSON, inPlay) {
   var color = "#b3b300";
   if (!inPlay) {color = "#000000";}
   var div = document.createElement("div");
-  document.getElementById("night_order_tab_landing").appendChild(div);
   div.classList = "night_order_tab";
   div.id = token_JSON.id + "_night_order_tab";
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , "+color+")";
@@ -1302,18 +1305,18 @@ function gen_fabled_tab(token_JSON, inPlay) {
   var token_landing = document.createElement("div");
   token_landing.classList = "night_order_fabled_token_container"
   token_landing.id = "night_order_" + token_JSON.id;
-  token_JSON["tokens"].forEach((token) => {
-    var token_perm = document.createElement("div");
-    token_perm.classList = "night_order_fabled_token_perm"
-    token_perm.style.backgroundImage = "url('assets/reminders/"+token+".png')"
-    token_landing.appendChild(token_perm)
-  })
+  // token_JSON["tokens"].forEach((token) => {
+  //   var token_perm = document.createElement("div");
+  //   token_perm.id = token;
+  //   token_perm.classList = "night_order_fabled_token_perm"
+  //   token_perm.style.backgroundImage = "url('assets/reminders/"+token+".png')"
+  //   token_landing.appendChild(token_perm)
+  // })
   div.appendChild(token_landing);
-  var token_drag = document.createElement("div"); // ! not oporational
-  let drag_y = document.getElementById("night_order_" + token_JSON.id).getBoundingClientRect.y;
-  console.log(drag_y)
-  token_drag.style = "position: absolute; left: 90px; top: " + drag_y + "px;"
+  var token_drag = document.createElement("div");
+  token_drag.id = "token_drag_" + token_JSON.id + "_night_order_tab";
   div.appendChild(token_drag);
+  document.getElementById("night_order_tab_landing").appendChild(div);
   div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
   div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
   div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
@@ -1321,21 +1324,21 @@ function gen_fabled_tab(token_JSON, inPlay) {
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"_night_order_tab')");
   div.appendChild(img);
 }
-function spawnNightOrderGhost(x, y, imgUrl, id) {
+function spawnNightOrderGhost(x, y, imgUrl, id, fabled) {
   var time = new Date();
   var uid = time.getTime();
   var div = document.createElement("div");
   div.classList = "info_tokens_drag drag";
-  div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 100px; height 100px;";
+  div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 80px; height: 80px;";
   div.id = id + "_" + uid;
   div.setAttribute("ghost", "true");
+  div.setAttribute("token_from", "night_order");
   var img = document.createElement("img");
   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
   img.src = "assets/delete.png";
   img.id = id + "_" + uid + "_img";
   div.appendChild(img);
-  console.log("night_order_" + id)
-  document.getElementById("night_order_" + id).prepend(div);
+  document.getElementById("token_drag_" + fabled + "_night_order_tab").prepend(div);
   dragInit();
 }
 
