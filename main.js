@@ -1196,7 +1196,17 @@ function expand_night_order_tab(id) {
   tab.style.width = "500px";
   tab.style.transform = "translateX(-410px)";
   tab.style.height = document.getElementById(id).scrollHeight;
-  tab.setAttribute("onclick", "javascript:collapse_night_order_tab('"+id+"')")
+  tab.setAttribute("onclick", "javascript:collapse_night_order_tab('"+id+"')");
+  if (tab.getElementsByClassName("night_order_fabled_token_container").length == 1 && tab.getElementsByClassName("night_order_fabled_token_container")[0].children.length != 0) {
+    let container = tab.getElementsByClassName("night_order_fabled_token_container")[0];
+    var tokens = tab.getElementsByClassName("night_order_fabled_token_container")[0].children;
+    for (i = 0; i < tokens.length; i++) {
+      let x = tokens[i].getBoundingClientRect().x - container.getBoundingClientRect().x;
+      let y = tokens[i].getBoundingClientRect().y - container.getBoundingClientRect().y;
+      console.log(x, y, tokens[i].style.backgroundImage, container.id.match(/(?<=night_order_).*/)[0]);
+      //spawnNightOrderGhost(x, y, tokens[i].style.backgroundImage, container.id.match(/(?<=night_order_).*/)[0]);
+    }
+  }
 }
 function collapse_night_order_tab(id) {
   tab = document.getElementById(id)
@@ -1276,33 +1286,56 @@ function populate_fabled() {
 function gen_fabled_tab(token_JSON, inPlay) {
   var color = "#b3b300";
   if (!inPlay) {color = "#000000";}
-  div = document.createElement("div");
+  var div = document.createElement("div");
+  document.getElementById("night_order_tab_landing").appendChild(div);
   div.classList = "night_order_tab";
   div.id = token_JSON.id + "_night_order_tab";
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , "+color+")";
-  span = document.createElement("span");
+  var span = document.createElement("span");
   span.classList = "night_order_span"
   span.innerHTML = token_JSON["description"];
   span.id = token_JSON.id + "_night_order_tab_span";
   div.appendChild(span);
-  img = document.createElement("img");
+  var img = document.createElement("img");
   img.classList = "night_order_img";
   img.src = "assets/icons/"+token_JSON.id+".png";
-  token_landing = document.createElement("div");
+  var token_landing = document.createElement("div");
   token_landing.classList = "night_order_fabled_token_container"
+  token_landing.id = "night_order_" + token_JSON.id;
   token_JSON["tokens"].forEach((token) => {
     var token_perm = document.createElement("div");
     token_perm.classList = "night_order_fabled_token_perm"
-    token_perm.style.backgroundImage = "url('assets/sky.png')"
+    token_perm.style.backgroundImage = "url('assets/reminders/"+token+".png')"
     token_landing.appendChild(token_perm)
   })
   div.appendChild(token_landing);
+  var token_drag = document.createElement("div"); // ! not oporational
+  let drag_y = document.getElementById("night_order_" + token_JSON.id).getBoundingClientRect.y;
+  console.log(drag_y)
+  token_drag.style = "position: absolute; left: 90px; top: " + drag_y + "px;"
+  div.appendChild(token_drag);
   div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
   div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
   div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
   div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"_night_order_tab')");
   div.appendChild(img);
-  document.getElementById("night_order_tab_landing").appendChild(div);
+}
+function spawnNightOrderGhost(x, y, imgUrl, id) {
+  var time = new Date();
+  var uid = time.getTime();
+  var div = document.createElement("div");
+  div.classList = "info_tokens_drag drag";
+  div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 100px; height 100px;";
+  div.id = id + "_" + uid;
+  div.setAttribute("ghost", "true");
+  var img = document.createElement("img");
+  img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
+  img.src = "assets/delete.png";
+  img.id = id + "_" + uid + "_img";
+  div.appendChild(img);
+  console.log("night_order_" + id)
+  document.getElementById("night_order_" + id).prepend(div);
+  dragInit();
 }
 
