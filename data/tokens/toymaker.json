@@ -1,0 +1,13 @@
+{
+    "id": "toymaker",
+    "name":"Toymaker",
+    "description":"The Demon may choose not to attack & must do this at least once per game. Evil players get normal starting info.",
+    "alignment":null,
+    "class":"FAB",
+    "tokens":["toymaker_last_night_cant_attack"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":null,
+    "hide_face":null
+}

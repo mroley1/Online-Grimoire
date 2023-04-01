@@ -1,0 +1,13 @@
+{
+    "id": "buddhist",
+    "name":"Buddhist",
+    "description":"For the first 2 minutes of each day, veteran players may not talk.",
+    "alignment":null,
+    "class":"FAB",
+    "tokens":[],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":null,
+    "hide_face":null
+}

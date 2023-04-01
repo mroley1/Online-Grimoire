@@ -1,0 +1,13 @@
+{
+    "id": "spirit_of_ivory",
+    "name":"Spirit Of Ivory",
+    "description":"There can't be more than 1 extra evil player.",
+    "alignment":null,
+    "class":"FAB",
+    "tokens":["spirit_of_ivory_cant_make_evil"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":null,
+    "hide_face":null
+}

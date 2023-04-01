@@ -100,7 +100,7 @@ html, body {overscroll-behavior: none;}
 .trashcan {position: absolute; bottom: 5px; left: 5px; width: 70px; height: 70px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; border-radius: 10px; background-image: url("assets/delete.png"); background-position: center; background-repeat: no-repeat; background-size: contain;}
 .trashcan:hover {opacity: 0.7;}
 
-.role_token {height: 150px; width: 150px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px; border-radius: 100%; background-image: url(assets/alive_token.png);}
+.role_token {height: 150px; width: 150px; position: absolute; background-repeat: no-repeat; background-size: cover; left: 0px; border-radius: 100%; background-image: url(assets/alive_token.png); pointer-events: all; cursor: pointer;}
 .role_token[viability*="dead"] {background-image: url(assets/dead_token.png);}
 #body_actual[night="true"] .role_token:not([visibility="show"]) {display: none;}
 .token_death {width: 50px; pointer-events: none; position: absolute; left: 50px; top: 7px; display: none;}
@@ -113,19 +113,22 @@ html, body {overscroll-behavior: none;}
 .token_oursider_betray {width: 80%; height: 80%; position: absolute; top: -15px; left: -15px; pointer-events: none; display: none;}
 #body_actual[night="true"] .token_oursider_betray {display: inherit;}
 
-#nightorder_button_container {position: absolute; top: 0px; right: 0px; width: 300px; height: 45px; display: inline-block; display: flex;}
+#nightorder_button_container {position: absolute; top: 0px; right: 0px; width: 400px; height: 45px; display: inline-block; display: flex;}
 .night_select {width: 100px; display: block; height: 41px; text-align: center; font-family: PiratesBay; font-size: 28pt; border: black 2px solid; background-image: url("assets/vines.png"); color: #afafaf; cursor: pointer; user-select: none;}
+#nightorder_button_container[nightOrder="fabled"] #fabled_toggle {color: rgb(244, 244, 244);}
 #nightorder_button_container[nightOrder="jinx"] #jinx_toggle {color: rgb(244, 244, 244);}
 #nightorder_button_container[nightOrder="firstnight"] #first_night {color: rgb(244, 244, 244);} 
 #nightorder_button_container[nightOrder="othernight"] #other_night {color: rgb(244, 244, 244);}
 
-#night_order_landing_container {position: absolute; width: 520px; right: 0px; top: 45px; word-wrap: normal; text-align: right; height: calc(100% - 160px); pointer-events: none; overflow-y: scroll; scrollbar-width: none;}
+#night_order_landing_container {position: absolute; width: 520px; right: 0px; top: 45px; word-wrap: normal; text-align: right; height: calc(100% - 160px); pointer-events: none; overflow-y: scroll; scrollbar-width: none; overflow: visible;}
 #night_order_landing_container::-webkit-scrollbar {display: none;}
 #night_order_tab_landing {width: 90px; position: absolute; right: 0px; pointer-events: all; display: flex; flex-flow: column; pointer-events: all;}
-.night_order_tab {width: 90px; height: 90px; display: block; background-position: center; background-repeat: no-repeat; background-size: contain; border-bottom: 2px solid black; cursor: pointer; position:static; transform: translateX(0px); transition: all ease-in-out 0.2s; text-align: left; min-height: 90px; overflow: hidden;}
+.night_order_tab {width: 90px; height: 90px; display: block; background-position: center; background-repeat: no-repeat; background-size: contain; border-bottom: 2px solid black; cursor: pointer; position:static; transform: translateX(0px); transition: all ease-in-out 0.2s; text-align: left; min-height: 90px; overflow: visible;}
 /*#night_order_landing_container:has(.night_order_tab:hover) {pointer-events: all;}  implemented in JS because touch >:| */
 .night_order_img {width: 90px; height: 90px; display: inline; pointer-events: none; position: absolute; left: 0px; top: 0px;}
 .night_order_span {width: 399px; height: calc(max-content + 10px); display: inline-block; transform: translateX(81px); padding: 10px; font-size: 15pt; font-family: PiratesBay; color: white; pointer-events: none;}
+.night_order_fabled_token_container {display: flex; flex-direction: row; height: max-content; left: 90px; position: relative; width: 400; flex-wrap: wrap;}
+.night_order_fabled_token_perm {height: 80px; width: 80px; background-image: url("assets/yellow_swirls.webp"); margin-right: 10px; margin-bottom: 10px; background-position: center; background-size: contain;}
 
 .mutate_menu_main {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-color: #000000b7; display: none;}
 .mutate_menu_scroll_body {display: inline-block; height: 100%; width: 70%; pointer-events: all; background-color: #000000b7; border-radius: 100px; padding: 50px; overflow-y: scroll; scrollbar-width: none;}

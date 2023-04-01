@@ -1,0 +1,13 @@
+{
+    "id": "djinn",
+    "name":"Djinn",
+    "description":"Use the Djinn's special rule. All players know what it is.",
+    "alignment":null,
+    "class":"FAB",
+    "tokens":["djinn_jinxed"],
+    "first_night_desc":"",
+    "other_night_desc":"",
+    "change_makeup":[],
+    "hide_token":null,
+    "hide_face":null
+}

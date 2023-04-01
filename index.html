@@ -8,15 +8,16 @@
     <body id="body_actual" style="--BG-IMG:url('assets/backgrounds/blue_circle_large.webp'); overflow: hidden;" onload="javascript:loaded()" night="false">
         <div class="body_background_image"></div>
         
+        <div onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;"></div>
+        
         <div id="alignment_tokens" style="position: absolute; top: 85px; width: 90px; left: 0px;">
             <div id="goodSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/good.png');"></div>
             <div id="evilSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/evil.png');"></div>
             <div id="genPipSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/reminder_pip.png');"></div>
         </div>
-
-        <div onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;">
+        <div id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
             <!--<div id="reminder_layer"></div>-->
-            <div onclick="javascript:unprompt_reminders()" id="token_layer"></div>
+            <div id="token_layer"></div>
         </div>
         <div id="interactivePlane" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
             <div id="dragPipLayer"></div>
@@ -24,6 +25,7 @@
         </div>
 
         <div id="nightorder_button_container" nightOrder="none">
+            <div id="fabled_toggle" class="night_select" onclick="javascript:toggle_night_order_buttons('fabled')">fabled</div>
             <div id="jinx_toggle" class="night_select" onclick="javascript:toggle_night_order_buttons('jinx')">jinxes</div>
             <div id="first_night" class="night_select" onclick="javascript:toggle_night_order_buttons('firstnight')">first</div>
             <div id="other_night" class="night_select" onclick="javascript:toggle_night_order_buttons('othernight')">other</div>
@@ -94,7 +96,7 @@
             </div>
         </div>
         
-        <div id="night_wedge_container">
+        <div id="night_wedge_container" style="display: none;">
             <div id="night_wedge_rotate" style="transform: rotate(180deg);">
                 <div id="night_wedge_circle" onclick="javascript:night_wedge_next_day()">
                     <div class="night_wedge_circle_bg" id="night_wedge_circle_day"></div>
@@ -207,6 +209,7 @@
                     <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_circle_small.webp"></div>
                     <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_swirls.webp"></div>
                     <div class="background_select_scroll_item" onclick="javascript:background_image_change('lounge')"><img class="background_select_scroll_item_image" src="assets/backgrounds/lounge.webp"></div>
+                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('user_center')"><img class="background_select_scroll_item_image" src="assets/backgrounds/user_center.webp"></div>
                 </div>
             </div>
         </div>
