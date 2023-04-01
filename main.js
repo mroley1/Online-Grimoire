@@ -60,6 +60,7 @@ function generate_game_state_json() {
   var state = new Object();
   state.script = CURRENT_SCRIPT;
   state.scriptColor = document.getElementById("script_upload_feedback").getAttribute("used");
+  state.scriptNumber = document.getElementById("script_options").selectedIndex;
   state.playercount = document.getElementById("player_count").value;
   state.night = document.getElementById("body_actual").getAttribute("night");
   state.orientation = document.getElementById("body_actual").getAttribute("orientation");
@@ -111,6 +112,8 @@ async function load_game_state_json(state) {
   loading = true;
   await populate_script(state.script);
   document.getElementById("script_upload_feedback").setAttribute("used", state.scriptColor);
+  console.log(state.selectedIndex)
+  document.getElementById("script_options").selectedIndex = state.scriptNumber;
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
   document.getElementById("body_actual").style.setProperty("--BG-IMG", state.background);
@@ -1290,6 +1293,7 @@ function gen_fabled_tab(token_JSON, inPlay) {
   token_JSON["tokens"].forEach((token) => {
     var token_perm = document.createElement("div");
     token_perm.classList = "night_order_fabled_token_perm"
+    token_perm.style.backgroundImage = "url('assets/sky.png')"
     token_landing.appendChild(token_perm)
   })
   div.appendChild(token_landing);
