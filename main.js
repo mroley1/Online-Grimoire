@@ -48,10 +48,10 @@ class NightCounter{
   }
 }
 var counter = new NightCounter();
-// TODO better scripts menu
+// ? TODO better scripts menu
 // TODO fullscreeen settings menu
-// TODO fabled
-// TODO pip layer clean up prompt delete
+// TODO better fabled tokens
+// ? TODO pip layer clean up prompt delete
 // TODO clean up saving and loading 
 // * TODO fancify night widget
 // * TODO higher player limit to include travellers
@@ -1202,17 +1202,19 @@ function expand_night_order_tab(id) {
   tab.style.width = "500px";
   tab.style.transform = "translateX(-410px)";
   tab.style.height = document.getElementById(id).scrollHeight;
-  tab.setAttribute("onclick", "javascript:collapse_night_order_tab('"+id+"')");
+  tab.setAttribute("onclick", "javascript:collapse_night_order_tab(event, '"+id+"')");
   if (tab.getElementsByClassName("night_order_fabled_token_container").length == 1 && tab.getElementsByClassName("night_order_fabled_token_container")[0].children.length != 0) {
     let container = tab.getElementsByClassName("night_order_fabled_token_container")[0];
     document.getElementById("token_drag_" + id).style = "position: absolute; height: 80px; left: " + container.offsetLeft + "; top: " + container.offsetTop + ";";
     var tokens = tab.getElementsByClassName("night_order_fabled_token_container")[0].children;
-    for (i = 0; i < tokens.length; i++) {
-      spawnNightOrderGhost(tokens[i].offsetLeft, tokens[i].offsetTop, tokens[i].style.backgroundImage, tokens[i].id, container.id.match(/(?<=night_order_).*/)[0]);
-    }
+    // for (i = 0; i < tokens.length; i++) {
+    //   spawnNightOrderGhost(tokens[i].offsetLeft, tokens[i].offsetTop, tokens[i].style.backgroundImage, tokens[i].id, container.id.match(/(?<=night_order_).*/)[0]);
+    // }
   }
 }
-function collapse_night_order_tab(id) {
+function collapse_night_order_tab(event, id) {
+  event.preventDefault()
+  if(document.elementFromPoint(event.clientX, event.clientY).classList == "night_order_fabled_token_perm") {return;} // bad implementation to prvent tab from closing when spawing token
   tab = document.getElementById(id)
   tab.style.width = "90px";
   tab.style.transform = "translateX(0px)";
@@ -1305,13 +1307,14 @@ function gen_fabled_tab(token_JSON, inPlay) {
   var token_landing = document.createElement("div");
   token_landing.classList = "night_order_fabled_token_container"
   token_landing.id = "night_order_" + token_JSON.id;
-  // token_JSON["tokens"].forEach((token) => {
-  //   var token_perm = document.createElement("div");
-  //   token_perm.id = token;
-  //   token_perm.classList = "night_order_fabled_token_perm"
-  //   token_perm.style.backgroundImage = "url('assets/reminders/"+token+".png')"
-  //   token_landing.appendChild(token_perm)
-  // })
+  token_JSON["tokens"].forEach((token) => {
+    var token_perm = document.createElement("div");
+    token_perm.id = token;
+    token_perm.classList = "night_order_fabled_token_perm"
+    token_perm.style.backgroundImage = "url('assets/reminders/"+token+".png')"
+    token_perm.setAttribute("onclick", "javascript:spawnReminder('" + token + "', 0, 'calc(50% - 40px)', 'calc(50% - 40px)')")
+    token_landing.appendChild(token_perm)
+  })
   div.appendChild(token_landing);
   var token_drag = document.createElement("div");
   token_drag.id = "token_drag_" + token_JSON.id + "_night_order_tab";
@@ -1324,21 +1327,21 @@ function gen_fabled_tab(token_JSON, inPlay) {
   div.setAttribute("onclick", "javascript:expand_night_order_tab('"+token_JSON.id+"_night_order_tab')");
   div.appendChild(img);
 }
-function spawnNightOrderGhost(x, y, imgUrl, id, fabled) {
-  var time = new Date();
-  var uid = time.getTime();
-  var div = document.createElement("div");
-  div.classList = "info_tokens_drag drag";
-  div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 80px; height: 80px;";
-  div.id = id + "_" + uid;
-  div.setAttribute("ghost", "true");
-  div.setAttribute("token_from", "night_order");
-  var img = document.createElement("img");
-  img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
-  img.src = "assets/delete.png";
-  img.id = id + "_" + uid + "_img";
-  div.appendChild(img);
-  document.getElementById("token_drag_" + fabled + "_night_order_tab").prepend(div);
-  dragInit();
-}
+// function spawnNightOrderGhost(x, y, imgUrl, id, fabled) {
+//   var time = new Date();
+//   var uid = time.getTime();
+//   var div = document.createElement("div");
+//   div.classList = "info_tokens_drag drag";
+//   div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 80px; height: 80px;";
+//   div.id = id + "_" + uid;
+//   div.setAttribute("ghost", "true");
+//   div.setAttribute("token_from", "night_order");
+//   var img = document.createElement("img");
+//   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
+//   img.src = "assets/delete.png";
+//   img.id = id + "_" + uid + "_img";
+//   div.appendChild(img);
+//   document.getElementById("token_drag_" + fabled + "_night_order_tab").prepend(div);
+//   dragInit();
+// }
 
