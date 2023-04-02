@@ -383,7 +383,7 @@ function shuffle_roles() {
     }
     hideInfo();
   }
-  var tokens = document.getElementById("token_layer").children;
+  let tokens = document.getElementById("token_layer").children;
   var ids = [];
   for (i = 0, j = 0; i < tokens.length; i++) {
     if (tokens[i].getAttribute("visibility")=="show") {
@@ -392,7 +392,7 @@ function shuffle_roles() {
   }
   shuffle(ids);
   var offset = 0
-  for (i = 0, j = 0; i < tokens.length; i++) {
+  for (let i = 0, j = 0; i < tokens.length; i++) {
     if (tokens[i].getAttribute("visibility")=="show") {
       mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
     }
@@ -404,7 +404,7 @@ function populate_mutate_menu(tokens) {
     div.id = "mutate_menu_" + element["id"];
     div.classList = "background_image mutate_menu_token";
     div.style.backgroundImage = "url(assets/roles/"+ element["id"] + "_token.png";
-    if (element["class"] == "fab") {
+    if (element["class"] != "fab") {
       document.getElementById("mutate_menu_" + element["class"]).appendChild(div);
     }
   })
