@@ -69,7 +69,7 @@ function generate_game_state_json() {
   players = document.getElementById("token_layer").getElementsByClassName("role_token");
   for (i = 0; i < players.length; i++) {
     state.players[i] = new Object();
-    state.players[i].character = players[i].id.substring(0,players[i].id.length-UID_LENGTH-7);
+    state.players[i].role = players[i].getAttribute("role");
     state.players[i].uid = players[i].getAttribute("uid");
     state.players[i].visibility = players[i].getAttribute("visibility");
     state.players[i].viability = players[i].getAttribute("viability");
@@ -83,7 +83,7 @@ function generate_game_state_json() {
   reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
   for (i = 0; i < reminders.length; i++) {
     state.reminders[i] = new Object();
-    state.reminders[i].id = reminders[i].id.substring(0,reminders[i].id.length-(UID_LENGTH*2)-2);
+    state.reminders[i].id = reminders[i].getAttribute("role");
     state.reminders[i].uid = reminders[i].getAttribute("uid");
     state.reminders[i].left = reminders[i].style.left;
     state.reminders[i].top = reminders[i].style.top;
@@ -94,7 +94,7 @@ function generate_game_state_json() {
   for (i = 0; i < pips.length; i++) {
     if (pips[i].getAttribute("stacked") == "false") {
       state.pips[j] = new Object();
-      state.pips[j].type = pips[i].id.substring(0,pips[i].id.length-UID_LENGTH-1);
+      state.pips[j].type = pips[i].getAttribute("role");
       state.pips[j].left = pips[i].style.left;
       state.pips[j].top = pips[i].style.top;
       j++;
@@ -201,7 +201,7 @@ function visibility_toggle() {
   if (document.getElementById("body_actual").getAttribute("night")=="false") { // ! nighttime
     document.getElementById("body_actual").setAttribute("night", "true");
     for (i = 0; i < tokens.length; i++) {
-      var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
+      var id = tokens[i].getAttribute("role");
       var uid = tokens[i].getAttribute("uid");
       tokens[i].style.backgroundImage = "";
       tokens[i].setAttribute("onclick", "javascript:deathCycle('"+ id + "', " + uid +")");
@@ -209,7 +209,7 @@ function visibility_toggle() {
   } else {                                                                     // ! daytime
     document.getElementById("body_actual").setAttribute("night", "false");
     for (i = 0; i < tokens.length; i++) {
-      var id = tokens[i].id.substring(0,tokens[i].id.length-UID_LENGTH-7);
+      var id = tokens[i].getAttribute("role");
       var uid = tokens[i].getAttribute("uid");
       tokens[i].style.backgroundImage = "url('assets/roles/"+id+"_token.png')"
       tokens[i].setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
@@ -270,6 +270,7 @@ function spawnToken(id, uid,  visibility, cat, hide_face, viability, left, top, 
   div.classList = "role_token drag";
   div.style = "background-image: url('assets/roles/"+id+"_token.png'); left: "+left+"; top: " + top;
   div.id = id+"_token_"+uid;
+  div.setAttribute("role", id);
   div.setAttribute("viability", viability);
   div.setAttribute("uid", uid);
   div.setAttribute("visibility", visibility);
@@ -813,6 +814,7 @@ function spawnReminder(id, uid, left, top) {
     div.classList = "reminder drag";
     div.style = "background-image: url('assets/reminders/"+id+".png'); left: "+left+"; top: "+top;
     div.id = id + "_" + uid;
+    div.setAttribute("role", id);
     div.setAttribute("uid", uid);
     var img = document.createElement("img");
     img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
@@ -1118,7 +1120,7 @@ async function populate_night_order() {
   var inPlay = new Set();
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
-    var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
+    var id = tokens[i].id.substring(0, tokens[i].getAttribute("role"));
     if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("visibility")!="bluff"){alive.add(id);}
     if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
   }
@@ -1227,7 +1229,7 @@ async function populate_jinx() {
   tokens = document.getElementById("token_layer").children;
   var inPlay = new Set();
   for (i = 0; i<tokens.length;i++) {
-    var id = tokens[i].id.substring(0, tokens[i].id.length-(7 + UID_LENGTH));
+    var id = tokens[i].id.substring(0, tokens[i].getAttribute("role"));
     if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
   }
   for (const token of inPlay) {
