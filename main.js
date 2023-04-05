@@ -1,4 +1,7 @@
 
+import {Token} from "./modules/token.js"
+
+
 const UID_LENGTH = 13
 const DEFAULT_FABLED = new Set(["doomsayer", "angel", "buddhist", "hells_librarian", "revolutionary", "fiddler", "toymaker"]);
 var tokens_ref;
@@ -48,13 +51,8 @@ class NightCounter{
   }
 }
 var counter = new NightCounter();
-// ? TODO better scripts menu
-// TODO fullscreeen settings menu
-// TODO better fabled tokens
-// ? TODO pip layer clean up prompt delete
-// TODO clean up saving and loading 
-// * TODO fancify night widget
-// * TODO higher player limit to include travellers
+// TODO move everything to event listeners
+// TODO push more sections into separate files
 
 function generate_game_state_json() {
   var state = new Object();
@@ -311,7 +309,7 @@ function spawnToken(id, uid,  visibility, cat, hide_face, viability, left, top, 
 }
 function spawnTokenDefault(id, visibility, cat, hide_face) {
   var time = new Date();
-  var uid = time.getTime()
+  var uid = time.getTime();
   spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width/2)-75)+"px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid) {
@@ -509,6 +507,8 @@ async function script_upload() {
 }
 async function populate_script(script) {
   CURRENT_SCRIPT = script;
+  let t = new Token(CURRENT_SCRIPT["tea_lady"]);
+  alert(t.getJson());
   document.getElementById("script_upload_feedback").innerHTML = script[0]["name"];
   function header(text, landing_name, color) {
       var div = document.createElement("div");
