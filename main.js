@@ -117,7 +117,7 @@ async function load_game_state_json(state) {
   document.getElementById("body_actual").setAttribute("night", state.night);
   document.getElementById("body_actual").style.setProperty("--BG-IMG", state.background);
   for (let i = 0; i < state.players.length; i++) {
-    spawnToken(state.players[i].character, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+    spawnToken(state.players[i].role, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
   }
   for (let i = 0; i < state.reminders.length; i++) {
     spawnReminder(state.reminders[i].id, state.reminders[i].uid, state.reminders[i].left, state.reminders[i].top)
@@ -405,7 +405,7 @@ function populate_mutate_menu(tokens) {
     div.id = "mutate_menu_" + element["id"];
     div.classList = "background_image mutate_menu_token";
     div.style.backgroundImage = "url(assets/roles/"+ element["id"] + "_token.png";
-    if (element["class"] != "fab") {
+    if (element["class"] != "FAB") {
       document.getElementById("mutate_menu_" + element["class"]).appendChild(div);
     }
   })
@@ -612,27 +612,29 @@ function player_count_change() {
     expected.dem = [table[tableIndex][3], 0, 0, false];
     expected.trav = [0, 0, 0, false];
     async function makeupMod(id) {
-      let lambdas = {"HARD":((cat, mod)=>{expected[cat][0]+=mod}),
-                     "SOFTPOS":((cat, mod)=>{expected[cat][1]+=mod}),
-                     "SOFTNEG":((cat, mod)=>{expected[cat][2]+=mod}),
-                     "REQ":((cat, val)=>{}),
-                     "LOCK":((cat, val)=>{
-                      if (val == -1) {
-                        expected[cat][0] = player_count;
-                      } else {
-                        expected[cat][0] = val;
-                      }
-                      expected[cat][3] = true;
-                      expected[cat][1] = 0;
-                      expected[cat][2] = 0;
-                     })}
-      let json = tokens_ref[id];
-      json["change_makeup"].forEach(element => {
-        let changeKey = Object.keys(element)[0];
-        if (!expected[element[changeKey][0]][3]) {
-          lambdas[changeKey](element[changeKey][0], element[changeKey][1]);
-        }
-      });
+      try {
+        let lambdas = {"HARD":((cat, mod)=>{expected[cat][0]+=mod}),
+                      "SOFTPOS":((cat, mod)=>{expected[cat][1]+=mod}),
+                      "SOFTNEG":((cat, mod)=>{expected[cat][2]+=mod}),
+                      "REQ":((cat, val)=>{}),
+                      "LOCK":((cat, val)=>{
+                        if (val == -1) {
+                          expected[cat][0] = player_count;
+                        } else {
+                          expected[cat][0] = val;
+                        }
+                        expected[cat][3] = true;
+                        expected[cat][1] = 0;
+                        expected[cat][2] = 0;
+                      })}
+        let json = tokens_ref[id];
+        json["change_makeup"].forEach(element => {
+          let changeKey = Object.keys(element)[0];
+          if (!expected[element[changeKey][0]][3]) {
+            lambdas[changeKey](element[changeKey][0], element[changeKey][1]);
+          }
+        });
+      } catch {}
       return Promise.resolve();
     }
     for (i = 0; i<tokens.length; i++) {
@@ -758,6 +760,7 @@ function change_background_menu_hide() {
 
 //info functions
 async function infoCall(id, uid) {
+  close_menu();
   let data_token = document.getElementById(id + "_token_" + uid);
   document.getElementById("info_img").src = "assets/roles/"+id+"_token.png";
   var roleJSON = tokens_ref[id];
@@ -825,6 +828,11 @@ function spawnReminder(id, uid, left, top) {
     document.getElementById("remainerLayer").appendChild(div);
     dragInit();
     if (!loading) {save_game_state();}
+}
+function spawnFabledReminder(id) {
+  var time = new Date();
+  var uid = time.getTime();
+  spawnReminder(id, uid, 'calc(50% - 40px)', 'calc(50% - 40px)')
 }
 function hideInfo() {
     document.getElementById("info_box").style.display = "none";
@@ -1120,7 +1128,8 @@ async function populate_night_order() {
   var inPlay = new Set();
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
-    var id = tokens[i].id.substring(0, tokens[i].getAttribute("role"));
+    var id = tokens[i].getAttribute("role");
+    console.log(id)
     if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("visibility")!="bluff"){alive.add(id);}
     if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
   }
@@ -1229,7 +1238,7 @@ async function populate_jinx() {
   tokens = document.getElementById("token_layer").children;
   var inPlay = new Set();
   for (i = 0; i<tokens.length;i++) {
-    var id = tokens[i].id.substring(0, tokens[i].getAttribute("role"));
+    var id = tokens[i].getAttribute("role");
     if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
   }
   for (const token of inPlay) {
@@ -1314,7 +1323,7 @@ function gen_fabled_tab(token_JSON, inPlay) {
     token_perm.id = token;
     token_perm.classList = "night_order_fabled_token_perm"
     token_perm.style.backgroundImage = "url('assets/reminders/"+token+".png')"
-    token_perm.setAttribute("onclick", "javascript:spawnReminder('" + token + "', 0, 'calc(50% - 40px)', 'calc(50% - 40px)')")
+    token_perm.setAttribute("onclick", "javascript:spawnFabledReminder('" + token + "')")
     token_landing.appendChild(token_perm)
   })
   div.appendChild(token_landing);
