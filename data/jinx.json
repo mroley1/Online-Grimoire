@@ -393,5 +393,34 @@
         "reason": "Only 1 jinxed character can be in play. Evil players start knowing which player and character it is."
       }
     ]
+  },
+  {
+    "id": "vizier",
+    "jinx": [
+      {
+        "id": "investigator",
+        "reason": "If the Investigator learns that the Vizier is in play, the existence of the Vizier is not announced by the Storyteller."
+      },
+      {
+        "id": "preacher",
+        "reason": "If the Vizier loses their ability, they learn this. If the Vizier is executed while they have their ability, their team wins."
+      },
+      {
+        "id": "courtier",
+        "reason": "If the Vizier loses their ability, they learn this. If the Vizier is executed while they have their ability, their team wins."
+      },
+      {
+        "id": "alchemist",
+        "reason": "If the Alchemist has the Vizier ability, they may only choose to execute immediately if three or more players voted, regardless of those players' alignment."
+      },
+      {
+        "id": "magician",
+        "reason": "Only 1 jinxed character can be in play. Evil players start knowing which player and character it is."
+      },
+      {
+        "id": "fearmonger",
+        "reason": "The Vizier wakes with the Fearmonger, learns who they choose and cannot choose to immediately execute that player."
+      }
+    ]
   }
 ]
