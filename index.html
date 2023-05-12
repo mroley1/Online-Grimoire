@@ -1,239 +1,33 @@
 <html>
     <head>
-        <script type="module" src="scripts/token.js"></script>
-        <script type="module" src="main.js"></script>
+        <script type="module" src="modules/main.js"></script>
         <link href="main.css" rel="stylesheet">
         <link rel="icon" href="assets/demon-head.ico">
         <title>Grimoire</title>
     </head>
-    <body id="body_actual" style="--BG-IMG:url('assets/backgrounds/blue_circle_large.webp'); overflow: hidden;" onload="javascript:loaded()" night="false">
+    <body style="--BG-IMG:url('assets/backgrounds/blue_circle_large.webp');">
         <div class="body_background_image"></div>
         
-        <div onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;"></div>
         
-        <div id="alignment_tokens" style="position: absolute; top: 85px; width: 90px; left: 0px;">
-            <div id="goodSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/good.png');"></div>
-            <div id="evilSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/evil.png');"></div>
-            <div id="genPipSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/reminder_pip.png');"></div>
-        </div>
-        <div id="dragZone" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
-            <!--<div id="reminder_layer"></div>-->
-            <div id="token_layer"></div>
-        </div>
-        <div id="interactivePlane" style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; pointer-events: none;">
-            <div id="dragPipLayer"></div>
-            <div id="remainerLayer"></div>
-        </div>
-
-        <div id="nightorder_button_container" nightOrder="none">
-            <div id="fabled_toggle" class="night_select" onclick="javascript:toggle_night_order_buttons('fabled')">fabled</div>
-            <div id="jinx_toggle" class="night_select" onclick="javascript:toggle_night_order_buttons('jinx')">jinxes</div>
-            <div id="first_night" class="night_select" onclick="javascript:toggle_night_order_buttons('firstnight')">first</div>
-            <div id="other_night" class="night_select" onclick="javascript:toggle_night_order_buttons('othernight')">other</div>
-        </div>
-        <div id="night_order_landing_container">
-            <div id="night_order_tab_landing"></div>
-        </div>
-
-        <div id="visibility_toggle" onclick="javascript:visibility_toggle()" class="bottom_buttons"></div>
-        <div id="move_toggle" onclick="javascript:move_toggle()" class="bottom_buttons" style="background-image: url(assets/move.png); right: 120px; background-color: rgb(66, 66, 66); cursor: pointer;"></div>
         
-        <div id="info_box" style="display: none;">
-            <div id="info_desc" class="info_tab" focus="true">
-                <div onclick="javascript:expand_info_tab('desc')" class="info_tab_header" style="width: 250px;">
-                    <img id="info_img" focus="true">
-                    <div id="info_visibility_shade" focus="true"></div>
-                    <div id="info_visibility_img" focus="true"></div><br>
-                    <span id="info_img_name" style="color:rgb(192, 72, 72); font-size: 20pt; font-family: PiratesBay;"></span>
-                </div>
-                <div style="position: absolute; top: 0px; left: 260px; height: 100%; width: calc(100% - 265px);">
-                    <div id="info_title_field"></div>
-                    <div id="info_name_field"></div>
-                    <div id="info_desc_field"></div>
-                </div>
-            </div>
-            <div id="info_list" class="info_tab">
-                <div onclick="javascript:expand_info_tab('list')" class="info_tab_header" style="width: 100px; background-image: url('assets/light_green_swirls.webp'); background-position: 50%; position: absolute; left: 0px; top: 0px;">
-                    <img class="info_tab_img" src="assets/list.png">
-                </div>
-                <div id="info_list_scroll">
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(10)" style="background-image: url(assets/cards/card-green.png);"><span>General Info</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(0)" style="background-image: url(assets/cards/card-brown.png);"><span>Use Your Ability?</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(1)" style="background-image: url(assets/cards/card-brown.png);"><span>Choose a Player</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(11)" style="background-image: url(assets/cards/card-brown.png);"><span>Choose Character 1</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(12)" style="background-image: url(assets/cards/card-brown.png);"><span>Choose Character 2</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(13)" style="background-image: url(assets/cards/card-brown.png);"><span>Choose Character 3</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(2)" style="background-image: url(assets/cards/card-blue.png);"><span>Not In Play</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(3)" style="background-image: url(assets/cards/card-red.png);"><span>This Is Your Demon</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(4)" style="background-image: url(assets/cards/card-red.png);"><span>These Are Your Minions</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(5)" style="background-image: url(assets/cards/card-purple.png);"><span>You Are</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(6)" style="background-image: url(assets/cards/card-purple.png);"><span>This Player Is</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(7)" style="background-image: url(assets/cards/card-green.png);"><span>Character Selected You</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(8)" style="background-image: url(assets/cards/card-orange.png);"><span>Did You Vote Today?</span></div>
-                    <div class="background-image info_list_scroll_option" onclick="javascript:load_playerinfo_shroud(9)" style="background-image: url(assets/cards/card-orange.png);"><span>Did You Nominate Today?</span></div>
-                </div>
-            </div>
-            <div id="info_rmnd" class="info_tab">
-                <div onclick="javascript:expand_info_tab('rmnd')" class="info_tab_header" style="width: 100px; background-image: url('assets/blue_swirls.webp'); background-position: 75%; position: absolute; left: 0px; top: 0px;">
-                    <img class="info_tab_img" src="assets/reminders.png">
-                </div>
-                <div id="info_token_landing"></div>
-                <div id="info_token_dragbox"></div>
-            </div>
-            <div id="info_powr" class="info_tab">
-                <div onclick="javascript:expand_info_tab('powr')" class="info_tab_header" style="width: 100px; background-image: url('assets/yellow_swirls.webp'); background-position: 25%; position: absolute; left: 0px; top: 0px;">
-                    <img class="info_tab_img" src="assets/power.png">
-                </div>
-                <div id="power_options_container">
-                    <span style="color:rgb(175, 175, 175); font-size: 20pt; font-family: PiratesBay;">Player Name:</span><br><br>
-                    <input autocomplete="off" type="text" id="info_name_input" class="info_name_input"><br><br>
-                    <div style="width: 100%; height: 50%;">
-                        <div class="info_power_options" id="info_remove_player" style="cursor: pointer; background-color: #e60000; background-image: url('assets/delete.png');"></div>
-                        <div class="info_power_options" id="info_kill_cycle" style="cursor: pointer; background-color: #444444;"></div>
-                        <div class="info_power_options" id="info_visibility_toggle" style="cursor: pointer; background-color: #00639c;"></div>
-                        <div class="info_power_options" id="info_edit_role" style="cursor: pointer; background-color: #00920c; background-image: url('assets/edit.png');"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <active>
+            <!--
+                <div class="token-container" style="top: 383px; left: 451.5px; width: 150px; height: 150px; background-image: url(./assets/roles/artist_token.png);"></div>
+            -->
+        </active>
         
-        <div id="night_wedge_container" style="display: none;">
-            <div id="night_wedge_rotate" style="transform: rotate(180deg);">
-                <div id="night_wedge_circle" onclick="javascript:night_wedge_next_day()">
-                    <div class="night_wedge_circle_bg" id="night_wedge_circle_day"></div>
-                    <div class="night_wedge_circle_bg" id="night_wedge_circle_night"></div>
-                    <div id="night_wedge_circle_border"></div>
-                </div>
-                <div class="night_wedge_back_wrapper" id="night_wedge_day_back">
-                    <div class="night_wedge_back" onclick="javascript:night_wedge_prev_day()"></div>
-                </div>
-                <div class="night_wedge_text" id="night_wedge_day_text">
-                    <div class="night_wedge_text_pre" id="night_wedge_day_text_pre"></div>
-                    <div class="night_wedge_text_num" id="night_wedge_day_text_num">setup</div>
-                </div>
-                <div class="night_wedge_back_wrapper" id="night_wedge_night_back">
-                    <div class="night_wedge_back" onclick="javascript:night_wedge_prev_day()"></div>
-                </div>
-                <div class="night_wedge_text" id="night_wedge_night_text">
-                    <div class="night_wedge_text_pre" id="night_wedge_night_text_pre"></div>
-                    <div class="night_wedge_text_num" id="night_wedge_night_text_num"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="toggle_menu" onclick="javascript:open_menu()"></div>
-
-        <div id="menu_main" class="menu_main" style="transform: translateX(-300px);">
-            <div class="menu_left">
-                <div class="menu_title"></div>
-            </div>
-            <div class="close_menu" onclick="javascript:close_menu()"></div>
-            <div class="menu_body">
-                <div id="menu_settings_dropdown" expand="false">
-                    <div id="menu_settings_dropdown_button" onclick="javascript:toggle_menu_collapse()">
-                        <img id="menu_settings_dropdown_img" src="assets/expand_more.png">
-                    </div>
-                    <div id="menu_settings_dropdown_body">
-                        <div style="width: 100%; height: 70px; display: flex; flex-flow: nowrap;">
-                            <div onclick="(() => document.getElementById('game_state_upload').click())()" class="menu_settings_dropdown_trio background_image" style="background-color: #888888; background-image: url(assets/upload.svg);"></div>
-                            <div onclick="javascript:change_background_menu()" class="menu_settings_dropdown_trio background_image" style="background-color: #78258d; background-image: url(assets/wallpaper.svg);"></div>
-                            <div onclick="javascript:download_game_state()" class="menu_settings_dropdown_trio background_image" style="background-color: #888888; background-image: url(assets/download.svg);"></div>
-                        </div>
-                        <input style="opacity: 0;" type="file" id="game_state_upload" accept=".json" onchange="javascript:game_state_upload()">
-                        <span style="color: white; text-shadow: 0 0 10px black; font-size: 35pt;">Script</span><br>
-                        <select id="script_options" style="margin-top: 5px; box-shadow: 0 0 5px rgb(0, 36, 199); background-color: rgb(46, 72, 189); color: white;" onclick="javascript:script_select()" onchange="javascript:script_select()"></select>
-                        <br><br>
-                        <label for="script_upload" id="script_upload_label">Upload Script</label><br>
-                        <input style="opacity: 0;" type="file" id="script_upload" accept=".json" onchange="javascript:script_upload()">
-                        <hr>
-                        <span id="script_upload_feedback" used="select">No File Loaded</span>
-                        <hr>
-                        <br>
-                        <span style="color: white; text-shadow: 0 0 10px black; font-size: 25pt;"># Of Players</span><br>
-                        <div style="margin-top: 10px;">
-                            <div id="player_count_wrapper">
-                                <div class="player_count_increment" style="background-color: rgb(173, 0, 0);" onclick="javascript:increment_player_count(-1)">-</div>
-                                <input type="number" inputmode="numeric" min="5" max="15" value="5" id="player_count" onchange="javascript:player_count_change()"></input>
-                                <div class="player_count_increment" style="background-color: rgb(0, 129, 0);" onclick="javascript:increment_player_count(1)">+</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div style="width: 100%; text-align: center; margin-top: 30px; height: 80px; display: flex; ">
-                    <div class="menu_settings_duo background_image" style="background-image: url(assets/clean.svg); background-size: 50%; background-color: #ff0000c5; width: 100px;" onclick="javascript:clean_board()">
-                    </div>
-                    <div class="menu_settings_duo background_image" style="background-image: url(assets/shuffle.svg); background-color: #585858e7; flex-grow: 1;" onclick="javascript:shuffle_roles()">
-                    </div>
-                </div>
-                <br>
-                <div id="TOWN"></div><br>
-                <div id="OUT"></div><br>
-                <div id="MIN"></div><br>
-                <div id="DEM"></div><br>
-                <div id="TRAV"></div><br>
-                <div style="color: white; text-align: center; width: 100%; margin-right: 5px;">Made with &#9825; @ RIT</div>
-                <div style="text-align: center; width: 100%; font-size: 10pt;">
-                    <a id="source_link" href="https://github.com/mroley1/Online-Grimoire" target="_blank">source</a>
-                </div>
-                <br>
-            </div>
-        </div>
         
-        <div id="playerinfo_shoud" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-image: url(assets/background-img2.webp); display: none;">
-            <div id="playerinfo_close" class="background_image" onclick="javascript:close_playerinfo_shroud()"></div>
-            <div id="playerinfo_body" style="height: fit-content; width: 100%; position: absolute; text-align: center;">
-                <span id="playerinfo_title" style="color: white; font-size: 50pt;"></span><br><br>
-                <div id="playerinfo_character_landing"></div>
-            </div>
-            
-        </div>
         
-        <div id="background_select_menu" style="display: inherit; display: none;" onclick="javascript:change_background_menu_hide()">
-            <div style="height: 70%; width: 100%; position: absolute; top: calc(15% - 50px); pointer-events: none; display: flex; align-items: center; justify-content: center;">
-                <div class="background_select_scroll_body">
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('red_troublebrewing_logo')"><img class="background_select_scroll_item_image" src="assets/backgrounds/red_troublebrewing_logo.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_badmoonrising_logo')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_badmoonrising_logo.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('purple_sectsandviolets_logo')"><img class="background_select_scroll_item_image" src="assets/backgrounds/purple_sectsandviolets_logo.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('blue_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/blue_circle_large.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('blue_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/blue_circle_small.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('blue_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/blue_swirls.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('green_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/green_circle_large.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('green_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/green_circle_small.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('green_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/green_swirls.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('purple_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/purple_circle_large.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('purple_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/purple_circle_small.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('purple_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/purple_swirls.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('red_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/red_circle_large.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('red_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/red_circle_small.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('red_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/red_swirls.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_circle_large')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_circle_large.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_circle_small')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_circle_small.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('yellow_swirls')"><img class="background_select_scroll_item_image" src="assets/backgrounds/yellow_swirls.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('lounge')"><img class="background_select_scroll_item_image" src="assets/backgrounds/lounge.webp"></div>
-                    <div class="background_select_scroll_item" onclick="javascript:background_image_change('user_center')"><img class="background_select_scroll_item_image" src="assets/backgrounds/user_center.webp"></div>
-                </div>
-            </div>
-        </div>
+        <template id="token">
+            <div class="token-container"></div>
+        </template>
         
-        <div id="script_select_menu_container" style="display: none;">
-            <div id="script_select_menu_main_flex"></div>
-        </div>
         
-        <div id="mutate_menu_main" class="mutate_menu_main" onclick="javascript:close_mutate_menu()">
-            <div style="height: 70%; width: 100%; position: absolute; top: calc(15% - 50px); text-align: center; pointer-events: none;">
-                <div class="mutate_menu_scroll_body">
-                    <div class="menu_header" style="color: #0033cc; display: inline-block;">Townsfolk</div><br>
-                    <div id="mutate_menu_TOWN"></div><br>
-                    <div class="menu_header" style="color: #1a53ff; display: inline-block;">Outsiders</div><br>
-                    <div id="mutate_menu_OUT"></div><br>
-                    <div class="menu_header" style="color: #b30000; display: inline-block;">Minions</div><br>
-                    <div id="mutate_menu_MIN"></div><br>
-                    <div class="menu_header" style="color: #e60000; display: inline-block;">Demons</div><br>
-                    <div id="mutate_menu_DEM"></div><br>
-                    <div class="menu_header" style="color: #6600ff; display: inline-block;">Travellers</div><br>
-                    <div id="mutate_menu_TRAV"></div><br>
-                </div>
-            </div>
-        </div>
+        
+        <template id="pip"></template>
+        
+        
+        
+        <div id="debug" style="position: absolute; bottom: 0px; right: 0px; width: 100px; height: 100px; background-color: red;"></div>
     </body>
 </html>

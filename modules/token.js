@@ -1,9 +1,6 @@
 
-export const Visibility = {
-    VISIBLE: 0,
-    HIDDEN: 1,
-    BLUFF: 2
-}
+import roles from '../data/tokens.json' assert {type: 'json'}
+import Position from './position.js';
 
 export const Viability = {
     ALIVE: 0,
@@ -11,76 +8,66 @@ export const Viability = {
     DEAD: 2
 }
 
-export class Token {
-    #json; // json containing init values
-    role; // role e.g. Alchemist, Amnesiac
-    uid; // UNIX timecode to differenciate duplicate tokens
-    name; // name associated with this token
-    #visibility; // is this token visible, hidden, or a bluff
-    #viablity; // are they alive, dead, or dead w/ a vote
-    #hideFace; // should the role icon be visible during the night e.g. travellers
-    #left; // token offset from left
-    #top; // token offset from top
-    
-    getJson() {return this.#json;}
-    
-    constructor(json) { // pass in json object for token
-        this.#json = json; //(async () => {await fetch("./data/tokens").json()[role];})
-        this.role = json["id"];
-        var time = new Date();
-        this.uid = time.getTime();
-        this.name = "";
-        this.#visibility = () => {
-            if (this.#json["hide_token"]) {return Visibility.HIDDEN;}
-            else {return Visibility.VISIBLE;}
-        }
-        this.#hideFace = this.#json["hide_face"]
-        this.left = "calc(50% - 75px)";
-        this.top = "calc(50% - 75px)";
-        //document.getElementById("token_layer").appendChild(this.formHtml());
-        // update_role_counts();
-        // player_count_change();
-        // dragInit();
-        // populate_night_order();
+const WIDTH = 150;
+const HEIGHT = 150;
+
+class TokenCreationError extends Error {
+    constructor(token) {
+        super(token + " is not defined in the token sheet");
     }
-    formHtml() {
-        var div = document.createElement("div");
-        div.setAttribute("onclick", "javascript:infoCall('"+ id + "', " + uid +")");
-        div.classList = "role_token drag";
-        div.style = "background-image: url('assets/roles/"+id+"_token.png'); left: "+left+"; top: " + top;
-        div.id = id+"_token_"+uid;
-        div.setAttribute("role", id);
-        div.setAttribute("viability", viability);
-        div.setAttribute("uid", uid);
-        div.setAttribute("visibility", visibility);
-        div.setAttribute("cat", cat);
-        div.setAttribute("show_face", !hide_face);
-        var death = document.createElement("img");
-        death.src = "assets/shroud.png";
-        death.classList = "token_death";
-        death.id = id + "_" + uid + "_death";
-        div.appendChild(death);
-        var visibility_pip = document.createElement("div");
-        visibility_pip.classList = "token_visibility_pip background_image";
-        visibility_pip.id = id+"_"+uid+"_visibility_pip";
-        div.appendChild(visibility_pip);
-        var vote = document.createElement("img");
-        vote.src = "assets/vote_token.png";
-        vote.classList = "token_vote";
-        vote.id = id + "_" + uid + "_vote";
-        div.appendChild(vote);
-        var oursider_betray = document.createElement("div");
-        if (cat == "TRAV"){
-            oursider_betray.style.backgroundImage = "url('assets/icons/"+id+".png')"
+}
+
+export class Token {
+    #role; // role e.g. Alchemist, Amnesiac
+    #uid; // unique number to differenciate duplicate tokens
+    #name; // name associated with this token
+    #viability; // are they alive, dead, or dead w/ a vote
+    #position; // position class relative to (0, 0)
+    #html; // html element in DOM
+    
+    getPosition() {return this.#position}
+    getViability() {return this.#viability}
+    getRole() {return this.#role}
+    getUid() {return this.#uid}
+    getName() {return this.#name}
+    getHTMLElement() {return this.#html}
+    
+    generateTokenDom() {
+        let template = document.querySelector("#token");
+        let container = template.content.cloneNode(true).querySelector(".token-container");
+        container.style.top = this.#position.getLeft() + "px";
+        container.style.left = this.#position.getLeft() + "px";
+        container.style.height = HEIGHT + "px";
+        container.style.width = WIDTH + "px";
+        container.style.backgroundImage = "url('./assets/roles/" + this.#role + "_token.png')";
+        document.querySelector("active").appendChild(container);
+        container.addEventListener("drag", this.drag.bind(null, this));
+        return container;
+    }
+    
+    drag(token, event) {
+        console.log(event)
+        event.preventDefault()
+        if (event.screenX!=0&&event.screenY!=0) {
+            console.log(event.movementX)
+            token.move(event.screenX, event.screenY, event);
         }
-        oursider_betray.classList = "token_oursider_betray background_image";
-        oursider_betray.id = id+"_"+uid+"_oursider_betray";
-        div.appendChild(oursider_betray);
-        var name = document.createElement("span")
-        name.innerHTML = nameText;
-        name.classList = "token_text"
-        name.id = id+"_name_"+uid;
-        div.appendChild(name);
-        return div;
+    }
+    
+    move(left, top, offsetLeft=0, offsetTop=0) {
+        this.#position.setPos(left, top)
+        this.#html.style.left = this.#position.getLeft() + "px";
+        this.#html.style.top = this.#position.getTop() + "px";
+    }
+    
+    constructor(role = "") {
+        if (!roles[role]) {throw new TokenCreationError(role)}
+        this.#role = role;
+        this.#uid = window.UIDGenerator.next().value;
+        this.#name = "";
+        this.#viability = Viability.ALIVE;
+        this.#position = new Position();
+        this.#position.setCenter(WIDTH, HEIGHT);
+        this.#html = this.generateTokenDom();
     }
 }
