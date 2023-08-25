@@ -1,1 +1,454 @@
-[{"id":"_meta","author":"mroley","name":"Gang's All Here"},{"id":"organ_grinder"},{"id":"alchemist"},{"id":"amnesiac"},{"id":"atheist"},{"id":"balloonist"},{"id":"bounty_hunter"},{"id":"cannibal"},{"id":"choirboy"},{"id":"cult_leader"},{"id":"engineer"},{"id":"farmer"},{"id":"fisherman"},{"id":"general"},{"id":"king"},{"id":"acrobat"},{"id":"damsel"},{"id":"golem"},{"id":"heretic"},{"id":"boomdandy"},{"id":"fearmonger"},{"id":"goblin"},{"id":"marionette"},{"id":"al-hadikhia"},{"id":"legion"},{"id":"leviathan"},{"id":"lil_monsta"},{"id":"gangster"},{"id":"huntsman"},{"id":"lycanthrope"},{"id":"magician"},{"id":"nightwatchman"},{"id":"noble"},{"id":"pixie"},{"id":"poppy_grower"},{"id":"preacher"},{"id":"politician"},{"id":"puzzlemaster"},{"id":"snitch"},{"id":"mezepheles"},{"id":"psychopath"},{"id":"widow"},{"id":"lleech"},{"id":"riot"},{"id":"chef"},{"id":"empath"},{"id":"fortune_teller"},{"id":"investigator"},{"id":"librarian"},{"id":"mayor"},{"id":"monk"},{"id":"washerwoman"},{"id":"virgin"},{"id":"undertaker"},{"id":"soldier"},{"id":"slayer"},{"id":"ravenkeeper"},{"id":"saint"},{"id":"recluse"},{"id":"drunk"},{"id":"butler"},{"id":"spy"},{"id":"baron"},{"id":"poisoner"},{"id":"scarlet_woman"},{"id":"imp"},{"id":"gunslinger"},{"id":"scapegoat"},{"id":"beggar"},{"id":"bureaucrat"},{"id":"thief"},{"id":"chambermaid"},{"id":"courtier"},{"id":"exorcist"},{"id":"fool"},{"id":"gambler"},{"id":"gossip"},{"id":"grandmother"},{"id":"innkeeper"},{"id":"minstrel"},{"id":"pacifist"},{"id":"professor"},{"id":"sailor"},{"id":"tea_lady"},{"id":"goon"},{"id":"lunatic"},{"id":"moonchild"},{"id":"tinker"},{"id":"assassin"},{"id":"devils_advocate"},{"id":"godfather"},{"id":"mastermind"},{"id":"po"},{"id":"pukka"},{"id":"shabaloth"},{"id":"zombuul"},{"id":"apprentice"},{"id":"matron"},{"id":"voudon"},{"id":"judge"},{"id":"bishop"},{"id":"artist"},{"id":"clockmaker"},{"id":"dreamer"},{"id":"flowergirl"},{"id":"juggler"},{"id":"mathematician"},{"id":"oracle"},{"id":"philosopher"},{"id":"sage"},{"id":"savant"},{"id":"seamstress"},{"id":"snake_charmer"},{"id":"town_crier"},{"id":"barber"},{"id":"klutz"},{"id":"mutant"},{"id":"sweetheart"},{"id":"cerenovus"},{"id":"evil_twin"},{"id":"pit-hag"},{"id":"witch"},{"id":"fang_gu"},{"id":"no_dashii"},{"id":"vigormortis"},{"id":"vortox"},{"id":"butcher"},{"id":"bone_collector"},{"id":"harlot"},{"id":"barista"},{"id":"deviant"},{"id":"toymaker"},{"id":"storm_catcher"},{"id":"spirit_of_ivory"},{"id":"sentinel"},{"id":"revolutionary"},{"id":"vizier"},{"id":"hells_librarian"},{"id":"fiddler"},{"id":"fibbin"},{"id":"duchess"},{"id":"doomsayer"},{"id":"djinn"},{"id":"buddhist"},{"id":"angel"}]
+[
+	{
+		"id": "_meta",
+		"author": "mroley",
+		"name": "Gang's All Here"
+	},
+	{
+		"id": "acrobat"
+	},
+	{
+		"id": "al-hadikhia"
+	},
+	{
+		"id": "alchemist"
+	},
+	{
+		"id": "amnesiac"
+	},
+	{
+		"id": "angel"
+	},
+	{
+		"id": "apprentice"
+	},
+	{
+		"id": "artist"
+	},
+	{
+		"id": "assassin"
+	},
+	{
+		"id": "atheist"
+	},
+	{
+		"id": "balloonist"
+	},
+	{
+		"id": "barber"
+	},
+	{
+		"id": "barista"
+	},
+	{
+		"id": "baron"
+	},
+	{
+		"id": "beggar"
+	},
+	{
+		"id": "bishop"
+	},
+	{
+		"id": "bone_collector"
+	},
+	{
+		"id": "boomdandy"
+	},
+	{
+		"id": "bounty_hunter"
+	},
+	{
+		"id": "buddhist"
+	},
+	{
+		"id": "bureaucrat"
+	},
+	{
+		"id": "butcher"
+	},
+	{
+		"id": "butler"
+	},
+	{
+		"id": "cannibal"
+	},
+	{
+		"id": "cerenovus"
+	},
+	{
+		"id": "chambermaid"
+	},
+	{
+		"id": "chef"
+	},
+	{
+		"id": "choirboy"
+	},
+	{
+		"id": "clockmaker"
+	},
+	{
+		"id": "courtier"
+	},
+	{
+		"id": "cult_leader"
+	},
+	{
+		"id": "damsel"
+	},
+	{
+		"id": "deviant"
+	},
+	{
+		"id": "devils_advocate"
+	},
+	{
+		"id": "djinn"
+	},
+	{
+		"id": "doomsayer"
+	},
+	{
+		"id": "dreamer"
+	},
+	{
+		"id": "drunk"
+	},
+	{
+		"id": "duchess"
+	},
+	{
+		"id": "empath"
+	},
+	{
+		"id": "engineer"
+	},
+	{
+		"id": "evil_twin"
+	},
+	{
+		"id": "exorcist"
+	},
+	{
+		"id": "fang_gu"
+	},
+	{
+		"id": "farmer"
+	},
+	{
+		"id": "fearmonger"
+	},
+	{
+		"id": "fibbin"
+	},
+	{
+		"id": "fiddler"
+	},
+	{
+		"id": "fisherman"
+	},
+	{
+		"id": "flowergirl"
+	},
+	{
+		"id": "fool"
+	},
+	{
+		"id": "fortune_teller"
+	},
+	{
+		"id": "gambler"
+	},
+	{
+		"id": "gangster"
+	},
+	{
+		"id": "general"
+	},
+	{
+		"id": "goblin"
+	},
+	{
+		"id": "godfather"
+	},
+	{
+		"id": "golem"
+	},
+	{
+		"id": "goon"
+	},
+	{
+		"id": "gossip"
+	},
+	{
+		"id": "grandmother"
+	},
+	{
+		"id": "gunslinger"
+	},
+	{
+		"id": "harlot"
+	},
+	{
+		"id": "harpy"
+	},
+	{
+		"id": "hells_librarian"
+	},
+	{
+		"id": "heretic"
+	},
+	{
+		"id": "high_priestess"
+	},
+	{
+		"id": "huntsman"
+	},
+	{
+		"id": "imp"
+	},
+	{
+		"id": "innkeeper"
+	},
+	{
+		"id": "investigator"
+	},
+	{
+		"id": "judge"
+	},
+	{
+		"id": "juggler"
+	},
+	{
+		"id": "king"
+	},
+	{
+		"id": "klutz"
+	},
+	{
+		"id": "knight"
+	},
+	{
+		"id": "legion"
+	},
+	{
+		"id": "leviathan"
+	},
+	{
+		"id": "librarian"
+	},
+	{
+		"id": "lil_monsta"
+	},
+	{
+		"id": "lleech"
+	},
+	{
+		"id": "lunatic"
+	},
+	{
+		"id": "lycanthrope"
+	},
+	{
+		"id": "magician"
+	},
+	{
+		"id": "marionette"
+	},
+	{
+		"id": "mastermind"
+	},
+	{
+		"id": "mathematician"
+	},
+	{
+		"id": "matron"
+	},
+	{
+		"id": "mayor"
+	},
+	{
+		"id": "mezepheles"
+	},
+	{
+		"id": "minstrel"
+	},
+	{
+		"id": "monk"
+	},
+	{
+		"id": "moonchild"
+	},
+	{
+		"id": "mutant"
+	},
+	{
+		"id": "nightwatchman"
+	},
+	{
+		"id": "no_dashii"
+	},
+	{
+		"id": "noble"
+	},
+	{
+		"id": "oracle"
+	},
+	{
+		"id": "organ_grinder"
+	},
+	{
+		"id": "pacifist"
+	},
+	{
+		"id": "philosopher"
+	},
+	{
+		"id": "pit-hag"
+	},
+	{
+		"id": "pixie"
+	},
+	{
+		"id": "po"
+	},
+	{
+		"id": "poisoner"
+	},
+	{
+		"id": "politician"
+	},
+	{
+		"id": "poppy_grower"
+	},
+	{
+		"id": "plague_doctor"
+	},
+	{
+		"id": "preacher"
+	},
+	{
+		"id": "professor"
+	},
+	{
+		"id": "psychopath"
+	},
+	{
+		"id": "pukka"
+	},
+	{
+		"id": "puzzlemaster"
+	},
+	{
+		"id": "ravenkeeper"
+	},
+	{
+		"id": "recluse"
+	},
+	{
+		"id": "revolutionary"
+	},
+	{
+		"id": "riot"
+	},
+	{
+		"id": "sage"
+	},
+	{
+		"id": "sailor"
+	},
+	{
+		"id": "saint"
+	},
+	{
+		"id": "savant"
+	},
+	{
+		"id": "scapegoat"
+	},
+	{
+		"id": "scarlet_woman"
+	},
+	{
+		"id": "seamstress"
+	},
+	{
+		"id": "sentinel"
+	},
+	{
+		"id": "shabaloth"
+	},
+	{
+		"id": "slayer"
+	},
+	{
+		"id": "snake_charmer"
+	},
+	{
+		"id": "snitch"
+	},
+	{
+		"id": "soldier"
+	},
+	{
+		"id": "spirit_of_ivory"
+	},
+	{
+		"id": "spy"
+	},
+	{
+		"id": "steward"
+	},
+	{
+		"id": "storm_catcher"
+	},
+	{
+		"id": "sweetheart"
+	},
+	{
+		"id": "tea_lady"
+	},
+	{
+		"id": "thief"
+	},
+	{
+		"id": "tinker"
+	},
+	{
+		"id": "town_crier"
+	},
+	{
+		"id": "toymaker"
+	},
+	{
+		"id": "undertaker"
+	},
+	{
+		"id": "vigormortis"
+	},
+	{
+		"id": "virgin"
+	},
+	{
+		"id": "vizier"
+	},
+	{
+		"id": "vortox"
+	},
+	{
+		"id": "voudon"
+	},
+	{
+		"id": "washerwoman"
+	},
+	{
+		"id": "widow"
+	},
+	{
+		"id": "witch"
+	},
+	{
+		"id": "zombuul"
+	}
+]
