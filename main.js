@@ -364,6 +364,7 @@ function mutate_token(idFrom, uid, idTo) {
   if (new_json["class"] == "TRAV") {subject.getElementsByClassName("token_oursider_betray")[0].style.backgroundImage = "url('assets/icons/"+idTo+".png')"}
   else {subject.getElementsByClassName("token_oursider_betray")[0].style.backgroundImage = ""}
   subject.setAttribute("show_face", !new_json["hide_face"]);
+  subject.setAttribute("role", new_json["id"]);
   subject.style.backgroundImage = "url('assets/roles/" + idTo + "_token.png')";
   subject.setAttribute("onclick", "javascript:infoCall('"+idTo+"', "+ uid +")");
   subject.id = idTo + "_token_" + uid;
