@@ -497,6 +497,13 @@ async function script_select() {
 }
 async function script_upload() {
   let json = JSON.parse(await document.getElementById("script_upload").files[0].text());
+  if (typeof json[1] == typeof "") {
+    for (var i = 0; i < json.length; i++) {
+      if (typeof json[i] == typeof "") {
+        json[i] = {"id": json[i]};
+      }
+    }
+  }
   try {
     json[0]["id"]
     populate_script(json);
