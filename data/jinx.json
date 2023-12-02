@@ -100,6 +100,14 @@
       {
         "id": "mayor",
         "reason": "If Leviathan is in play & no execution occurs on day 5, good wins."
+      },
+      {
+        "id": "hatter",
+        "reason": "If the Hatter dies on or after day 5, the Demon cannot choose Leviathan."
+      },
+      {
+        "id": "pit-hag",
+        "reason": "After day 5, the Pit-Hag cannot choose Leviathan."
       }
     ]
   },
@@ -125,6 +133,10 @@
       {
         "id": "vizier",
         "reason": "The Vizier can die by execution if they are babysitting Lil' Monsta."
+      },
+      {
+        "id": "hatter",
+        "reason": "If a Demon chooses Lil' Monsta, they also choose a Minion to become and babysit Lil' Monsta tonight."
       }
     ]
   },
@@ -422,6 +434,10 @@
       {
         "id": "preacher",
         "reason": "Riot registers as a Minion to the Preacher."
+      },
+      {
+        "id": "hatter",
+        "reason": "If the Hatter dies, Riot is in play and a Riot chooses a different Demon, a normal evil team is created from the Riot players. If the Hatter dies and the Demon chooses Riot, Minions become Riot too."
       }
     ]
   },
