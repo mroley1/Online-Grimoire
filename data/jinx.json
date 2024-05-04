@@ -174,7 +174,7 @@
   {
     "id": "spy",
     "jinx": [
-	  {
+      {
         "id": "alchemist",
         "reason": "The Alchemist can not have the Spy ability."
       },
@@ -203,7 +203,7 @@
   {
     "id": "widow",
     "jinx": [
-	  {
+      {
         "id": "alchemist",
         "reason": "The Alchemist can not have the Widow ability."
       },
@@ -261,7 +261,7 @@
       }
     ]
   },
-    {
+  {
     "id": "baron",
     "jinx": [
       {
@@ -292,8 +292,8 @@
       {
         "id": "balloonist",
         "reason": "If the Marionette thinks that they are the Balloonist, +1 Outsider was added."
-      },      
-	  {
+      },
+      {
         "id": "damsel",
         "reason": "The Marionette does not learn that a Damsel is in play."
       },
@@ -526,6 +526,15 @@
       {
         "id": "fearmonger",
         "reason": "The Vizier wakes with the Fearmonger, learns who they choose and cannot choose to immediately execute that player."
+      }
+    ]
+  },
+  {
+    "id": "yaggababble",
+    "jinx": [
+      {
+        "id": "exorcist",
+        "reason": "If the Exorcist chooses the Yaggababble, the Yaggababble ability does not kill tonight."
       }
     ]
   }
