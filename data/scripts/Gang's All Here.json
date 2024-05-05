@@ -35,6 +35,9 @@
 		"id": "balloonist"
 	},
 	{
+		"id": "banshee"
+	},
+	{
 		"id": "barber"
 	},
 	{
@@ -419,6 +422,9 @@
 		"id": "storm_catcher"
 	},
 	{
+		"id": "summoner"
+	},
+	{
 		"id": "sweetheart"
 	},
 	{
@@ -443,6 +449,9 @@
 		"id": "vigormortis"
 	},
 	{
+		"id": "village_idiot"
+	},
+	{
 		"id": "virgin"
 	},
 	{
@@ -462,6 +471,9 @@
 	},
 	{
 		"id": "witch"
+	},
+	{
+		"id": "yaggababble"
 	},
 	{
 		"id": "zombuul"

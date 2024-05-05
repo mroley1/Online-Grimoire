@@ -1,0 +1,29 @@
+# adding tokens
+- place token image in `assets/icons/`
+- add entry to `data/tokens.json`
+- add role to `data/scripts/Gang's All Here.json`
+- add role to `data/nightsheet.json` if necesarry
+- add and jinxes to `data/jinx.json` if necesarry
+- generate player token using `template_token.xcf` and place it in `assets/roles`
+    - replace image in center and fit to size that looks right
+    - erase `curvedText` layer
+    - show hidden text layer
+    - type role name in text layer
+    - right click on text and select `Text along Path`
+    - hide text layer
+    - select `curvedText` layer
+    - select paths tab
+    - set foreground color to black
+    - select new path
+    - right click new path and select `fill path`
+    - delete new path
+    - select `Unified Transform Tool`
+    - rotate and position `curvedText` layer to be at bottom of token
+    - edit role description and use newlines to make it fit you can adjust text size if necesarry
+    - export as png
+    - DO NOT save file
+- generate any reminders using `template_reminder.xcf` and place them in `assets/reminders`
+    - replace image and resize to fit
+    - edit text
+    - export as png
+    - DO NOT save file
