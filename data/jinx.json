@@ -174,7 +174,7 @@
   {
     "id": "spy",
     "jinx": [
-	  {
+      {
         "id": "alchemist",
         "reason": "The Alchemist can not have the Spy ability."
       },
@@ -203,7 +203,7 @@
   {
     "id": "widow",
     "jinx": [
-	  {
+      {
         "id": "alchemist",
         "reason": "The Alchemist can not have the Widow ability."
       },
@@ -261,7 +261,7 @@
       }
     ]
   },
-    {
+  {
     "id": "baron",
     "jinx": [
       {
@@ -292,8 +292,8 @@
       {
         "id": "balloonist",
         "reason": "If the Marionette thinks that they are the Balloonist, +1 Outsider was added."
-      },      
-	  {
+      },
+      {
         "id": "damsel",
         "reason": "The Marionette does not learn that a Damsel is in play."
       },
@@ -526,6 +526,36 @@
       {
         "id": "fearmonger",
         "reason": "The Vizier wakes with the Fearmonger, learns who they choose and cannot choose to immediately execute that player."
+      }
+    ]
+  },
+  {
+    "id": "yaggababble",
+    "jinx": [
+      {
+        "id": "exorcist",
+        "reason": "If the Exorcist chooses the Yaggababble, the Yaggababble ability does not kill tonight."
+      }
+    ]
+  },
+  {
+    "id": "Summoner",
+    "jinx": [
+      {
+        "id": "Clockmaker",
+        "reason": "If the Summoner is in play, the Clockmaker does not receive their information until a Demon is created."
+      },
+      {
+        "id": "Alchemist",
+        "reason": "If there is an Alchemist-Summoner in play, the game starts with a Demon in play, as normal. If the Alchemist-Summoner chooses a player, they make that player a Demon but do not change their alignment."
+      },
+      {
+        "id": "Poppy Grower",
+        "reason": "If the Poppy Grower is alive when the Summoner acts, the Summoner chooses which Demon, but the Storyteller chooses which player."
+      },
+      {
+        "id": "Marionette",
+        "reason": "The Marionette neighbors the Summoner. The Summoner knows who the Marionette is."
       }
     ]
   }
