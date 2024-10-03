@@ -9,10 +9,10 @@
     ]
   },
   {
-    "id": "evil_twin",
+    "id": "eviltwin",
     "jinx": [
       {
-        "id": "plague_doctor",
+        "id": "plaguedoctor",
         "reason": "The Storyteller cannot gain the Evil Twin ability if the Plague Doctor dies."
       }
     ]
@@ -36,7 +36,7 @@
     ]
   },
   {
-    "id": "pit-hag",
+    "id": "pithag",
     "jinx": [
       {
         "id": "heretic",
@@ -65,7 +65,7 @@
     "id": "goblin",
     "jinx": [
       {
-        "id": "plague_doctor",
+        "id": "plaguedoctor",
         "reason": "If the Plague Doctor dies, a living Minion gains the Goblin ability in addition to their own ability, and learns this."
       }
     ]
@@ -106,16 +106,16 @@
         "reason": "If the Hatter dies on or after day 5, the Demon cannot choose Leviathan."
       },
       {
-        "id": "pit-hag",
+        "id": "pithag",
         "reason": "After day 5, the Pit-Hag cannot choose Leviathan."
       }
     ]
   },
   {
-    "id": "lil_monsta",
+    "id": "lilmonsta",
     "jinx": [
       {
-        "id": "poppy_grower",
+        "id": "poppygrower",
         "reason": "If the Poppy Grower is in play, Minions don't wake together. They are woken one by one, until one of them chooses to take the Lil' Monsta token."
       },
       {
@@ -123,11 +123,11 @@
         "reason": "Only 1 jinxed character can be in play. "
       },
       {
-        "id": "scarlet_woman",
+        "id": "scarletwoman",
         "reason": "If there are 5 or more players alive and the player holding the Lil' Monsta token dies, the Scarlet Woman is given the Lil' Monsta token tonight."
       },
       {
-        "id": "organ_grinder",
+        "id": "organgrinder",
         "reason": "Votes for the Organ Grinder count if the Organ Grinder is babysitting Lil' Monsta."
       },
       {
@@ -163,10 +163,10 @@
     ]
   },
   {
-    "id": "fang_gu",
+    "id": "fanggu",
     "jinx": [
       {
-        "id": "scarlet_woman",
+        "id": "scarletwoman",
         "reason": "If the Fang Gu chooses an Outsider and dies, the Scarlet Woman does not become the Fang Gu."
       }
     ]
@@ -183,11 +183,11 @@
         "reason": "When the Spy sees the Grimoire, the Demon and Magician's character tokens are removed."
       },
       {
-        "id": "poppy_grower",
+        "id": "poppygrower",
         "reason": "If the Poppy Grower is in play, the Spy does not see the Grimoire until the Poppy Grower dies."
       },
       {
-        "id": "plague_doctor",
+        "id": "plaguedoctor",
         "reason": "If the Plague Doctor dies, a living Minion gains the Spy ability in addition to their own ability, and learns this."
       },
       {
@@ -212,7 +212,7 @@
         "reason": "When the Widow sees the Grimoire, the Demon and Magician's character tokens are removed."
       },
       {
-        "id": "poppy_grower",
+        "id": "poppygrower",
         "reason": "If the Poppy Grower is in play, the Widow does not see the Grimoire until the Poppy Grower dies."
       },
       {
@@ -235,10 +235,10 @@
     ]
   },
   {
-    "id": "scarlet_woman",
+    "id": "scarletwoman",
     "jinx": [
       {
-        "id": "plague_doctor",
+        "id": "plaguedoctor",
         "reason": "If the Plague Doctor dies, a living Minion gains the Scarlet Woman ability in addition to their own ability, and learns this."
       }
     ]
@@ -247,7 +247,7 @@
     "id": "boomdandy",
     "jinx": [
       {
-        "id": "plague_doctor",
+        "id": "plaguedoctor",
         "reason": "If the Plague Doctor is executed and the Storyteller would gain the Boomdandy ability, the Boomdandy ability triggers immediately."
       }
     ]
@@ -256,7 +256,7 @@
     "id": "fearmonger",
     "jinx": [
       {
-        "id": "plague_doctor",
+        "id": "plaguedoctor",
         "reason": "If the Plague Doctor dies, a living Minion gains the Fearmonger ability in addition to their own ability, and learns this."
       }
     ]
@@ -269,7 +269,7 @@
         "reason": "The Baron might only add 1 Outsider, not 2."
       },
       {
-        "id": "plague_doctor",
+        "id": "plaguedoctor",
         "reason": "If the Storyteller gains the Baron ability, up to two players become out-of-play Outsiders."
       }
     ]
@@ -278,11 +278,11 @@
     "id": "marionette",
     "jinx": [
       {
-        "id": "lil_monsta",
+        "id": "lilmonsta",
         "reason": "The Marionette neighbors a Minion, not the Demon. \nThe Marionette is not woken to choose who takes the Lil' Monsta token, and does not learn they are the Marionette if they have the Lil' Monsta token."
       },
       {
-        "id": "poppy_grower",
+        "id": "poppygrower",
         "reason": "When the Poppy Grower dies, the Demon learns the Marionette but the Marionette learns nothing."
       },
       {
@@ -298,7 +298,7 @@
         "reason": "The Marionette does not learn that a Damsel is in play."
       },
       {
-        "id": "plague_doctor",
+        "id": "plaguedoctor",
         "reason": "If the Demon has a neighbour who is alive and a Townsfolk or Outsider when the Plague Doctor dies, that player becomes an evil Marionette. If there is already an extra evil player, this does not happen."
       },
       {
@@ -328,7 +328,7 @@
     "id": "kazali",
     "jinx": [
       {
-        "id": "bounty_hunter",
+        "id": "bountyhunter",
         "reason": "An evil Townsfolk is only created if the Bounty Hunter is still in play after the Kazali acts."
       },
       {
@@ -373,7 +373,7 @@
         "reason": "The Butler can not nominate their master."
       },
       {
-        "id": "pit-hag",
+        "id": "pithag",
         "reason": "If the Pit-Hag creates Riot, all evil players become Riot. \nIf the Pit-Hag creates Riot after day 3, the game continues for one more day."
       },
       {
@@ -437,7 +437,7 @@
         "reason": "Players that die by nomination register as being executed to the Pacifist. "
       },
       {
-        "id": "devils_advocate",
+        "id": "devilsadvocate",
         "reason": "Players that die by nomination register as being executed to the Devil's Advocate."
       },
       {
@@ -467,10 +467,10 @@
     ]
   },
   {
-    "id": "al-hadikhia",
+    "id": "alhadikhia",
     "jinx": [
       {
-        "id": "scarlet_woman",
+        "id": "scarletwoman",
         "reason": "If there are two living Al-Hadikhias, the Scarlet Woman Al-Hadikhia becomes the Scarlet Woman again."
       },
       {
@@ -480,7 +480,7 @@
     ]
   },
   {
-    "id": "organ_grinder",
+    "id": "organgrinder",
     "jinx": [
       {
         "id": "butler",
@@ -539,22 +539,22 @@
     ]
   },
   {
-    "id": "Summoner",
+    "id": "summoner",
     "jinx": [
       {
-        "id": "Clockmaker",
+        "id": "clockmaker",
         "reason": "If the Summoner is in play, the Clockmaker does not receive their information until a Demon is created."
       },
       {
-        "id": "Alchemist",
+        "id": "alchemist",
         "reason": "If there is an Alchemist-Summoner in play, the game starts with a Demon in play, as normal. If the Alchemist-Summoner chooses a player, they make that player a Demon but do not change their alignment."
       },
       {
-        "id": "Poppy Grower",
+        "id": "poppygrower",
         "reason": "If the Poppy Grower is alive when the Summoner acts, the Summoner chooses which Demon, but the Storyteller chooses which player."
       },
       {
-        "id": "Marionette",
+        "id": "marionette",
         "reason": "The Marionette neighbors the Summoner. The Summoner knows who the Marionette is."
       }
     ]
