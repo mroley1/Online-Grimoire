@@ -1,1 +1,88 @@
-[{"id":"_meta","author":"official","name":"Trouble Brewing"},{"id":"chef"},{"id":"empath"},{"id":"fortune_teller"},{"id":"investigator"},{"id":"librarian"},{"id":"mayor"},{"id":"monk"},{"id":"washerwoman"},{"id":"virgin"},{"id":"undertaker"},{"id":"soldier"},{"id":"slayer"},{"id":"ravenkeeper"},{"id":"saint"},{"id":"recluse"},{"id":"drunk"},{"id":"butler"},{"id":"spy"},{"id":"baron"},{"id":"poisoner"},{"id":"scarlet_woman"},{"id":"imp"},{"id":"gunslinger"},{"id":"scapegoat"},{"id":"beggar"},{"id":"bureaucrat"},{"id":"thief"}]
+[
+    {
+        "id": "_meta",
+        "author": "official",
+        "name": "Trouble Brewing"
+    },
+    {
+        "id": "chef"
+    },
+    {
+        "id": "empath"
+    },
+    {
+        "id": "fortuneteller"
+    },
+    {
+        "id": "investigator"
+    },
+    {
+        "id": "librarian"
+    },
+    {
+        "id": "mayor"
+    },
+    {
+        "id": "monk"
+    },
+    {
+        "id": "washerwoman"
+    },
+    {
+        "id": "virgin"
+    },
+    {
+        "id": "undertaker"
+    },
+    {
+        "id": "soldier"
+    },
+    {
+        "id": "slayer"
+    },
+    {
+        "id": "ravenkeeper"
+    },
+    {
+        "id": "saint"
+    },
+    {
+        "id": "recluse"
+    },
+    {
+        "id": "drunk"
+    },
+    {
+        "id": "butler"
+    },
+    {
+        "id": "spy"
+    },
+    {
+        "id": "baron"
+    },
+    {
+        "id": "poisoner"
+    },
+    {
+        "id": "scarletwoman"
+    },
+    {
+        "id": "imp"
+    },
+    {
+        "id": "gunslinger"
+    },
+    {
+        "id": "scapegoat"
+    },
+    {
+        "id": "beggar"
+    },
+    {
+        "id": "bureaucrat"
+    },
+    {
+        "id": "thief"
+    }
+]
