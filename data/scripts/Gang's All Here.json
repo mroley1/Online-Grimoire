@@ -8,7 +8,7 @@
 		"id": "acrobat"
 	},
 	{
-		"id": "al-hadikhia"
+		"id": "alhadikhia"
 	},
 	{
 		"id": "alchemist"
@@ -53,13 +53,13 @@
 		"id": "bishop"
 	},
 	{
-		"id": "bone_collector"
+		"id": "bonecollector"
 	},
 	{
 		"id": "boomdandy"
 	},
 	{
-		"id": "bounty_hunter"
+		"id": "bountyhunter"
 	},
 	{
 		"id": "buddhist"
@@ -95,7 +95,7 @@
 		"id": "courtier"
 	},
 	{
-		"id": "cult_leader"
+		"id": "cultleader"
 	},
 	{
 		"id": "damsel"
@@ -104,7 +104,7 @@
 		"id": "deviant"
 	},
 	{
-		"id": "devils_advocate"
+		"id": "devilsadvocate"
 	},
 	{
 		"id": "djinn"
@@ -128,13 +128,13 @@
 		"id": "engineer"
 	},
 	{
-		"id": "evil_twin"
+		"id": "eviltwin"
 	},
 	{
 		"id": "exorcist"
 	},
 	{
-		"id": "fang_gu"
+		"id": "fanggu"
 	},
 	{
 		"id": "farmer"
@@ -161,7 +161,7 @@
 		"id": "fool"
 	},
 	{
-		"id": "fortune_teller"
+		"id": "fortuneteller"
 	},
 	{
 		"id": "gambler"
@@ -203,13 +203,13 @@
 		"id": "hatter"
 	},
 	{
-		"id": "hells_librarian"
+		"id": "hellslibrarian"
 	},
 	{
 		"id": "heretic"
 	},
 	{
-		"id": "high_priestess"
+		"id": "highpriestess"
 	},
 	{
 		"id": "huntsman"
@@ -251,7 +251,7 @@
 		"id": "librarian"
 	},
 	{
-		"id": "lil_monsta"
+		"id": "lilmonsta"
 	},
 	{
 		"id": "lleech"
@@ -299,7 +299,7 @@
 		"id": "nightwatchman"
 	},
 	{
-		"id": "no_dashii"
+		"id": "nodashii"
 	},
 	{
 		"id": "noble"
@@ -311,7 +311,7 @@
 		"id": "oracle"
 	},
 	{
-		"id": "organ_grinder"
+		"id": "organgrinder"
 	},
 	{
 		"id": "pacifist"
@@ -320,7 +320,7 @@
 		"id": "philosopher"
 	},
 	{
-		"id": "pit-hag"
+		"id": "pithag"
 	},
 	{
 		"id": "pixie"
@@ -335,10 +335,10 @@
 		"id": "politician"
 	},
 	{
-		"id": "poppy_grower"
+		"id": "poppygrower"
 	},
 	{
-		"id": "plague_doctor"
+		"id": "plaguedoctor"
 	},
 	{
 		"id": "preacher"
@@ -383,7 +383,7 @@
 		"id": "scapegoat"
 	},
 	{
-		"id": "scarlet_woman"
+		"id": "scarletwoman"
 	},
 	{
 		"id": "seamstress"
@@ -401,7 +401,7 @@
 		"id": "slayer"
 	},
 	{
-		"id": "snake_charmer"
+		"id": "snakecharmer"
 	},
 	{
 		"id": "snitch"
@@ -410,7 +410,7 @@
 		"id": "soldier"
 	},
 	{
-		"id": "spirit_of_ivory"
+		"id": "spiritofivory"
 	},
 	{
 		"id": "spy"
@@ -419,7 +419,7 @@
 		"id": "steward"
 	},
 	{
-		"id": "storm_catcher"
+		"id": "stormcatcher"
 	},
 	{
 		"id": "summoner"
@@ -428,7 +428,7 @@
 		"id": "sweetheart"
 	},
 	{
-		"id": "tea_lady"
+		"id": "tealady"
 	},
 	{
 		"id": "thief"
@@ -437,7 +437,7 @@
 		"id": "tinker"
 	},
 	{
-		"id": "town_crier"
+		"id": "towncrier"
 	},
 	{
 		"id": "toymaker"
@@ -449,7 +449,7 @@
 		"id": "vigormortis"
 	},
 	{
-		"id": "village_idiot"
+		"id": "villageidiot"
 	},
 	{
 		"id": "virgin"

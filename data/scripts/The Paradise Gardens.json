@@ -1,1 +1,166 @@
-[{"id":"_meta","author":"","name":"The Paradise Gardens"},{"id":"clockmaker"},{"id":"pixie"},{"id":"empath"},{"id":"dreamer"},{"id":"king"},{"id":"fortune_teller"},{"id":"gambler"},{"id":"oracle"},{"id":"innkeeper"},{"id":"chambermaid"},{"id":"slayer"},{"id":"philosopher"},{"id":"choirboy"},{"id":"recluse"},{"id":"drunk"},{"id":"goon"},{"id":"klutz"},{"id":"barber"},{"id":"witch"},{"id":"spy"},{"id":"baron"},{"id":"marionette"},{"id":"vizier"},{"id":"al-hadikhia"},{"id":"thief"},{"id":"voudon"},{"id":"scapegoat"},{"id":"matron"},{"id":"judge"},{"id":"harlot"},{"id":"gunslinger"},{"id":"gangster"},{"id":"deviant"},{"id":"butcher"},{"id":"bureaucrat"},{"id":"bone_collector"},{"id":"bishop"},{"id":"beggar"},{"id":"barista"},{"id":"apprentice"},{"id":"djinn"},{"id":"duchess"},{"id":"fibbin"},{"id":"fiddler"},{"id":"hells_librarian"},{"id":"revolutionary"},{"id":"sentinel"},{"id":"storm_catcher"},{"id":"toymaker"},{"id":"doomsayer"},{"id":"buddhist"},{"id":"angel"},{"id":"spirit_of_ivory"}]
+[
+    {
+        "id": "_meta",
+        "author": "",
+        "name": "The Paradise Gardens"
+    },
+    {
+        "id": "clockmaker"
+    },
+    {
+        "id": "pixie"
+    },
+    {
+        "id": "empath"
+    },
+    {
+        "id": "dreamer"
+    },
+    {
+        "id": "king"
+    },
+    {
+        "id": "fortuneteller"
+    },
+    {
+        "id": "gambler"
+    },
+    {
+        "id": "oracle"
+    },
+    {
+        "id": "innkeeper"
+    },
+    {
+        "id": "chambermaid"
+    },
+    {
+        "id": "slayer"
+    },
+    {
+        "id": "philosopher"
+    },
+    {
+        "id": "choirboy"
+    },
+    {
+        "id": "recluse"
+    },
+    {
+        "id": "drunk"
+    },
+    {
+        "id": "goon"
+    },
+    {
+        "id": "klutz"
+    },
+    {
+        "id": "barber"
+    },
+    {
+        "id": "witch"
+    },
+    {
+        "id": "spy"
+    },
+    {
+        "id": "baron"
+    },
+    {
+        "id": "marionette"
+    },
+    {
+        "id": "vizier"
+    },
+    {
+        "id": "alhadikhia"
+    },
+    {
+        "id": "thief"
+    },
+    {
+        "id": "voudon"
+    },
+    {
+        "id": "scapegoat"
+    },
+    {
+        "id": "matron"
+    },
+    {
+        "id": "judge"
+    },
+    {
+        "id": "harlot"
+    },
+    {
+        "id": "gunslinger"
+    },
+    {
+        "id": "gangster"
+    },
+    {
+        "id": "deviant"
+    },
+    {
+        "id": "butcher"
+    },
+    {
+        "id": "bureaucrat"
+    },
+    {
+        "id": "bonecollector"
+    },
+    {
+        "id": "bishop"
+    },
+    {
+        "id": "beggar"
+    },
+    {
+        "id": "barista"
+    },
+    {
+        "id": "apprentice"
+    },
+    {
+        "id": "djinn"
+    },
+    {
+        "id": "duchess"
+    },
+    {
+        "id": "fibbin"
+    },
+    {
+        "id": "fiddler"
+    },
+    {
+        "id": "hellslibrarian"
+    },
+    {
+        "id": "revolutionary"
+    },
+    {
+        "id": "sentinel"
+    },
+    {
+        "id": "stormcatcher"
+    },
+    {
+        "id": "toymaker"
+    },
+    {
+        "id": "doomsayer"
+    },
+    {
+        "id": "buddhist"
+    },
+    {
+        "id": "angel"
+    },
+    {
+        "id": "spiritofivory"
+    }
+]

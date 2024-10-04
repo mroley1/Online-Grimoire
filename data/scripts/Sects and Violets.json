@@ -1,1 +1,97 @@
-[{"id":"_meta","author":"official","name":"Sects and Violets"},{"id":"artist"},{"id":"clockmaker"},{"id":"dreamer"},{"id":"flowergirl"},{"id":"juggler"},{"id":"mathematician"},{"id":"oracle"},{"id":"philosopher"},{"id":"sage"},{"id":"savant"},{"id":"seamstress"},{"id":"snake_charmer"},{"id":"town_crier"},{"id":"barber"},{"id":"klutz"},{"id":"mutant"},{"id":"sweetheart"},{"id":"cerenovus"},{"id":"evil_twin"},{"id":"pit-hag"},{"id":"witch"},{"id":"fang_gu"},{"id":"no_dashii"},{"id":"vigormortis"},{"id":"vortox"},{"id":"butcher"},{"id":"bone_collector"},{"id":"harlot"},{"id":"barista"},{"id":"deviant"}]
+[
+    {
+        "id": "_meta",
+        "author": "official",
+        "name": "Sects and Violets"
+    },
+    {
+        "id": "artist"
+    },
+    {
+        "id": "clockmaker"
+    },
+    {
+        "id": "dreamer"
+    },
+    {
+        "id": "flowergirl"
+    },
+    {
+        "id": "juggler"
+    },
+    {
+        "id": "mathematician"
+    },
+    {
+        "id": "oracle"
+    },
+    {
+        "id": "philosopher"
+    },
+    {
+        "id": "sage"
+    },
+    {
+        "id": "savant"
+    },
+    {
+        "id": "seamstress"
+    },
+    {
+        "id": "snakecharmer"
+    },
+    {
+        "id": "towncrier"
+    },
+    {
+        "id": "barber"
+    },
+    {
+        "id": "klutz"
+    },
+    {
+        "id": "mutant"
+    },
+    {
+        "id": "sweetheart"
+    },
+    {
+        "id": "cerenovus"
+    },
+    {
+        "id": "eviltwin"
+    },
+    {
+        "id": "pithag"
+    },
+    {
+        "id": "witch"
+    },
+    {
+        "id": "fanggu"
+    },
+    {
+        "id": "nodashii"
+    },
+    {
+        "id": "vigormortis"
+    },
+    {
+        "id": "vortox"
+    },
+    {
+        "id": "butcher"
+    },
+    {
+        "id": "bonecollector"
+    },
+    {
+        "id": "harlot"
+    },
+    {
+        "id": "barista"
+    },
+    {
+        "id": "deviant"
+    }
+]
