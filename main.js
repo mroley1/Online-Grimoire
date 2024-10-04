@@ -768,39 +768,41 @@ function change_background_menu_hide() {
 
 //info functions
 async function infoCall(id, uid) {
-  close_menu();
-  let data_token = document.getElementById(id + "_token_" + uid);
-  document.getElementById("info_img").src = "assets/roles/"+id+"_token.png";
-  var roleJSON = tokens_ref[id];
-  document.getElementById("info_title_field").innerHTML = roleJSON["name"];
-  document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
-  document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
-  document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
-  document.getElementById("info_list").setAttribute("current_player", id);
-  document.getElementById("info_token_landing").innerHTML = "";
-  for (var i = 0; i < roleJSON["tokens"].length;i++){
-    var div = document.createElement("div");
-    div.className = "info_tokens";
-    TokenId = roleJSON["tokens"][i]
-    div.style.backgroundImage = "url('assets/reminders/"+TokenId+".png')";
-    div.id = "info_"+roleJSON["tokens"][i]+"_"+uid;
-    document.getElementById("info_token_landing").appendChild(div);
-  }
-  document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('"+id+"', '"+ uid +"')");
-  document.getElementById("info_kill_cycle").setAttribute("onclick", "javascript:info_death_cycle_trigger('"+id+"', '"+ uid +"')");
-  update_info_death_cycle(id, uid);
-  document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
-  document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('"+id+"', '"+ uid +"')");
-  document.getElementById("info_box").setAttribute("hidden", data_token.getAttribute("visibility"));
-  document.getElementById("info_name_input").value = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
-  document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
-  document.getElementById("info_box").style.display = "inherit";
-  document.getElementById("info_token_dragbox").innerHTML = "";
-  var tokens = document.getElementById("info_token_landing").children;
-  for (i = 0; i < tokens.length; i++) {
-    let x = tokens[i].getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
-    let y = tokens[i].getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
-    spawnReminderGhost(x, y, tokens[i].style.backgroundImage, tokens[i].id)
+  if (document.getElementById("move_toggle").style.backgroundColor!="green") {
+    close_menu();
+    let data_token = document.getElementById(id + "_token_" + uid);
+    document.getElementById("info_img").src = "assets/roles/"+id+"_token.png";
+    var roleJSON = tokens_ref[id];
+    document.getElementById("info_title_field").innerHTML = roleJSON["name"];
+    document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
+    document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
+    document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
+    document.getElementById("info_list").setAttribute("current_player", id);
+    document.getElementById("info_token_landing").innerHTML = "";
+    for (var i = 0; i < roleJSON["tokens"].length;i++){
+      var div = document.createElement("div");
+      div.className = "info_tokens";
+      TokenId = roleJSON["tokens"][i]
+      div.style.backgroundImage = "url('assets/reminders/"+TokenId+".png')";
+      div.id = "info_"+roleJSON["tokens"][i]+"_"+uid;
+      document.getElementById("info_token_landing").appendChild(div);
+    }
+    document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('"+id+"', '"+ uid +"')");
+    document.getElementById("info_kill_cycle").setAttribute("onclick", "javascript:info_death_cycle_trigger('"+id+"', '"+ uid +"')");
+    update_info_death_cycle(id, uid);
+    document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('"+id+"', '"+ uid +"')");
+    document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('"+id+"', '"+ uid +"')");
+    document.getElementById("info_box").setAttribute("hidden", data_token.getAttribute("visibility"));
+    document.getElementById("info_name_input").value = data_token.children.namedItem(id+"_name_" + uid).innerHTML;
+    document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('"+ id +"', "+ uid +")");
+    document.getElementById("info_box").style.display = "inherit";
+    document.getElementById("info_token_dragbox").innerHTML = "";
+    var tokens = document.getElementById("info_token_landing").children;
+    for (i = 0; i < tokens.length; i++) {
+      let x = tokens[i].getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
+      let y = tokens[i].getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
+      spawnReminderGhost(x, y, tokens[i].style.backgroundImage, tokens[i].id)
+    }
   }
 }
 function spawnReminderGhost(x, y, imgUrl, longId) {
@@ -1005,76 +1007,73 @@ function close_playerinfo_shroud() {
 
 //drag functions
 var active;
+var xOffset;
+var yOffset;
 function dragInit() {
   const dragSpots = document.getElementsByClassName("drag");
   for (var i = 0; i < dragSpots.length; i++) {
     var container = dragSpots[i];
-
-    container.addEventListener("touchstart", dragStart, false);
-    container.addEventListener("touchend", dragEnd, false);
-    container.addEventListener("touchmove", drag, false);
-
-    container.addEventListener("mousedown", dragStart, false);
-    container.addEventListener("mouseup", dragEnd, false);
-    container.addEventListener("mousemove", drag, false);
+    container.addEventListener("pointerdown", dragStart);
   }
+  
+  document.addEventListener("pointermove", drag);
+  window.addEventListener("pointerup", dragEnd);
+  document.addEventListener("pointercancel", dragEnd);
 }
 function dragStart(e) {
   if (document.getElementById("move_toggle").style.backgroundColor!="green" && e.target.classList.contains("role_token")){return}
-  var pos = getComputedStyle(e.target)
-  if (e.type === "touchstart") {
-    xOffset = e.touches[0].clientX - pos.getPropertyValue('left').match(/\d+/)[0];
-    yOffset = e.touches[0].clientY - pos.getPropertyValue('top').match(/\d+/)[0];
-  } else {
-    xOffset = e.clientX - pos.getPropertyValue('left').match(/\d+/)[0];
-    yOffset = e.clientY - pos.getPropertyValue('top').match(/\d+/)[0];
-  }
   if (e.target.classList.contains("drag")){
-    active = true;
+    xOffset = e.clientX - (e.target.getBoundingClientRect().x - e.target.parentNode.getBoundingClientRect().x)
+    yOffset = e.clientY - (e.target.getBoundingClientRect().y - e.target.parentNode.getBoundingClientRect().y)
+    active = e.target;
+    if (active.classList.contains("role_token")) {
+      active.style.zIndex = "30";
+    }
   }
   
 }
-function dragEnd(e) {
-  if(e.target.getAttribute("disposable-reminder")) {
-    if (e.target.getAttribute("stacked")=="true") {
-      dragPipLayerSpawnDefault(e.target.getAttribute("alignment"));
+function dragEnd(_) {
+  if (active) {
+    if (active.getAttribute("disposable-reminder")) {
+      if (active.getAttribute("stacked")=="true") {
+        dragPipLayerSpawnDefault(active.getAttribute("alignment"));
+      }
+      active.setAttribute("stacked", false);
+      active.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+active.id+"')");
+      active.style.cursor = "pointer";
     }
-    e.target.setAttribute("stacked", false);
-    e.target.setAttribute("onmouseup", "javascript:prompt_delete_reminder('"+e.target.id+"')");
-    e.target.style.cursor = "pointer";
+    if (active.getAttribute("ghost") == "true") {
+      spawnReminder(active.id.substring(5, active.id.length-(2*UID_LENGTH)-2), active.id.substring(active.id.length-(2*UID_LENGTH)-1, active.id.length), active.getBoundingClientRect().left+10, active.getBoundingClientRect().top+10);
+      if (active.getAttribute("token_from") == "info") {
+        let x = document.getElementById(active.id.substring(0, active.id.length-UID_LENGTH-1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
+        let y = document.getElementById(active.id.substring(0, active.id.length-UID_LENGTH-1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
+        spawnReminderGhost(x, y, active.style.backgroundImage, active.id.substring(0, active.id.length-UID_LENGTH-1));
+      }// else if (active.target.getAttribute("token_from") == "night_order") {
+      //   let x = document.getElementById("night_order_" + active.target.id.substring(0, active.target.id.length-UID_LENGTH-1))
+      //   let y = document.getElementById("night_order_" + active.target.id.substring(0, active.target.id.length-UID_LENGTH-1))
+      //   spawnNightOrderGhost(x, y, active.target.style.backgroundImage, active.target.id.substring(0, active.target.id.length-UID_LENGTH-1));
+      // }
+      active.parentNode.removeChild(active);
+    }
+    if (active.classList.contains("role_token")) {
+      active.style.zIndex = "";
+    }
+    active = null;
+    if (!loading) {save_game_state();}
   }
-  if (e.target.getAttribute("ghost") == "true") {
-    spawnReminder(e.target.id.substring(5, e.target.id.length-(2*UID_LENGTH)-2), e.target.id.substring(e.target.id.length-(2*UID_LENGTH)-1, e.target.id.length), e.target.getBoundingClientRect().left+10, e.target.getBoundingClientRect().top+10);
-    if (e.target.getAttribute("token_from") == "info") {
-      let x = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
-      let y = document.getElementById(e.target.id.substring(0, e.target.id.length-UID_LENGTH-1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
-      spawnReminderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
-    }// else if (e.target.getAttribute("token_from") == "night_order") {
-    //   let x = document.getElementById("night_order_" + e.target.id.substring(0, e.target.id.length-UID_LENGTH-1))
-    //   let y = document.getElementById("night_order_" + e.target.id.substring(0, e.target.id.length-UID_LENGTH-1))
-    //   spawnNightOrderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
-    // }
-    e.target.parentNode.removeChild(e.target);
-  }
-  active = false;
-  if (!loading) {save_game_state();}
 }
+
 function drag(e) {
   if (active) {
-  
     e.preventDefault();
   
-    if (e.type === "touchmove") {
-      currentX = e.touches[0].clientX - xOffset;
-      currentY = e.touches[0].clientY - yOffset;
-    } else {
-      currentX = e.clientX - xOffset;
-      currentY = e.clientY - yOffset;
-    }
+    currentX = e.clientX - xOffset;
+    currentY = e.clientY - yOffset;
 
-    setTranslate(currentX, currentY, e.target);
+    setTranslate(currentX, currentY, active);
   }
 }
+
 function setTranslate(xPos, yPos, el) {
   el.style.left =  xPos + "px"
   el.style.top =  yPos + "px"
@@ -1137,7 +1136,6 @@ async function populate_night_order() {
   var alive = new Set();
   for (i = 0; i<tokens.length;i++) {
     var id = tokens[i].getAttribute("role");
-    console.log(id)
     if (tokens[i].getAttribute("viability")=="alive" && tokens[i].getAttribute("visibility")!="bluff"){alive.add(id);}
     if (tokens[i].getAttribute("visibility")!="bluff") {inPlay.add(id);}
   }
