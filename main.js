@@ -234,6 +234,7 @@ async function loaded()
   })
   setTimeout(function ()
   {
+    loading = false;
     player_count_change();
   }, 2000)
   document.getElementById("body_actual").setAttribute("orientation", getOrientation())
