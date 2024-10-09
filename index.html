@@ -8,7 +8,7 @@
     <body id="body_actual" style="--BG-IMG:url('assets/backgrounds/blue_circle_large.webp'); overflow: hidden;" onload="javascript:loaded()" night="false">
         <div class="body_background_image"></div>
         
-        <div onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%;"></div>
+        <div id="pointerCapture" onclick="javascript:neutralClick()" onmouseup="javascript:neutralClick()" style="position: fixed; top: 0px; left: 0px; height: 100%; width: 100%; touch-action: none;"></div>
         
         <div id="alignment_tokens" style="position: absolute; top: 85px; width: 90px; left: 0px;">
             <div id="goodSpawn" class="background_image alignment_token" style="background-image: url('assets/reminders/good.png');"></div>
