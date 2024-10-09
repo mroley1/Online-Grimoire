@@ -959,7 +959,6 @@ async function infoCall(id, uid)
     spawnReminderGhost(x, y, tokens[i].style.backgroundImage, tokens[i].id)
   }
 }
-
 function spawnReminderGhost(x, y, imgUrl, longId)
 {
   var time = new Date();
@@ -1194,21 +1193,20 @@ function close_playerinfo_shroud()
 var active;
 function dragInit()
 {
-//var xOffset;
-//var yOffset;
-//function dragInit() {
   const dragSpots = document.getElementsByClassName("drag");
   for (var i = 0; i < dragSpots.length; i++)
   {
     var container = dragSpots[i];
-    container.addEventListener("pointerdown", dragStart);
-  }
-  
-  document.addEventListener("pointermove", drag);
-  window.addEventListener("pointerup", dragEnd);
-  document.addEventListener("pointercancel", dragEnd);
-}
 
+    container.addEventListener("touchstart", dragStart, false);
+    container.addEventListener("touchend", dragEnd, false);
+    container.addEventListener("touchmove", drag, false);
+
+    container.addEventListener("mousedown", dragStart, false);
+    container.addEventListener("mouseup", dragEnd, false);
+    container.addEventListener("mousemove", drag, false);
+  }
+}
 function dragStart(e)
 {
   if (document.getElementById("move_toggle").style.backgroundColor != "green" && e.target.classList.contains("role_token")) { return }
@@ -1228,7 +1226,6 @@ function dragStart(e)
   }
 
 }
-
 function dragEnd(e)
 {
   if (e.target.getAttribute("disposable-reminder"))
@@ -1276,10 +1273,9 @@ function drag(e)
       currentY = e.clientY - yOffset;
     }
 
-    setTranslate(currentX, currentY, active);
+    setTranslate(currentX, currentY, e.target);
   }
 }
-
 function setTranslate(xPos, yPos, el)
 {
   el.style.left = xPos + "px"
