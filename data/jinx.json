@@ -333,7 +333,7 @@
       },
       {
         "id": "goon",
-        "reason": "If the Kazali chooses the Goon to become a Minion, remaining Minion choices are decided by the Storyteller."
+        "reason": "The Kazali can choose that the Goon player is one of their evil Minions."
       },
       {
         "id": "marionette",
@@ -346,7 +346,11 @@
       {
         "id": "choirboy",
         "reason": "The Kazali can not choose the King to become a Minion if a Choirboy is in play."
-      }
+      },
+      {
+        "id": "soldier",
+        "reason": "The Kazali can choose that the Soldier player is one of their evil Minions"
+      },
     ]
   },
   {
@@ -489,14 +493,6 @@
       {
         "id": "flowergirl",
         "reason": "If players' eyes were closed during the nominations, the Flowergirl learns how many times the Demon voted."
-      },
-      {
-        "id": "minstrel",
-        "reason": "Only 1 jinxed character can be in play. Evil players start knowing which player and character it is."
-      },
-      {
-        "id": "preacher",
-        "reason": "Only 1 jinxed character can be in play. Evil players start knowing which player and character it is."
       }
     ]
   },
