@@ -918,45 +918,90 @@ function change_background_menu_hide()
 {
   document.getElementById("background_select_menu").style.display = "none";
 }
-
-//info functions
-async function infoCall(id, uid)
-{
+async function infoCall(id, uid) {
   close_menu();
-  let data_token = document.getElementById(id + "_token_" + uid);
-  document.getElementById("info_img").src = "assets/roles/" + id + "_token.png";
-  var roleJSON = tokens_ref[id];
-  document.getElementById("info_title_field").innerHTML = roleJSON["name"];
-  document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-  document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-  document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
-  document.getElementById("info_list").setAttribute("current_player", id);
-  document.getElementById("info_token_landing").innerHTML = "";
-  for (var i = 0; i < roleJSON["tokens"].length; i++)
-  {
-    var div = document.createElement("div");
-    div.className = "info_tokens";
-    TokenId = roleJSON["tokens"][i]
-    div.style.backgroundImage = "url('assets/reminders/" + TokenId + ".png')";
-    div.id = "info_" + roleJSON["tokens"][i] + "_" + uid;
-    document.getElementById("info_token_landing").appendChild(div);
+
+  if (!tokens_ref || !tokens_ref[id]) {
+      console.error('Role data not loaded or incorrect role ID:', id);
+      return;
   }
-  document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('" + id + "', '" + uid + "')");
-  document.getElementById("info_kill_cycle").setAttribute("onclick", "javascript:info_death_cycle_trigger('" + id + "', '" + uid + "')");
+
+  let data_token = document.getElementById(id + "_token_" + uid);
+  if (!data_token) {
+      console.error('Token element not found for ID:', id + "_token_" + uid);
+      return;
+  }
+
+  var roleJSON = tokens_ref[id];
+  console.log('Loading role info for:', roleJSON);
+
+  const infoImgElement = document.getElementById("info_img");
+  if (infoImgElement) {
+      infoImgElement.src = "assets/roles/" + id + "_token.png";
+  } else {
+      console.error('Info image element not found.');
+  }
+
+  const titleFieldElement = document.getElementById("info_title_field");
+  const nameFieldElement = document.getElementById("info_name_field");
+  const imgNameElement = document.getElementById("info_img_name");
+  const descFieldElement = document.getElementById("info_desc_field");
+
+  if (titleFieldElement) titleFieldElement.innerHTML = roleJSON["name"];
+  if (nameFieldElement) nameFieldElement.innerHTML = data_token.children.namedItem(id + "_name_" + uid)?.innerHTML || '';
+  if (imgNameElement) imgNameElement.innerHTML = data_token.children.namedItem(id + "_name_" + uid)?.innerHTML || '';
+  if (descFieldElement) descFieldElement.innerHTML = roleJSON["description"];
+
+  const infoListElement = document.getElementById("info_list");
+  if (infoListElement) infoListElement.setAttribute("current_player", id);
+
+  const tokenLandingElement = document.getElementById("info_token_landing");
+  if (tokenLandingElement) {
+      tokenLandingElement.innerHTML = "";
+      roleJSON["tokens"].forEach(tokenId => {
+          const div = document.createElement("div");
+          div.className = "info_tokens";
+          div.style.backgroundImage = "url('assets/reminders/" + tokenId + ".png')";
+          div.id = "info_" + tokenId + "_" + uid;
+          tokenLandingElement.appendChild(div);
+      });
+  } else {
+      console.error('Token landing element not found.');
+  }
+
+  document.getElementById("info_remove_player")?.setAttribute("onclick", `javascript:remove_token('${id}', '${uid}')`);
+  document.getElementById("info_kill_cycle")?.setAttribute("onclick", `javascript:info_death_cycle_trigger('${id}', '${uid}')`);
   update_info_death_cycle(id, uid);
-  document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('" + id + "', '" + uid + "')");
-  document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('" + id + "', '" + uid + "')");
-  document.getElementById("info_box").setAttribute("hidden", data_token.getAttribute("visibility"));
-  document.getElementById("info_name_input").value = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-  document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('" + id + "', " + uid + ")");
-  document.getElementById("info_box").style.display = "inherit";
-  document.getElementById("info_token_dragbox").innerHTML = "";
-  var tokens = document.getElementById("info_token_landing").children;
-  for (i = 0; i < tokens.length; i++)
-  {
-    let x = tokens[i].getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
-    let y = tokens[i].getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
-    spawnReminderGhost(x, y, tokens[i].style.backgroundImage, tokens[i].id)
+  document.getElementById("info_visibility_toggle")?.setAttribute("onclick", `javascript:cycle_token_visibility_toggle('${id}', '${uid}')`);
+  document.getElementById("info_edit_role")?.setAttribute("onclick", `javascript:mutate_menu('${id}', '${uid}')`);
+
+  const infoBoxElement = document.getElementById("info_box");
+  if (infoBoxElement) {
+      infoBoxElement.setAttribute("hidden", data_token.getAttribute("visibility"));
+      infoBoxElement.style.display = "inherit";
+  } else {
+      console.error('Info box element not found.');
+  }
+
+  const nameInputElement = document.getElementById("info_name_input");
+  if (nameInputElement) {
+      nameInputElement.value = data_token.children.namedItem(id + "_name_" + uid)?.innerHTML || '';
+      nameInputElement.setAttribute("onchange", `javascript:nameIn('${id}', ${uid})`);
+  } else {
+      console.error('Name input element not found.');
+  }
+
+  const tokenDragboxElement = document.getElementById("info_token_dragbox");
+  if (tokenDragboxElement) {
+      tokenDragboxElement.innerHTML = "";
+      const tokens = tokenLandingElement.children;
+      for (let i = 0; i < tokens.length; i++) {
+          let x = tokens[i].getBoundingClientRect().x - tokenLandingElement.getBoundingClientRect().x;
+          let y = tokens[i].getBoundingClientRect().y - tokenLandingElement.getBoundingClientRect().y;
+          spawnReminderGhost(x, y, tokens[i].style.backgroundImage, tokens[i].id);
+      }
+  } else {
+      console.error('Token dragbox element not found.');
   }
 }
 function spawnReminderGhost(x, y, imgUrl, longId)
