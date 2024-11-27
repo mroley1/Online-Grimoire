@@ -384,7 +384,7 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
 
   // The role of travelers, when shown in TS mode. 
   var outsider_betray = document.createElement("div");
-  if (cat == "TRAV")
+  if (cat == "traveler")
   {
     outsider_betray.style.backgroundImage = `url('${tokens_ref[id].image}')`
   }
@@ -476,27 +476,27 @@ function clean_tokens(uid)
 }
 function mutate_menu(id, uid)
 {
-  var town = document.getElementById("mutate_menu_TOWN").children;
+  var town = document.getElementById("mutate_menu_townsfolk").children;
   for (i = 0; i < town.length; i++)
   {
     town[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + town[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  var outsiders = document.getElementById("mutate_menu_outsider").children;
   for (i = 0; i < outsiders.length; i++)
   {
     outsiders[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var minions = document.getElementById("mutate_menu_MIN").children;
+  var minions = document.getElementById("mutate_menu_minion").children;
   for (i = 0; i < minions.length; i++)
   {
     minions[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var demons = document.getElementById("mutate_menu_DEM").children;
+  var demons = document.getElementById("mutate_menu_demon").children;
   for (i = 0; i < demons.length; i++)
   {
     demons[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  var travellers = document.getElementById("mutate_menu_traveler").children;
   for (i = 0; i < travellers.length; i++)
   {
     travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
@@ -514,9 +514,9 @@ function mutate_token(idFrom, uid, idTo)
 
   let subject = document.getElementById(idFrom + "_token_" + uid);
 
-  subject.setAttribute("cat", new_json["class"]);
+  subject.setAttribute("cat", new_json["team"]);
   const townSquareImage = subject.getElementsByClassName("token_outsider_betray")[0]
-  if (new_json["class"] == "TRAV") {
+  if (new_json["team"] == "traveler") {
     townSquareImage.style.backgroundImage = `url('${tokens_ref[idTo].image}')`;
   } else { 
     townSquareImage.style.backgroundImage = "";
@@ -584,9 +584,10 @@ function populate_mutate_menu(tokens)
     div.id = "mutate_menu_" + element["id"];
     generateSampleToken(element["id"], div);
     div.classList = "background_image mutate_menu_token";
-    if (element["class"] != "FAB")
+    if (element["team"] != "fabled")
     {
-      document.getElementById("mutate_menu_" + element["class"]).appendChild(div);
+      console.log(element["team"])
+      document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
     }
   })
 }
@@ -737,12 +738,13 @@ async function populate_script(script)
     for (i = 0; i < tokenNames.length; i++)
     {
       var tokenJSON = tokenNames[i];
-      if (tokenJSON.class == type)
+      console.log(tokenJSON)
+      if (tokenJSON.team == type)
       {
         var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
         outer_div.title = tokenJSON["description"];
-        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('" + tokenJSON["id"] + "', " + (tokenJSON["hide_token"] == "true" ? "'hidden'" : "'show'") + ", '" + tokenJSON["class"] + "', " + tokenJSON["hide_face"] + ", 'alive')");
+        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('" + tokenJSON["id"] + "', " + (tokenJSON["hide_token"] == "true" ? "'hidden'" : "'show'") + ", '" + tokenJSON["team"] + "', " + tokenJSON["hide_face"] + ", 'alive')");
         var label = document.createElement("label");
         label.classList = "menu_list";
         label.innerHTML = tokenJSON["name"];
@@ -773,21 +775,21 @@ async function populate_script(script)
     }
   })
 
-  clear("TOWN")
-  header("Town", "TOWN", "#0033cc")
-  options("TOWN", scriptTokens)
-  clear("OUT")
-  header("Outsiders", "OUT", "#1a53ff")
-  options("OUT", scriptTokens)
-  clear("MIN")
-  header("Minions", "MIN", "#b30000")
-  options("MIN", scriptTokens)
-  clear("DEM")
-  header("Demons", "DEM", "#e60000")
-  options("DEM", scriptTokens)
-  clear("TRAV")
-  header("Travellers", "TRAV", "#6600ff")
-  options("TRAV", scriptTokens)
+  clear("townsfolk")
+  header("Townsfolk", "townsfolk", "#0033cc")
+  options("townsfolk", scriptTokens)
+  clear("outsider")
+  header("Outsiders", "outsider", "#1a53ff")
+  options("outsider", scriptTokens)
+  clear("minion")
+  header("Minions", "minion", "#b30000")
+  options("minion", scriptTokens)
+  clear("demon")
+  header("Demons", "demon", "#e60000")
+  options("demon", scriptTokens)
+  clear("traveler")
+  header("Travellers", "traveler", "#6600ff")
+  options("traveler", scriptTokens)
   player_count_change();
   update_role_counts();
   clear_mutate_menu();
@@ -868,19 +870,19 @@ function player_count_change()
       let visibility = tokens[i].getAttribute("visibility");
       switch (tokens[i].getAttribute("cat"))
       {
-        case "TOWN":
+        case "townsfolk":
           if (visibility == "show") { counts[0]++; }
           break;
-        case "OUT":
+        case "outsider":
           if (visibility == "show") { counts[1]++; }
           break;
-        case "MIN":
+        case "minion":
           if (visibility == "show") { counts[2]++; }
           break;
-        case "DEM":
+        case "demon":
           if (visibility == "show") { counts[3]++; }
           break;
-        case "TRAV":
+        case "traveler":
           if (visibility == "show") { counts[4]++; }
           break;
       }
@@ -913,12 +915,12 @@ function player_count_change()
       }
       return string;
     }
-    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + expected["town"][0] + genSoftModString(expected["town"][1], expected["town"][2]);
-    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
-    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
-    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
+    document.getElementById("ratio_townsfolk").innerHTML = counts[0] + "/" + expected["town"][0] + genSoftModString(expected["town"][1], expected["town"][2]);
+    document.getElementById("ratio_outsider").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
+    document.getElementById("ratio_minion").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
+    document.getElementById("ratio_demon").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
     if (player_count > 15 && !expected["trav"][3]) { expected["trav"][0] += player_count - 15 }
-    document.getElementById("ratio_TRAV").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
+    document.getElementById("ratio_traveler").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
   }
 }
 function update_role_counts()
@@ -946,11 +948,11 @@ function update_role_counts()
 }
 function clear_mutate_menu()
 {
-  document.getElementById("mutate_menu_TOWN").innerHTML = "";
-  document.getElementById("mutate_menu_OUT").innerHTML = "";
-  document.getElementById("mutate_menu_MIN").innerHTML = "";
-  document.getElementById("mutate_menu_DEM").innerHTML = "";
-  document.getElementById("mutate_menu_TRAV").innerHTML = "";
+  document.getElementById("mutate_menu_townsfolk").innerHTML = "";
+  document.getElementById("mutate_menu_outsider").innerHTML = "";
+  document.getElementById("mutate_menu_minion").innerHTML = "";
+  document.getElementById("mutate_menu_demon").innerHTML = "";
+  document.getElementById("mutate_menu_traveler").innerHTML = "";
 }
 function toggle_menu_collapse()
 {
@@ -1369,27 +1371,27 @@ function load_playerinfo_shroud(typeId)
 
 function trigger_playerinfo_character_select(id)
 {
-  var town = document.getElementById("mutate_menu_TOWN").children;
+  var town = document.getElementById("mutate_menu_townsfolk").children;
   for (i = 0; i < town.length; i++)
   {
     town[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + town[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  var outsiders = document.getElementById("mutate_menu_outsider").children;
   for (i = 0; i < outsiders.length; i++)
   {
     outsiders[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var minions = document.getElementById("mutate_menu_MIN").children;
+  var minions = document.getElementById("mutate_menu_minion").children;
   for (i = 0; i < minions.length; i++)
   {
     minions[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var demons = document.getElementById("mutate_menu_DEM").children;
+  var demons = document.getElementById("mutate_menu_demon").children;
   for (i = 0; i < demons.length; i++)
   {
     demons[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  var travellers = document.getElementById("mutate_menu_traveler").children;
   for (i = 0; i < travellers.length; i++)
   {
     travellers[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
@@ -1654,11 +1656,11 @@ function gen_night_order_tab_role(token_JSON, night, dead)
   var color;
   switch (token_JSON.class)
   {
-    case "TOWN": color = "#0033cc"; break;
-    case "OUT": color = "#0086b3"; break;
-    case "MIN": color = "#e62e00"; break;
-    case "DEM": color = "#cc0000"; break;
-    case "TRAV": color = "#6600ff"; break;
+    case "townsfolk": color = "#0033cc"; break;
+    case "outsider": color = "#0086b3"; break;
+    case "minion": color = "#e62e00"; break;
+    case "demon": color = "#cc0000"; break;
+    case "traveler": color = "#6600ff"; break;
   }
   if (dead) { color = "#000000"; }
   div = document.createElement("div");
@@ -1803,7 +1805,7 @@ function populate_fabled()
     if (entry.id != "_meta")
     {
       var token = tokens_ref[entry.id];
-      if (token["class"] == "FAB")
+      if (token["team"] == "fabled")
       {
         fabled.add(entry.id);
       }
@@ -1898,7 +1900,7 @@ function generateHTMLDocument() {
 
   // Generate rows from the provided arrays for town
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].class == 'TOWN'){
+    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'townsfolk'){
       html += `
     <tr>
       <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
@@ -1914,9 +1916,9 @@ html += `
 <p>Outsiders<p>
 <table>`;
 
-  // Generate rows from the provided arrays for OUTsiders
+  // Generate rows from the provided arrays for outsiders
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].class == 'OUT'){
+    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'outsider'){
       html += `
     <tr>
       <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
@@ -1933,7 +1935,7 @@ html += `
 
   // Generate rows from the provided arrays for minions
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].class == 'MIN'){
+    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'minion'){
       html += `
     <tr>
       <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
@@ -1950,7 +1952,7 @@ html += `
 
   // Generate rows from the provided arrays for Demons
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].class == 'DEM'){
+    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'demon'){
       html += `
     <tr>
       <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>

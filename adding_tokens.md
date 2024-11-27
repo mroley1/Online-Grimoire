@@ -12,8 +12,8 @@
         "description": "Your team wins. Everyone goes home and praises the developers",
         // GOOD, EVIL, or BOTH. 
         "alignment": "GOOD", 
-         // TOWN, OUT, MIN, DEM, TRAV, or FAB. 
-        "class": "TOWN",
+         // townsfolk, outsider, minion, demon, traveler, or fabled. 
+        "class": "townsfolk",
         "tokens": [
             // The phrase that should appear on each reminder. 
             // Do not put duplicates. 
