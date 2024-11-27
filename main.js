@@ -157,7 +157,6 @@ async function load_game_state_json(state)
                player.uid, 
                player.visibility, 
                player.cat, 
-               player.hide_face, 
                player.viability, 
                player.left, 
                player.top, 
@@ -348,7 +347,7 @@ function update_night_wedge_text()
 }
 
 //token functions
-function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, nameText)
+function spawnToken(id, uid, visibility, cat, viability, left, top, nameText)
 {
   // Force tokens to appear if we try to add one. 
   // (Why can we even see the rolelist in townsquare mode?)
@@ -367,7 +366,7 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
   div.setAttribute("uid", uid);
   div.setAttribute("visibility", visibility);
   div.setAttribute("cat", cat);
-  div.setAttribute("show_face", !hide_face);
+  div.setAttribute("show_face", cat == "traveler");
 
   // Actual picture.
   var role = document.createElement("img");
@@ -465,11 +464,11 @@ function createRoleNameElement(id, uid)
 }
 
 
-function spawnTokenDefault(id, visibility, cat, hide_face)
+function spawnTokenDefault(id, visibility, cat)
 {
   var time = new Date();
-  var uid = time.getTime()
-  spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width / 2) - 75) + "px", "calc(50% - 75px)", "");
+  var uid = time.getTime();
+  spawnToken(id, uid, visibility, cat, "alive", (parseInt(window.visualViewport.width / 2) - 75) + "px", "calc(50% - 75px)", "");
 }
 function remove_token(id, uid)
 {
@@ -540,7 +539,7 @@ function mutate_token(idFrom, uid, idTo)
     townSquareImage.style.backgroundImage = "";
   }
 
-  subject.setAttribute("show_face", !new_json["hide_face"]);
+  subject.setAttribute("show_face", new_json["team"] == "traveler");
   subject.setAttribute("role", new_json["id"]);
   subject.style.backgroundImage = "url('assets/token.png')";
   subject.setAttribute("onclick", "javascript:infoCall('" + idTo + "', " + uid + ")");
@@ -604,7 +603,6 @@ function populate_mutate_menu(tokens)
     div.classList = "background_image mutate_menu_token";
     if (element["team"] != "fabled")
     {
-      console.log(element["team"])
       document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
     }
   })
@@ -756,13 +754,12 @@ async function populate_script(script)
     for (i = 0; i < tokenNames.length; i++)
     {
       var tokenJSON = tokenNames[i];
-      console.log(tokenJSON)
       if (tokenJSON.team == type)
       {
         var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
-        outer_div.title = tokenJSON["description"];
-        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('" + tokenJSON["id"] + "', " + (tokenJSON["hide_token"] == "true" ? "'hidden'" : "'show'") + ", '" + tokenJSON["team"] + "', " + tokenJSON["hide_face"] + ", 'alive')");
+        outer_div.title = tokenJSON["ability"];
+        outer_div.setAttribute("onclick", `javascript:spawnTokenDefault('${tokenJSON["id"]}', 'show', '${tokenJSON["team"]}')`);
         var label = document.createElement("label");
         label.classList = "menu_list";
         label.innerHTML = tokenJSON["name"];
@@ -1040,7 +1037,7 @@ async function infoCall(id, uid)
   document.getElementById("info_title_field").innerHTML = roleJSON["name"];
   document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
   document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-  document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
+  document.getElementById("info_desc_field").innerHTML = roleJSON["ability"];
   document.getElementById("info_list").setAttribute("current_player", id);
   document.getElementById("info_token_landing").innerHTML = "";
   document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('" + id + "', '" + uid + "')");
@@ -1672,7 +1669,7 @@ function nightOrderScroll(enable)
 function gen_night_order_tab_role(token_JSON, night, dead)
 {
   var color;
-  switch (token_JSON.class)
+  switch (token_JSON.team)
   {
     case "townsfolk": color = "#0033cc"; break;
     case "outsider": color = "#0086b3"; break;
@@ -1847,7 +1844,7 @@ function gen_fabled_tab(token_JSON, inPlay)
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , " + color + ")";
   var span = document.createElement("span");
   span.classList = "night_order_span"
-  span.innerHTML = token_JSON["description"];
+  span.innerHTML = token_JSON["ability"];
   span.id = token_JSON.id + "_night_order_tab_span";
   div.appendChild(span);
   var img = document.createElement("img");
@@ -1923,7 +1920,7 @@ function generateHTMLDocument() {
     <tr>
       <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].description}</td>
+      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }
@@ -1941,7 +1938,7 @@ html += `
     <tr>
       <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].description}</td>
+      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }
@@ -1958,7 +1955,7 @@ html += `
     <tr>
       <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].description}</td>
+      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }
@@ -1975,7 +1972,7 @@ html += `
     <tr>
       <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].description}</td>
+      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }

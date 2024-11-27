@@ -9,7 +9,7 @@
         // Full name, with spaces and capitalization
         "name": "Token Name", 
         // Copy the text from the BOTC wiki
-        "description": "Your team wins. Everyone goes home and praises the developers",
+        "ability": "Your team wins. Everyone goes home and praises the developers",
         // GOOD, EVIL, or BOTH. 
         "alignment": "GOOD", 
          // townsfolk, outsider, minion, demon, traveler, or fabled. 

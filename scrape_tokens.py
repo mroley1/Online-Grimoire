@@ -30,7 +30,7 @@ def is_offical(entry):
     # An official character has a wiki page for itself.
     return get_soup_by_name(entry["name"]) != None
 
-def sync_description(entry):
+def sync_ability(entry):
     # Step 1: Get the HTML for the character.
     soup = get_soup_by_name(entry["name"])
 
@@ -47,10 +47,10 @@ def sync_description(entry):
     summary = summary_element.text[1:-2]
 
     # Step 3: determine if an update is necessary.
-    if summary == entry["description"]: return
+    if "ability" in summary and summary == entry["ability"]: return
 
-    entry["description"] = summary
-    print("UPDATE   " + (entry["name"] + ": ").ljust(20) + summary)
+    entry["ability"] = summary
+    print("UPDATE " + (entry["name"] + ": ").ljust(20) + summary)
 
 def sync_flavor(entry):
     # Step 1: Get the HTML for the character.
@@ -126,10 +126,45 @@ def check_type(entry, official_keys, homebrew_keys):
         official_keys.append(entry["id"])
     homebrew_keys.append(entry["id"])
 
+def force_compatibility(entry):
+    ALLOWED = set([
+        "id", 
+        "name", 
+        "description", "ability",
+        "team", "class", 
+        "tokens", "reminders", "remindersGlobal", # All the same, for most purposes
+        "first_night_desc", "firstNightReminder",
+        "other_night_desc", "otherNightReminder",
+        "change_makeup", # TODO: depreciate
+        "image",
+        "flavor"
+    ])
+
+    CHANGE = {
+        # OLD --> NEW
+        "class": "team",
+        "description": "ability",
+        # "tokens": "reminders",
+        # "first_night_desc": "firstNightReminder",
+        # "other_night_desc": "otherNightReminder",
+    }
+    
+    new_entry = dict()
+    for key in entry.keys():
+        if key not in ALLOWED: continue
+        if key in CHANGE:
+            new_entry[CHANGE[key]] = entry[key]
+        else:
+            new_entry[key] = entry[key]
+    
+    return new_entry
+
 def main():
 
     with open("data/tokens.json") as f:
-        data = json.loads(f.read())
+        data: dict = json.loads(f.read())
+
+    data = {k: force_compatibility(v) for k, v in data.items()}
 
     official_keys = list()
     homebrew_keys = list()
@@ -144,7 +179,7 @@ def main():
         # download_image(entry)
         # sync_description(entry)
         downloader_threader = [executor.submit(sync_image, data[k]) for k in official_keys]
-        desc_threader = [executor.submit(sync_description, data[k]) for k in official_keys]
+        desc_threader = [executor.submit(sync_ability, data[k]) for k in official_keys]
         flavor_threader = [executor.submit(sync_flavor, data[k]) for k in official_keys]
         cf.wait(downloader_threader)
         cf.wait(desc_threader)
