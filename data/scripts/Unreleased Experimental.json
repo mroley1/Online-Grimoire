@@ -1,268 +1,1147 @@
 [
     {
         "id": "_meta",
-        "author": "ella",
-        "name": "Unreleased Experimental"
-    },
-    {
-        "id": "scholar"
-    },
-    {
-        "id": "auditor"
-    },
-    {
-        "id": "governess"
-    },
-    {
-        "id": "diplomat"
-    },
-    {
-        "id": "blacksmith"
-    },
-    {
-        "id": "ballerina"
-    },
-    {
-        "id": "pirate"
-    },
-    {
-        "id": "prophet"
-    },
-    {
-        "id": "stableboy"
-    },
-    {
-        "id": "moneylender"
-    },
-    {
-        "id": "palmreader"
-    },
-    {
-        "id": "wench"
-    },
-    {
-        "id": "houndskeeper"
-    },
-    {
-        "id": "genius"
-    },
-    {
-        "id": "quack"
-    },
-    {
-        "id": "witchhunter"
-    },
-    {
-        "id": "insomniac"
-    },
-    {
-        "id": "voyeur"
-    },
-    {
-        "id": "hustler"
-    },
-    {
-        "id": "astrologer"
-    },
-    {
-        "id": "matchmaker"
-    },
-    {
-        "id": "druid"
-    },
-    {
-        "id": "coachman"
-    },
-    {
-        "id": "thespian"
-    },
-    {
-        "id": "apothecary"
-    },
-    {
-        "id": "patient"
-    },
-    {
-        "id": "bodyguard"
-    },
-    {
-        "id": "hangman"
-    },
-    {
-        "id": "piper"
-    },
-    {
-        "id": "machinist"
-    },
-    {
-        "id": "leper"
-    },
-    {
-        "id": "phoenix"
-    },
-    {
-        "id": "scavenger"
-    },
-    {
-        "id": "nun"
-    },
-    {
-        "id": "bonvivant"
-    },
-    {
-        "id": "nanny"
-    },
-    {
-        "id": "liontamer"
-    },
-    {
-        "id": "schoolmarm"
-    },
-    {
-        "id": "strongman"
-    },
-    {
-        "id": "prince"
-    },
-    {
-        "id": "rogue"
-    },
-    {
-        "id": "tycoon"
-    },
-    {
-        "id": "merchant"
-    },
-    {
-        "id": "queen"
-    },
-    {
-        "id": "mole"
-    },
-    {
-        "id": "beekeeper"
-    },
-    {
-        "id": "casanova"
-    },
-    {
-        "id": "bully"
-    },
-    {
-        "id": "dowager"
-    },
-    {
-        "id": "orphan"
-    },
-    {
-        "id": "tramp"
-    },
-    {
-        "id": "charlatan"
-    },
-    {
-        "id": "goldenchild"
-    },
-    {
-        "id": "hermit"
-    },
-    {
-        "id": "princess"
-    },
-    {
-        "id": "prisoner"
-    },
-    {
-        "id": "vatdweller"
-    },
-    {
-        "id": "klaun"
-    },
-    {
-        "id": "familiar"
-    },
-    {
-        "id": "wizard"
-    },
-    {
-        "id": "ringmaster"
-    },
-    {
-        "id": "amaniti"
-    },
-    {
-        "id": "senator"
-    },
-    {
-        "id": "scarecrow"
-    },
-    {
-        "id": "wraith"
-    },
-    {
-        "id": "imposter"
-    },
-    {
-        "id": "copycat"
-    },
-    {
-        "id": "riddlefiend"
-    },
-    {
-        "id": "gorgon"
-    },
-    {
-        "id": "daughterofnox"
-    },
-    {
-        "id": "sicilian"
-    },
-    {
-        "id": "zodion"
-    },
-    {
-        "id": "shacklewight"
-    },
-    {
-        "id": "virilus"
-    },
-    {
-        "id": "soulhammer"
-    },
-    {
-        "id": "creepingterror"
-    },
-    {
-        "id": "barrowfog"
-    },
-    {
-        "id": "palabradedios"
-    },
-    {
-        "id": "lecadeau"
-    },
-    {
-        "id": "queenoflies"
-    },
-    {
-        "id": "dolomite"
-    },
-    {
-        "id": "tipitipi"
-    },
-    {
-        "id": "hwisp"
-    },
-    {
-        "id": "jnak"
-    },
-    {
-        "id": "fanzazz"
-    },
-    {
-        "id": "pall"
-    },
-    {
-        "id": "sissaphyth"
+        "name": "Full Unreleased Characters",
+        "author": "TPI for the actual characters, Piglix for putting it together and various artists.",
+        "almanac": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/almanac.html"
+    },
+    {
+        "id": "scholar_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/scholar_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Scholar every in-play evil character token.",
+        "name": "Scholar",
+        "team": "townsfolk",
+        "ability": "You start knowing which evil characters are in-play.",
+        "attribution": "Recreated icon by Dela",
+        "firstNight": 37
+    },
+    {
+        "id": "auditor_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/auditor_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Auditor the number of players affecting set up.",
+        "setup": true,
+        "name": "? Auditor ?",
+        "team": "townsfolk",
+        "ability": "You start knowing how many players have abilities affecting set up. [No default Outsiders]",
+        "attribution": "Recreated icon",
+        "firstNight": 39
+    },
+    {
+        "id": "governess_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/governess_full_unreleased_characters.png",
+        "firstNightReminder": "Point to the character type on your character sheet of the closest non-Townsfolk.",
+        "name": "? Governess ?",
+        "team": "townsfolk",
+        "ability": "You start knowing one character type of the closest non-Townsfolk (not including Travellers).",
+        "attribution": "Recreated icon",
+        "firstNight": 40
+    },
+    {
+        "id": "diplomat_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/diplomat_full_unreleased_characters.png",
+        "firstNightReminder": "Point to the minions",
+        "reminders": [
+            "Knows"
+        ],
+        "name": "Diplomat",
+        "team": "townsfolk",
+        "ability": "You start knowing which players are minions. If a minion you know is executed, your team loses, even if dead.",
+        "attribution": "Recreated icon",
+        "firstNight": 11
+    },
+    {
+        "id": "blacksmith_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/blacksmith_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Blacksmith the number of in-play outsiders.",
+        "reminders": [
+            "Drunk"
+        ],
+        "setup": true,
+        "name": "Blacksmith",
+        "team": "townsfolk",
+        "ability": "You start knowing how many outsiders are in play. All outsiders are drunk, even if you are dead. [+1 Outsider]",
+        "attribution": "Recreated icon",
+        "firstNight": 20
+    },
+    {
+        "id": "ballerina_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/ballerina_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Ballerina a 1 if there are more townsfolk odd steps away from them clockwise, a 2 if there are more even steps from them clockwise or a 3 if it's equal.",
+        "name": "Ballerina",
+        "team": "townsfolk",
+        "ability": "You start knowing if more townsfolk are (1) odd or (2) even steps from you clockwise. Or you learn that (3) it's equal.",
+        "attribution": "Recreated icon",
+        "firstNight": 27
+    },
+    {
+        "id": "pirate_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/pirate_full_unreleased_characters.png",
+        "setup": true,
+        "name": "Pirate",
+        "team": "townsfolk",
+        "ability": "You start knowing how many pirates are in-play. If Pirates are the only good characters alive, good wins. [+0 to +2 Pirates]",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "prophet_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/prophet_full_unreleased_characters.png",
+        "firstNightReminder": "Wake the prophet and get them to show you a number.",
+        "otherNightReminder": "If it is the day that the prophet chose and all dead players are good, then they are all resurrected as travellers.",
+        "reminders": [
+            "Resurrected"
+        ],
+        "name": "Prophet",
+        "team": "townsfolk",
+        "ability": "On your 1st night, choose a day number: if all dead players are good that dawn, they are resurrected as travellers.",
+        "attribution": "Icon by Dela",
+        "firstNight": 12,
+        "otherNight": 17
+    },
+    {
+        "id": "stableboy_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/stableboy_full_unreleased_characters.png",
+        "firstNightReminder": "Point to an in-play character",
+        "otherNightReminder": "Point to an in-play character",
+        "name": "Stableboy",
+        "team": "townsfolk",
+        "ability": "Each night, learn 1 in-play character. ",
+        "attribution": "Recreated icon",
+        "firstNight": 17,
+        "otherNight": 11
+    },
+    {
+        "id": "moneylender_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/moneylender_full_unreleased_characters.png",
+        "firstNightReminder": "The Moneylender becomes the same alignment as the player that they choose.",
+        "otherNightReminder": "The Moneylender becomes the same alignment as the player that they choose.",
+        "name": "Moneylender",
+        "team": "townsfolk",
+        "ability": "Each night, choose an alive player (not yourself): you become their alignment.",
+        "attribution": "Recreated icon",
+        "firstNight": 14,
+        "otherNight": 7
+    },
+    {
+        "id": "palmreader_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/palmreader_full_unreleased_characters.png",
+        "firstNightReminder": "Wake the Demon and show them that the Palm Reader selected them. Then get them to point to a player. Mark them with the \"Dies next night\" reminder token. Wake the Palm Reader and point to the player the Demon chose.",
+        "otherNightReminder": "Wake the Palm Reader and point to the player the Demon chose.",
+        "reminders": [
+            "Dies next night"
+        ],
+        "name": "Palm Reader",
+        "team": "townsfolk",
+        "ability": "The Demon attacks one night before it takes effect, even if you are dead. Each night, learn who was attacked.",
+        "attribution": "Recreated icon",
+        "firstNight": 35,
+        "otherNight": 39
+    },
+    {
+        "id": "wench_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/wench_full_unreleased_characters.png",
+        "firstNightReminder": "Mark a player with the \"Drunk & False info\" reminder token. Wake the Wench and point to that player.",
+        "otherNightReminder": "Mark a player with the \"Drunk & False info\" reminder token. Wake the Wench and point to that player.",
+        "reminders": [
+            "Drunk & False info"
+        ],
+        "name": "Wench",
+        "team": "townsfolk",
+        "ability": "Each night, you learn a player. They are drunk until dusk and any information they receive is false.",
+        "attribution": "Should be 3 Drunk icons. Icon by Dela.",
+        "firstNight": 30,
+        "otherNight": 32
+    },
+    {
+        "id": "houndskeeper_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/houndskeeper_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Houndskeeper the number of steps to the nearest living player targeted by an evil ability tonight.",
+        "otherNightReminder": "Show the Houndskeeper the number of steps to the nearest living player targeted by an evil ability tonight.",
+        "name": "Houndskeeper",
+        "team": "townsfolk",
+        "ability": "Each night, you learn how many steps to the nearest living player targeted by an evil ability tonight.",
+        "attribution": "Recreated icon",
+        "firstNight": 24,
+        "otherNight": 22
+    },
+    {
+        "id": "genius_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/genius_full_unreleased_characters.png",
+        "firstNightReminder": "The Genius points to a good character on their sheet. Swap the character token with the Genius token and add the 'Is the Genius' reminder.",
+        "otherNightReminder": "The Genius points to a good character on their sheet. Swap the character token with the Genius' current token. On every other night, place the 'Drunk' reminder token on the Genius.",
+        "remindersGlobal": [
+            "Is the Genius",
+            "Drunk"
+        ],
+        "name": "Genius",
+        "team": "townsfolk",
+        "ability": "Each night, choose a good character: you have that ability until you choose again. You are drunk every other night.",
+        "attribution": "Recreated icon by Dela",
+        "firstNight": 16,
+        "otherNight": 20
+    },
+    {
+        "id": "quack_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/quack_full_unreleased_characters.png",
+        "firstNightReminder": "Mark the chosen players with the 'Chosen' reminder token. Any abilities that target one, target the other instead.",
+        "otherNightReminder": "Mark the chosen players with the 'Chosen' reminder token. Any abilities that target one, target the other instead.",
+        "reminders": [
+            "Chosen"
+        ],
+        "name": "- Quack -",
+        "team": "townsfolk",
+        "ability": "Each night, choose 2 living players: abilities that target one, target the other instead. The demon cannot die this way.",
+        "attribution": "Recreated icon",
+        "firstNight": 15,
+        "otherNight": 19
+    },
+    {
+        "id": "witchhunter_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/witchhunter_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Witch Hunter the alignment of the player who they selected and mark them with the 'Turns evil' reminder token.",
+        "otherNightReminder": "If the player with the 'Turns evil' reminder token has not been executed, they turn evil. Show the Witch Hunter the alignment of the player who they selected and mark them with the 'Turns evil' reminder token.",
+        "reminders": [
+            "Turns evil"
+        ],
+        "name": "Witch Hunter",
+        "team": "townsfolk",
+        "ability": "Each night, choose a player: you learn their alignment. If they are not executed tomorrow, they turn evil. You can not be evil.",
+        "attribution": "Recreated icon by DarkArtist",
+        "firstNight": 13,
+        "otherNight": 18
+    },
+    {
+        "id": "insomniac_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/insomniac_full_unreleased_characters.png",
+        "otherNightReminder": "Point to a character that died tonight",
+        "name": "Insomniac",
+        "team": "townsfolk",
+        "ability": "Each night*, learn a character that died tonight.",
+        "attribution": "Recreated icon",
+        "otherNight": 4
+    },
+    {
+        "id": "voyeur_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/voyeur_full_unreleased_characters.png",
+        "otherNightReminder": "Get the Voyeur to point to a player. Mark that player with the \"Chosen\" reminder token. If that player dies tonight, at dawn, announce who the Voyeur is.",
+        "reminders": [
+            "Chosen"
+        ],
+        "name": "Voyeur",
+        "team": "townsfolk",
+        "ability": "Each night*, choose a player (not yourself): if they die tonight, all players learn who you are.",
+        "attribution": "Recreated icon",
+        "otherNight": 30
+    },
+    {
+        "id": "hustler_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/hustler_full_unreleased_characters.png",
+        "otherNightReminder": "If the Hustler was mad that they were the Hustler mark them with the \"False info\" reminder token. If the Hustler was nominated today, point to the character of the player that nominated them.",
+        "reminders": [
+            "False info",
+            "Nominated Hustler"
+        ],
+        "name": "Hustler",
+        "team": "townsfolk",
+        "ability": "Each night*, learn the character that nominated you today. If you are \"mad\" about being the hustler, you receive false info.",
+        "attribution": "Should be a chequered suit",
+        "otherNight": 33
+    },
+    {
+        "id": "astrologer_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/astrologer_full_unreleased_characters.png",
+        "name": "Astrologer",
+        "team": "townsfolk",
+        "ability": "Each day, ask the Storyteller to tell you 1 piece of false information.",
+        "attribution": "Recreated icon by DarkArtist"
+    },
+    {
+        "id": "matchmaker_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/matchmaker_full_unreleased_characters.png",
+        "name": "? Matchmaker ?",
+        "team": "townsfolk",
+        "ability": "Each day, privately choose 2 players: you learn if they're connected by an active ability.",
+        "attribution": "Should be a loop knot"
+    },
+    {
+        "id": "mormon_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/mormon_full_unreleased_characters.png",
+        "reminders": [
+            "No ability"
+        ],
+        "name": "- Mormon -",
+        "team": "townsfolk",
+        "ability": "Each day, if 1 of your living neighbours publicly agrees, they become a Mormon. If not, lose your ability."
+    },
+    {
+        "id": "druid_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/druid_full_unreleased_characters.png",
+        "otherNightReminder": "If the Druid or the player with the \"In the Grove\" reminder token dies, if possible, an alive minion dies instead.",
+        "reminders": [
+            "In the Grove"
+        ],
+        "name": "Druid",
+        "team": "townsfolk",
+        "ability": "Each day, you may publicly choose a player. If either of you die tonight, an alive minion dies instead, if possible.",
+        "attribution": "Recreated icon by Dela",
+        "otherNight": 6
+    },
+    {
+        "id": "coachman_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/coachman_full_unreleased_characters.png",
+        "reminders": [
+            "False info"
+        ],
+        "name": "Coachman",
+        "team": "townsfolk",
+        "ability": "Each day, choose a 1 word topic on which the Storyteller tells you 1 fact. If an alive neighbour is evil, you get false info.",
+        "attribution": "Recreated icon by Dela"
+    },
+    {
+        "id": "thespian_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/thespian_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Thespian and the player with the \"Mad\" reminder token what they should be mad about.",
+        "otherNightReminder": "Show the Thespian and the player with the \"Mad\" reminder token what they should be mad about.",
+        "reminders": [
+            "Mad"
+        ],
+        "name": "Thespian",
+        "team": "townsfolk",
+        "ability": "Each day, an evil player must be \"mad\" about something or they die. Each day, you must be \"mad\" about something or you die.",
+        "attribution": "Recreated icon by IRS",
+        "firstNight": 31,
+        "otherNight": 14
+    },
+    {
+        "id": "apothecary_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/apothecary_full_unreleased_characters.png",
+        "name": "Apothecary",
+        "team": "townsfolk",
+        "ability": "Once per game, publicly change one game rule, if the Storyteller agrees.",
+        "attribution": "Recreated icon by Dela"
+    },
+    {
+        "id": "patient_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/patient_full_unreleased_characters.png",
+        "otherNightReminder": "If the Patient should wake, wake them and get them to point to a character. If it is not in-play, shake your head no. If it is, they have that character's ability for each night they were asleep.",
+        "reminders": [
+            "Has ability"
+        ],
+        "name": "Patient",
+        "team": "townsfolk",
+        "ability": "Once per game, at night, you wake: choose an in-play character to gain ability for each night you were asleep.",
+        "attribution": "Recreated icon",
+        "otherNight": 16
+    },
+    {
+        "id": "bodyguard_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/bodyguard_full_unreleased_characters.png",
+        "firstNightReminder": "Get the Bodyguard to either point to a character or shake their head no. If the Bodyguard points to a character mark them with the \"Protected\" reminder token.",
+        "otherNightReminder": "If the Bodyguard has not yet used their ability, get them to either point to a character or shake their head no. If the Bodyguard points to a character mark them with the \"Protected\" reminder token.",
+        "reminders": [
+            "Protected"
+        ],
+        "name": "Bodyguard",
+        "team": "townsfolk",
+        "ability": "Once per game, at night, choose a character (not the Bodyguard): they are not affected in any way by evil abilities.",
+        "attribution": "Recreated icon",
+        "firstNight": 38,
+        "otherNight": 44
+    },
+    {
+        "id": "hangman_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/hangman_full_unreleased_characters.png",
+        "name": "Hangman",
+        "team": "townsfolk",
+        "ability": "Once per game, choose a player. Going clockwise, good players that do not publicly state their character in 3 seconds, die.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "piper_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/piper_full_unreleased_characters.png",
+        "name": "Piper",
+        "team": "townsfolk",
+        "ability": "Once per game, publicly choose that from now on: Minions can privately choose to turn good but the next executee's team loses.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "machinist_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/machinist_full_unreleased_characters.png",
+        "reminders": [
+            "?"
+        ],
+        "name": "Machinist",
+        "team": "townsfolk",
+        "ability": "On your 1st day, you may visit the Storyteller to gain the ability of an off-script character, even if drunk or poisoned.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "leper_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/leper_full_unreleased_characters.png",
+        "otherNightReminder": "If the Leper was killed by the Demon mark them with the 'Poisoned' reminder token.",
+        "reminders": [
+            "Poisoned"
+        ],
+        "name": "Leper",
+        "team": "townsfolk",
+        "ability": "If the demon kills you, they are poisoned.",
+        "attribution": "Recreated icon",
+        "otherNight": 3
+    },
+    {
+        "id": "phoenix_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/phoenix_full_unreleased_characters.png",
+        "name": "Phoenix",
+        "team": "townsfolk",
+        "ability": "On final day, if dead, you are raised as a not-in-play townsfolk.",
+        "attribution": "Icon by DarkArtist"
+    },
+    {
+        "id": "scavenger_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/scavenger_full_unreleased_characters.png",
+        "reminders": [
+            "Something good"
+        ],
+        "name": "Scavenger",
+        "team": "townsfolk",
+        "ability": "If both your neighbors die, something good happens.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "nun_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/nun_full_unreleased_characters.png",
+        "name": "Nun",
+        "team": "townsfolk",
+        "ability": "Other good players cannot be drunk, poisoned or get false info.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "bonvivant_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/bonvivant_full_unreleased_characters.png",
+        "reminders": [
+            "Drunk"
+        ],
+        "name": "Bon Vivant",
+        "team": "townsfolk",
+        "ability": "Your alive neighbouring players are drunk (not including Travelers).",
+        "attribution": "Should be a party horn"
+    },
+    {
+        "id": "nanny_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/nanny_full_unreleased_characters.png",
+        "otherNightReminder": "If the Nanny died, kill some of the players with both hands over their eyes and mark them with the \"Dead\" reminder tokens.",
+        "reminders": [
+            "Dead",
+            "Protected"
+        ],
+        "name": "Nanny",
+        "team": "townsfolk",
+        "ability": "At night, other players with both hands over their eyes cannot die, but if you die, they might die too.",
+        "attribution": "Recreated icon",
+        "otherNight": 12
+    },
+    {
+        "id": "liontamer_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/liontamer_full_unreleased_characters.png",
+        "reminders": [
+            "All safe"
+        ],
+        "name": "Lion Tamer",
+        "team": "townsfolk",
+        "ability": "If either of your alive neighbours died by execution today, all players are safe from the Demon tonight.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "schoolmarm_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/schoolmarm_full_unreleased_characters.png",
+        "firstNightReminder": "If a player turns evil, show them the Schoolmarm token. If they nod yes, signal to them that they are good, if they shake no, send them back to sleep.",
+        "otherNightReminder": "If a player turns evil, show them the Schoolmarm token. If they nod yes, signal to them that they are good, if they shake no, send them back to sleep.",
+        "setup": true,
+        "name": "Schoolmarm",
+        "team": "townsfolk",
+        "ability": "Players who turn evil learn you are in play and may choose to remain good. [1 evil-creating character is in-play]",
+        "attribution": "Recreated icon",
+        "firstNight": 32,
+        "otherNight": 34
+    },
+    {
+        "id": "strongman_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/strongman_full_unreleased_characters.png",
+        "otherNightReminder": "If the Strongman was the most mad about being the Strongman today, if a player chooses them for any reason tonight, they die.",
+        "reminders": [
+            "Dead"
+        ],
+        "name": "Strongman",
+        "team": "townsfolk",
+        "ability": "If you were the most mad about being the Strongman today & a player chose you tonight for any reason, they die.",
+        "attribution": "Should just be the weights",
+        "otherNight": 37
+    },
+    {
+        "id": "messenger_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/messenger_full_unreleased_characters.png",
+        "otherNightReminder": "If the Messenger used their ability, wake the chosen player and show them the Messenger's message.",
+        "reminders": [
+            "Message"
+        ],
+        "name": "Messenger",
+        "team": "townsfolk",
+        "ability": "On the final night, even if you are dead, choose a player: they learn something. At any time, you may request what.",
+        "attribution": "Recreated icon",
+        "otherNight": 43
+    },
+    {
+        "id": "prince_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/prince_full_unreleased_characters.png",
+        "reminders": [
+            "Pure"
+        ],
+        "name": "? Prince ?",
+        "team": "townsfolk",
+        "ability": "After the first night, as long as you haven't been nominated, you cannot die, turn evil, or become another character.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "rogue_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/rogue_full_unreleased_characters.png",
+        "reminders": [
+            "Something bad"
+        ],
+        "name": "- Rogue -",
+        "team": "townsfolk",
+        "ability": "You may choose to break any rules when alive. If the Storyteller finds out, even if dead, something bad might happen.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "tycoon_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/tycoon_full_unreleased_characters.png",
+        "otherNightReminder": "Choose whether or not to make a player the Tycoon shook hands with drunk. Wake the Tycoon and nod yes if they shook hands with an evil player, otherwise shake your head no.",
+        "reminders": [
+            "Shook hands",
+            "Drunk"
+        ],
+        "name": "Tycoon",
+        "team": "townsfolk",
+        "ability": "1 player that you have shaken hands with might be drunk. Each night*, learn if you shook hands with an evil player today.",
+        "attribution": "Recreated icon",
+        "otherNight": 45
+    },
+    {
+        "id": "merchant_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/merchant_full_unreleased_characters.png",
+        "reminders": [
+            "Deal"
+        ],
+        "name": "Merchant",
+        "team": "townsfolk",
+        "ability": "You & any other player may choose to make a deal. Until a new deal is made, if a player breaks the deal, 1 of you dies.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "queen_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/queen_full_unreleased_characters.png",
+        "firstNightReminder": "If both of the Queen's neighbours are good wake them and show them the 'This character selected you' card and then the Queen token",
+        "name": "Queen",
+        "team": "townsfolk",
+        "ability": "If both of your neighbours are good, they learn who you are. Anyone mad about a Queen being in-play might be executed.",
+        "attribution": "Recreated icon by Dela",
+        "firstNight": 18
+    },
+    {
+        "id": "mole_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/mole_full_unreleased_characters.png",
+        "firstNightReminder": "Wake the Mole and show them the minion they are.",
+        "remindersGlobal": [
+            "Is the mole",
+            "Guess Used"
+        ],
+        "name": "Mole",
+        "team": "townsfolk",
+        "ability": "You are a minion & register as evil. If the Demon publicly guesses you (once), your team loses, even if dead, drunk or poisoned.",
+        "attribution": "Recreated icon",
+        "firstNight": 19
+    },
+    {
+        "id": "beekeeper_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/beekeeper_full_unreleased_characters.png",
+        "reminders": [
+            "Target",
+            "Guess used"
+        ],
+        "name": "Beekeeper",
+        "team": "townsfolk",
+        "ability": "One evil player registers as good and as a Townsfolk or Outsider. If you publicly guess who it is (once per game), your team wins.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "casanova_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/casanova_full_unreleased_characters.png",
+        "firstNightReminder": "The Casanova points to a player. Mark them with the \"Chosen\" reminder token.",
+        "otherNightReminder": "The Casanova points to a player. Mark them with the \"Chosen\" reminder token.",
+        "reminders": [
+            "Chosen"
+        ],
+        "name": "Casanova",
+        "team": "outsider",
+        "ability": "Each night, choose an alive player (not yourself). If they're an ally & executed tomorrow your team loses.",
+        "attribution": "Recreated icon by Dela",
+        "firstNight": 36,
+        "otherNight": 40
+    },
+    {
+        "id": "bully_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/bully_full_unreleased_characters.png",
+        "name": "Bully",
+        "team": "outsider",
+        "ability": "Any players who vote differently to you might die.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "peasant_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/peasant_full_unreleased_characters.png",
+        "name": "- Peasant -",
+        "team": "outsider",
+        "ability": "If you lose, you are the Peasant in the next game."
+    },
+    {
+        "id": "dowager_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/dowager_full_unreleased_characters.png",
+        "otherNightReminder": "If the Dowager died today, wake the Demon and show them the Grimoire.",
+        "reminders": [
+            "Secrets spilled tonight"
+        ],
+        "name": "? Dowager ?",
+        "team": "outsider",
+        "ability": "If you died today or tonight, the Demon sees the Grimoire.",
+        "attribution": "Should be a hat with veil and a hand holding a cigarette",
+        "otherNight": 47
+    },
+    {
+        "id": "orphan_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/orphan_full_unreleased_characters.png",
+        "name": "? Orphan ?",
+        "team": "outsider",
+        "ability": "If you are good & dead, the Demon only dies by execution if you voted.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "tramp_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/tramp_full_unreleased_characters.png",
+        "name": "Tramp",
+        "team": "outsider",
+        "ability": "If there are any votes to execute you, you might be executed immediately.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "charlatan_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/charlatan_full_unreleased_characters.png",
+        "otherNightReminder": "The Chartalan becomes the alignment of the 1st player to be executed.",
+        "reminders": [
+            "1st Execution"
+        ],
+        "name": "Charlatan",
+        "team": "outsider",
+        "ability": "At night, you become the alignment of the 1st player to be executed this game.",
+        "attribution": "Should be two faces, a light one and a dark one",
+        "otherNight": 2
+    },
+    {
+        "id": "donkeywrangler_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/donkeywrangler_full_unreleased_characters.png",
+        "reminders": [
+            "Nominated"
+        ],
+        "name": "Donkey Wrangler",
+        "team": "outsider",
+        "ability": "If you are nominated and the demon is not executed, your team loses. [Your token is square]",
+        "attribution": "Icon by Moony"
+    },
+    {
+        "id": "goldenchild_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/goldenchild_full_unreleased_characters.png",
+        "otherNightReminder": "Wake the first player to nominate the Golden Child and show them that they are now evil.",
+        "reminders": [
+            "Turns evil"
+        ],
+        "name": "Golden Child",
+        "team": "outsider",
+        "ability": "The 1st player to nominate you, turns evil that night. If you nominate yourself 1st, your team loses.",
+        "attribution": "Recreated icon",
+        "otherNight": 21
+    },
+    {
+        "id": "hermit_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/hermit_full_unreleased_characters.png",
+        "reminders": [
+            "?"
+        ],
+        "setup": true,
+        "name": "Hermit",
+        "team": "outsider",
+        "ability": "You have the ability of every other outsider. No Outsider modification effects work. [No other outsiders]",
+        "attribution": "Recreated icon by Dela"
+    },
+    {
+        "id": "princess_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/princess_full_unreleased_characters.png",
+        "name": "Princess",
+        "team": "outsider",
+        "ability": "If a player dies, then claims to be the Princess (you must), 1 player may choose to die instead. If they are evil, your team loses.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "prisoner_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/prisoner_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Prisoner a not-in-play character.",
+        "name": "Prisoner",
+        "team": "outsider",
+        "ability": "You cannot vote. You start knowing 1 not-in-play character. If most players vote to free you, you become that character and that character's alignment.",
+        "attribution": "Recreated icon",
+        "firstNight": 21
+    },
+    {
+        "id": "vatdweller_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/vatdweller_full_unreleased_characters.png",
+        "firstNightReminder": "The Vat Dweller points to an Outsider. All Outsiders become that Outsider.",
+        "setup": true,
+        "name": "Vat Dweller",
+        "team": "minion",
+        "ability": "On your 1st night, choose an Outsider. Every Outsider is a copy of that Outsider. [-? to +? Outsiders]",
+        "attribution": "Recreated icon by Eddy",
+        "firstNight": 23
+    },
+    {
+        "id": "klaun_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/klaun_full_unreleased_characters.png",
+        "firstNightReminder": "The Klaun points to up to 3 players. Wake those players and show them that they are mad in some way.",
+        "otherNightReminder": "The Klaun points to up to 3 players. Mark them with the \"Fake Madness\" reminder tokens. Wake those players and show them that they are mad in some way.",
+        "reminders": [
+            "Fake Madness"
+        ],
+        "name": "Klaun",
+        "team": "minion",
+        "ability": "Each night, choose up to 3 players. They are told that they are mad in some way, but are not.",
+        "attribution": "Should be a spotty hat with flowers",
+        "firstNight": 33,
+        "otherNight": 36
+    },
+    {
+        "id": "familiar_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/familiar_full_unreleased_characters.png",
+        "otherNightReminder": "Wake the Familiar at the same time as the Demon and get them to point to a player. That player dies.",
+        "reminders": [
+            "No Ability",
+            "Dead"
+        ],
+        "name": "Familiar",
+        "team": "minion",
+        "ability": "Each night*, you wake with the Demon and choose a player: they die. If you die, the demon loses its ability. ",
+        "attribution": "Recreated icon",
+        "otherNight": 35
+    },
+    {
+        "id": "ringmaster_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/ringmaster_full_unreleased_characters.png",
+        "firstNightReminder": "If the Ringmaster nods 'yes' they become the Storyteller (mark them with 'Is the Storyteller' and 'No ability'). If they shake 'no' put them back to sleep.",
+        "otherNightReminder": "If the Ringmaster nods 'yes' they become the Storyteller (mark them with 'Is the Storyteller' and 'No ability'). If they shake 'no' put them back to sleep.",
+        "reminders": [
+            "Is the Storyteller",
+            "No ability"
+        ],
+        "name": "Ringmaster",
+        "team": "minion",
+        "ability": "Once per game, choose to become the Storyteller. You may still vote.",
+        "firstNight": 22,
+        "otherNight": 5
+    },
+    {
+        "id": "wizard_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/wizard_full_unreleased_characters.png",
+        "reminders": [
+            "No ability",
+            "?"
+        ],
+        "name": "Wizard",
+        "team": "minion",
+        "ability": "Once per game, choose to make a wish. If granted, your wish may have a price, and leaves a clue to its nature.",
+        "attribution": "Recreated icon by Eddy"
+    },
+    {
+        "id": "amaniti_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/amaniti_full_unreleased_characters.png",
+        "reminders": [
+            "Registers falsely"
+        ],
+        "name": "Amaniti",
+        "team": "minion",
+        "ability": "Your neighbours falsely register to good players' abilities.",
+        "attribution": "Recreated icon by Dela"
+    },
+    {
+        "id": "senator_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/senator_full_unreleased_characters.png",
+        "name": "Senator",
+        "team": "minion",
+        "ability": "Players can only nominate their living neighbors, even if you are dead.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "scarecrow_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/scarecrow_full_unreleased_characters.png",
+        "reminders": [
+            "Registers as Minion",
+            "Registers as Demon"
+        ],
+        "name": "Scarecrow",
+        "team": "minion",
+        "ability": "To good players, you register as a Demon & the Demon registers as a Minion.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "wraith_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/wraith_full_unreleased_characters.png",
+        "name": "Wraith",
+        "team": "minion",
+        "ability": "You may choose to open your eyes at night. You wake when other evil players do.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "imposter_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/imposter_full_unreleased_characters.png",
+        "otherNightReminder": "Mark the 1st in-play character that the Imposter was mad about yesterday with the \"Has ability\" and \"Poisoned\" reminder tokens.",
+        "reminders": [
+            "Has ability",
+            "Poisoned"
+        ],
+        "name": "Imposter",
+        "team": "minion",
+        "ability": "You poison and gain the ability of the 1st in-play character that you are mad about being each day.",
+        "attribution": "Recreated icon",
+        "otherNight": 10
+    },
+    {
+        "id": "copycat_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/copycat_full_unreleased_characters.png",
+        "firstNightReminder": "The Copycat points to a Minion player or character. Mark them with the 'Has ability' reminder token.",
+        "otherNightReminder": "The Copycat points to a Minion player or character. Mark them with the 'Has ability' reminder token.",
+        "reminders": [
+            "Has ability"
+        ],
+        "name": "Copycat",
+        "team": "minion",
+        "ability": "You have the ability of an in-play Minion. If no others exist, you start by choosing a Minion: gain their ability.",
+        "attribution": "Recreated icon by Faketier",
+        "firstNight": 34,
+        "otherNight": 38
+    },
+    {
+        "id": "riddlefiend_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/riddlefiend_full_unreleased_characters.png",
+        "reminders": [
+            "Guessed"
+        ],
+        "name": "Riddle Fiend",
+        "team": "minion",
+        "ability": "On the final day, even if you are dead, each player publicly guesses who you are. If no good players do, evil wins.",
+        "attribution": "Recreated icon by DarkArtist"
+    },
+    {
+        "id": "gorgon_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/gorgon_full_unreleased_characters.png",
+        "firstNightReminder": "The Gorgon points to a player, mark them with the \"Petrified\" reminder token. If they leave their seat tomorrow, they die.",
+        "otherNightReminder": "If there are 4 or more players alive: The Gorgon points to a player, mark them with the \"Petrified\" reminder token. If they leave their seat tomorrow, they die.",
+        "reminders": [
+            "Petrified"
+        ],
+        "name": "? Gorgon ?",
+        "team": "minion",
+        "ability": "Each night, choose a player: if they leave their seat tomorrow, they die. Lose this ability when 3 or fewer players live.",
+        "attribution": "Recreated icon",
+        "firstNight": 41,
+        "otherNight": 48
+    },
+    {
+        "id": "daughterofnox_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/daughterofnox_full_unreleased_characters.png",
+        "reminders": [
+            "No ability",
+            "Named"
+        ],
+        "name": "Daughter of Nox",
+        "team": "minion",
+        "ability": "Good\u2019s info is reversed. The 1st time each player names you: lose your ability (if they are good), regain it (if they are evil).",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "sicilian_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/sicilian_full_unreleased_characters.png",
+        "reminders": [
+            "Chosen"
+        ],
+        "name": "Sicilian",
+        "team": "minion",
+        "ability": "When nominations are called, if you publicly choose a player (not yourself) & they are not executed today, their team wins.",
+        "attribution": "Correct icon",
+        "flavor": "You must take your opponent into a deep dark forest where 2+2=5, and the path leading out is only wide enough for one."
+    },
+    {
+        "id": "zodion_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/zodion_full_unreleased_characters.png",
+        "firstNightReminder": "Show the Zodion every not-in-play character token.",
+        "otherNightReminder": "Put the 'Dead' reminder token next to the living character that is highest on the script.",
+        "reminders": [
+            "Dead"
+        ],
+        "name": "Zodion",
+        "team": "demon",
+        "ability": "You start knowing all not-in-play characters. Each night*, the highest character on the script dies.",
+        "firstNight": 28,
+        "otherNight": 29
+    },
+    {
+        "id": "shacklewight_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/shacklewight_full_unreleased_characters.png",
+        "firstNightReminder": "Mark the players the Shacklewight point at with the 'Bound' reminder token. Then, wake those players and show them the 'This character selected you' card and the Shacklewight token",
+        "otherNightReminder": "Remove the previous 'Bound' reminder tokens. Mark the players the Shacklewight point at with the 'Bound' reminder token. Then, wake those players and show them the 'This character selected you' card and the Shacklewight token",
+        "reminders": [
+            "Bound"
+        ],
+        "name": "Shacklewight",
+        "team": "demon",
+        "ability": "Each night, choose any players: they all wake together. Tomorrow day, if 1 dies, they all die. Each day, if no-one dies, evil wins.",
+        "firstNight": 25,
+        "otherNight": 23
+    },
+    {
+        "id": "virilus_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/virilus_full_unreleased_characters.png",
+        "firstNightReminder": "The Virilus points to a player. Mark them with the 'Infected' reminder token.",
+        "otherNightReminder": "The Virilus points to a player. Mark them with the 'Infected' reminder token.",
+        "reminders": [
+            "Infected"
+        ],
+        "name": "Virilus",
+        "team": "demon",
+        "ability": "Each night, choose a player to infect. Infected who nominate die & infect the nominee. After day 4, evil wins.",
+        "attribution": "Should be some sort of bubbly virus",
+        "firstNight": 29,
+        "otherNight": 31
+    },
+    {
+        "id": "soulhammer_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/soulhammer_full_unreleased_characters.png",
+        "otherNightReminder": "The Soul Hammer points to a player. That player dies.",
+        "reminders": [
+            "Dead",
+            "Final Day"
+        ],
+        "name": "Soul Hammer",
+        "team": "demon",
+        "ability": "Each night*, choose a player: they die. After the final night, the dead may not talk to the living.",
+        "attribution": "Recreated icon",
+        "otherNight": 25
+    },
+    {
+        "id": "creepingterror_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/creepingterror_full_unreleased_characters.png",
+        "otherNightReminder": "If the Creeping Terror points at up to 3 players, mark them with the 'Marked' reminder token. Then, wake them and tell them that the Creeping Terror has selected them. If Creeping Terror nods then kill all marked players.",
+        "reminders": [
+            "Marked",
+            "Dead"
+        ],
+        "name": "Creeping Terror",
+        "team": "demon",
+        "ability": "Each night*, mark up to 3 players or kill all marked players. Marked players learn that they are marked.",
+        "attribution": "Recreated icon by Dela",
+        "otherNight": 27
+    },
+    {
+        "id": "barrowfog_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/barrowfog_full_unreleased_characters.png",
+        "otherNightReminder": "The Barrow-Fog points to a player. That player dies but will register as alive during the day.",
+        "reminders": [
+            "Secretly dead"
+        ],
+        "name": "- Barrow-Fog -",
+        "team": "demon",
+        "ability": "Each night*, choose a player: they die. Players killed by the Barrow-Fog register as alive during the day.",
+        "otherNight": 46
+    },
+    {
+        "id": "palabradedios_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/palabradedios_full_unreleased_characters.png",
+        "otherNightReminder": "Kill a player for each alive good player who raised their hand at dusk.",
+        "reminders": [
+            "Going to die"
+        ],
+        "name": "Palabra de Dios",
+        "team": "demon",
+        "ability": "Each night*, each alive good player that raised a hand at dusk, kills a random player. If none did, evil wins.",
+        "attribution": "Should be some sort of long thin horns",
+        "otherNight": 26
+    },
+    {
+        "id": "lecadeau_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/lecadeau_full_unreleased_characters.png",
+        "otherNightReminder": "If a new Le Cadeau was made today, wake them and show them the \"You are\" card and the Le Cadeau token. The original Demon dies. Otherwise, the Le Cadeau points to a player, they die.",
+        "reminders": [
+            "Dead"
+        ],
+        "name": "? Le Cadeau ?",
+        "team": "demon",
+        "ability": "Each night*, choose a player: they die. The 1st Townsfolk to nominate you becomes an evil Le Cadeau & you die tonight.",
+        "attribution": "Recreated icon",
+        "otherNight": 49
+    },
+    {
+        "id": "queenoflies_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/queenoflies_full_unreleased_characters.png",
+        "otherNightReminder": "The Queen of Lies will point to 3 players. Mark them with the \"Duped\" reminder tokens. Publicly announce the players marked \"Duped\". Wake them one by one and get them to choose a player. Mark those players with the \"Chosen\" reminder tokens. Kill 2 of the \"Chosen\" players and mark them with the \"Dead\" reminder tokens.",
+        "reminders": [
+            "Duped",
+            "Chosen",
+            "Dead"
+        ],
+        "name": "Queen of Lies",
+        "team": "demon",
+        "ability": "Each night* choose 3 players to dupe: each chooses a different alive player, 2 of which die. All players learn who you duped.",
+        "otherNight": 41
+    },
+    {
+        "id": "dolomite_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/dolomite_full_unreleased_characters.png",
+        "otherNightReminder": "Dolomite may lose their ability. If not, Dolomite points to a player: that player turns evil. ",
+        "reminders": [
+            "No ability"
+        ],
+        "setup": true,
+        "name": "Dolomite",
+        "team": "demon",
+        "ability": "Each night*, choose a player: they turn evil & learn who you are. Once per game, you lose this ability. [No Minions]",
+        "attribution": "Recreated icon by Dela",
+        "otherNight": 28
+    },
+    {
+        "id": "tipitipi_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/tipitipi_full_unreleased_characters.png",
+        "otherNightReminder": "A player dies. On the final night, the Tipi-Tipi will choose a player, mark them with the \"Mad\" reminder token. Wake them and show them the Tipi-Tipi token and then point to the Tipi-Tipi.",
+        "reminders": [
+            "Dead",
+            "Mad"
+        ],
+        "name": "Tipi-Tipi",
+        "team": "demon",
+        "ability": "Each night*, a player dies. On the final night, choose a player. They are \"mad\" that you are not the demon or their team loses.",
+        "attribution": "Recreated icon by Nunny",
+        "otherNight": 9
+    },
+    {
+        "id": "hwisp_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/hwisp_full_unreleased_characters.png",
+        "otherNightReminder": "The Hwisp points to a player. That player dies.",
+        "reminders": [
+            "Dead"
+        ],
+        "name": "Hwisp",
+        "team": "demon",
+        "ability": "Each night*, choose a player: they die. If nominated by a Townsfolk, you die. 2nd Townsfolk to nominate in a day's, team loses.",
+        "attribution": "Recreated icon by DarkArtist",
+        "otherNight": 42
+    },
+    {
+        "id": "jnak_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/jnak_full_unreleased_characters.png",
+        "firstNightReminder": "Wake the good player with the \"Knows\" reminder token and point to the two players with the \"Known\" reminder tokens.",
+        "otherNightReminder": "The J'Nak points to a player. That player dies. ",
+        "reminders": [
+            "Dead",
+            "Knows",
+            "Known"
+        ],
+        "name": "J'nak",
+        "team": "demon",
+        "ability": "Each night*, choose a player: they die. 1 good player knows you are 1 of 2 players. If executed while a minion lives, your team wins.",
+        "attribution": "Recreated icon",
+        "firstNight": 26,
+        "otherNight": 15
+    },
+    {
+        "id": "skinkulus_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/skinkulus_full_unreleased_characters.png",
+        "otherNightReminder": "The Skinkulus points to a player. That player dies. If all player the Skinkulus has killed differ in gender from the Skinkulus wake them and show them that they are evil.",
+        "reminders": [
+            "Dead",
+            "Cannot vote"
+        ],
+        "name": "- Skinkulus -",
+        "team": "demon",
+        "ability": "Each night*, choose a player: they die. If all differ in gender to you they turn evil & may not vote (even if you lose this ability).",
+        "attribution": "Correct icon",
+        "otherNight": 24
+    },
+    {
+        "id": "fanzazz_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/fanzazz_full_unreleased_characters.png",
+        "otherNightReminder": "The Fanzazz points to a player. They die and the Fanzazz becomes the alignment of that player.",
+        "reminders": [
+            "Dead"
+        ],
+        "name": "Fanzazz",
+        "team": "demon",
+        "ability": "Each night*, choose a player: they die & you become their alignment. If you die, your team loses. If only 2 players live, your team wins.",
+        "attribution": "Recreated icon by DarkArtist",
+        "otherNight": 13
+    },
+    {
+        "id": "_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/_full_unreleased_characters.png",
+        "reminders": [
+            "Risen"
+        ],
+        "name": "???",
+        "team": "demon",
+        "ability": "All players start dead. Dead players may nominate and if executed, are reborn. Each night*, choose a player: they are reborn. If all evils live, evil wins.",
+        "attribution": "Recreated icon by Eddy"
+    },
+    {
+        "id": "sissaphyth_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/sissaphyth_full_unreleased_characters.png",
+        "otherNightReminder": "If all Minions are dead wake the Sissaphyth and get the to point to a Demon. Mark them with the \"Acts twice\" reminder token and they become that Demon.",
+        "remindersGlobal": [
+            "Acts twice"
+        ],
+        "name": "Sissaphyth",
+        "team": "demon",
+        "ability": "At night, if all Minions are dead, choose a Demon: become it, acting twice each night.",
+        "attribution": "Recreated icon",
+        "otherNight": 8
+    },
+    {
+        "id": "deusexfiasco_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/deusexfiasco_full_unreleased_characters.png",
+        "reminders": [
+            "Oops"
+        ],
+        "name": "- Deus Ex Fiasco -",
+        "team": "fabled",
+        "ability": "Once per game, the Storyteller will make a mistake, correct it, and publicly admit to it.",
+        "attribution": "Recreated icon"
+    },
+    {
+        "id": "hindu_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/hindu_full_unreleased_characters.png",
+        "reminders": [
+            "Died first"
+        ],
+        "name": "Hindu",
+        "team": "fabled",
+        "ability": "The player who dies first may secretly choose which character they are in the next game."
+    },
+    {
+        "id": "patron_full_unreleased_characters",
+        "image": "https://www.bloodstar.xyz/p/piglix/Full_Unreleased_Characters/patron_full_unreleased_characters.png",
+        "name": "- Patron -",
+        "team": "fabled",
+        "ability": "Jinxed characters may not both be in-play. Evil players know which not-in-play characters are jinxed.",
+        "attribution": "Recreated icon"
     }
 ]

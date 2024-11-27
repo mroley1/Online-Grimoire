@@ -740,7 +740,7 @@ async function populate_script(script)
     div.innerHTML = text;
     div.style.color = color;
     div.classList = "menu_header"
-    landing = document.getElementById(landing_name)
+    const landing = document.getElementById(landing_name)
     landing.appendChild(div);
     var ratio = document.createElement("div");
     ratio.classList = "menu_ratio";
