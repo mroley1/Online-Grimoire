@@ -1,7 +1,8 @@
 
 const UID_LENGTH = 13
 const DEFAULT_FABLED = new Set(["doomsayer", "angel", "buddhist", "hellslibrarian", "revolutionary", "fiddler", "toymaker"]);
-var tokens_ref;
+var base_roles;
+var roles;
 var loading = false;
 var CURRENT_SCRIPT;
 class NightCounter
@@ -247,7 +248,9 @@ function orientationChange()
 async function loaded()
 {
   loading = true;
-  tokens_ref = await get_JSON("tokens.json");
+  base_roles = await get_JSON("tokens.json");
+  // Make a copy...
+  roles = JSON.parse(JSON.stringify(base_roles));
   dragPipLayerSpawnDefault("good");
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
@@ -370,7 +373,7 @@ function spawnToken(id, uid, visibility, cat, viability, left, top, nameText)
 
   // Actual picture.
   var role = document.createElement("img");
-  role.src = tokens_ref[id].image;
+  role.src = roles[id].image;
   role.id = `${id}_${uid}_image`;
   role.classList = "token_image background_image";
   div.appendChild(role);
@@ -403,7 +406,7 @@ function spawnToken(id, uid, visibility, cat, viability, left, top, nameText)
   var outsider_betray = document.createElement("div");
   if (cat == "traveler")
   {
-    outsider_betray.style.backgroundImage = `url('${tokens_ref[id].image}')`
+    outsider_betray.style.backgroundImage = `url('${roles[id].image}')`
   }
   outsider_betray.classList = "token_outsider_betray background_image";
   outsider_betray.id = id + "_" + uid + "_outsider_betray";
@@ -454,7 +457,7 @@ function createRoleNameElement(id, uid)
   textPath.setAttribute("style", "fill: black; font-family: Dumbledor; font-size: 24px;");
   textPath.classList.add("js--character--name");
   textPath.id = `${id}_${uid}_name_text`;
-  textPath.textContent = tokens_ref[id]["name"]; // Use textContent for dynamic text
+  textPath.textContent = roles[id]["name"]; // Use textContent for dynamic text
   
   // Append textPath to text, and text to svg
   text.appendChild(textPath);
@@ -527,14 +530,14 @@ function close_mutate_menu()
 
 function mutate_token(idFrom, uid, idTo)
 {
-  let new_json = tokens_ref[idTo];
+  let new_json = roles[idTo];
 
   let subject = document.getElementById(idFrom + "_token_" + uid);
 
   subject.setAttribute("cat", new_json["team"]);
   const townSquareImage = subject.getElementsByClassName("token_outsider_betray")[0]
   if (new_json["team"] == "traveler") {
-    townSquareImage.style.backgroundImage = `url('${tokens_ref[idTo].image}')`;
+    townSquareImage.style.backgroundImage = `url('${roles[idTo].image}')`;
   } else { 
     townSquareImage.style.backgroundImage = "";
   }
@@ -547,7 +550,7 @@ function mutate_token(idFrom, uid, idTo)
 
   const image = document.getElementById(`${idFrom}_${uid}_image`);
   image.id = `${idTo}_${uid}_image`;
-  image.src = tokens_ref[idTo].image
+  image.src = roles[idTo].image
 
   document.getElementById(idFrom + "_" + uid + "_death").id = idTo + "_" + uid + "_death";
   document.getElementById(idFrom + "_" + uid + "_visibility_pip").id = idTo + "_" + uid + "_visibility_pip";
@@ -706,19 +709,17 @@ async function script_select()
 async function script_upload()
 {
   let json = JSON.parse(await document.getElementById("script_upload").files[0].text());
-  if (typeof json[1] == typeof "")
+  // Pre-integration check for reeeeeally old scripts.
+  for (var i = 0; i < json.length; i++)
   {
-    for (var i = 0; i < json.length; i++)
+    if (typeof json[i] == typeof "")
     {
-      if (typeof json[i] == typeof "")
-      {
-        json[i] = { "id": json[i] };
-      }
+      json[i] = { "id": json[i] };
     }
   }
   try
   {
-    json[0]["id"]
+    json[0]["id"];
     populate_script(json);
     document.getElementById("script_upload_feedback").setAttribute("used", "upload");
   } catch (e) {
@@ -784,10 +785,14 @@ async function populate_script(script)
   let scriptTokens = [];
   script.forEach(element =>
   {
-    if (element.id.substring(0, 1) != "_")
-    {
-      try { scriptTokens.push(tokens_ref[element.id]) } catch { }
+    if (element.id == "_meta") return;
+    // More complex things have more than an ID.
+    if (Object.keys(element).length > 1) {
+      roles[element.id] = element;
     }
+    try { 
+      scriptTokens.push(roles[element.id]) 
+    } catch {}
   })
 
   clear("townsfolk")
@@ -868,7 +873,7 @@ function player_count_change()
             expected[cat][2] = 0;
           })
         }
-        let json = tokens_ref[id];
+        let json = roles[id];
         json["change_makeup"].forEach(element =>
         {
           let changeKey = Object.keys(element)[0];
@@ -1033,7 +1038,7 @@ async function infoCall(id, uid)
   close_menu();
   let data_token = document.getElementById(id + "_token_" + uid);
   generateSampleToken(id,  document.getElementById("info_img"));
-  var roleJSON = tokens_ref[id];
+  var roleJSON = roles[id];
   document.getElementById("info_title_field").innerHTML = roleJSON["name"];
   document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
   document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
@@ -1078,7 +1083,7 @@ function generateSampleToken(id, el) {
   var role = document.createElement("img");
   role.id = "info_img_role";
   role.style.position = "absolute";
-  role.src = tokens_ref[id].image;
+  role.src = roles[id].image;
   el.appendChild(role);
 
   var roleName = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -1104,7 +1109,7 @@ function generateSampleToken(id, el) {
   textPath.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#curve");
   textPath.setAttribute("style", "fill: black; font-family: Dumbledor; font-size: 24px;");
   textPath.classList.add("js--character--name");
-  textPath.textContent = tokens_ref[id]["name"]; 
+  textPath.textContent = roles[id]["name"]; 
   
   text.appendChild(textPath);
   roleName.appendChild(text);
@@ -1130,7 +1135,7 @@ function generateReminderBacking(roleName, reminder, uid) {
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = tokens_ref[roleName].image;
+  role.src = roles[roleName].image;
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1168,7 +1173,7 @@ function spawnReminderGhost(left, top, roleName, reminder, longId)
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = tokens_ref[roleName].image;
+  role.src = roles[roleName].image;
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1202,7 +1207,7 @@ function spawnReminder(roleName, reminder, uid, left, top)
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = tokens_ref[roleName].image;
+  role.src = roles[roleName].image;
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1643,7 +1648,7 @@ async function populate_night_order()
   {
     if (inPlay.has(order[i]))
     {
-      gen_night_order_tab_role(tokens_ref[order[i]], night, (alive.has(order[i])) ? false : true)
+      gen_night_order_tab_role(roles[order[i]], night, (alive.has(order[i])) ? false : true)
     }
     if (order[i].toUpperCase() == order[i])
     {
@@ -1796,10 +1801,10 @@ function gen_jinxes_tab(id1, id2, reason)
   imgDiv = document.createElement("div");
   imgDiv.classList = "night_order_img"
   img1 = document.createElement("img");
-  img1.src = tokens_ref[id1].image;
+  img1.src = roles[id1].image;
   img1.style = "width: 70%; position: absolute; top: 0px; left: 0px"
   img2 = document.createElement("img");
-  img2.src = tokens_ref[id2].image;
+  img2.src = roles[id2].image;
   img2.style = "width: 70%; position: absolute; bottom: 0px; right: 0px"
   imgDiv.appendChild(img1);
   imgDiv.appendChild(img2);
@@ -1819,7 +1824,7 @@ function populate_fabled()
   {
     if (entry.id != "_meta")
     {
-      var token = tokens_ref[entry.id];
+      var token = roles[entry.id];
       if (token["team"] == "fabled")
       {
         fabled.add(entry.id);
@@ -1829,7 +1834,7 @@ function populate_fabled()
   })
   fabled.forEach((fable) =>
   {
-    var json = tokens_ref[fable];
+    var json = roles[fable];
     gen_fabled_tab(json, true);
     return Promise.resolve();
   })
@@ -1915,12 +1920,12 @@ function generateHTMLDocument() {
 
   // Generate rows from the provided arrays for town
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'townsfolk'){
+    if(roles[CURRENT_SCRIPT[i].id].team == 'townsfolk'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
+      <td style="width: 7.5%;"><img src="${roles[CURRENT_SCRIPT[i].id].image}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
+      <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
+      <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }
@@ -1933,12 +1938,12 @@ html += `
 
   // Generate rows from the provided arrays for outsiders
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'outsider'){
+    if(roles[CURRENT_SCRIPT[i].id].team == 'outsider'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
+      <td style="width: 7.5%;"><img src="${roles[CURRENT_SCRIPT[i].id].image}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
+      <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
+      <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }
@@ -1950,12 +1955,12 @@ html += `
 
   // Generate rows from the provided arrays for minions
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'minion'){
+    if(roles[CURRENT_SCRIPT[i].id].team == 'minion'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
+      <td style="width: 7.5%;"><img src="${roles[CURRENT_SCRIPT[i].id].image}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
+      <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
+      <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }
@@ -1967,12 +1972,12 @@ html += `
 
   // Generate rows from the provided arrays for Demons
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'demon'){
+    if(roles[CURRENT_SCRIPT[i].id].team == 'demon'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="${tokens_ref[CURRENT_SCRIPT[i].id].image}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
+      <td style="width: 7.5%;"><img src="${roles[CURRENT_SCRIPT[i].id].image}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
+      <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
+      <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }
