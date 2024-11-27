@@ -1043,6 +1043,8 @@ async function infoCall(id, uid)
   document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
   document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
   document.getElementById("info_desc_field").innerHTML = roleJSON["ability"];
+  document.getElementById("info_flavor_field").innerHTML = `"${(roleJSON["flavor"] ?? "").replaceAll(/\n[\t ]*/g, " / ")}"`;
+  document.getElementById("info_flavor_field").style.color = ["minion", "demon"].includes(roleJSON.team) ? "rgb(230, 176, 176)" : "rgb(176, 176, 230)"
   document.getElementById("info_list").setAttribute("current_player", id);
   document.getElementById("info_token_landing").innerHTML = "";
   document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('" + id + "', '" + uid + "')");
@@ -1058,16 +1060,17 @@ async function infoCall(id, uid)
   update_info_death_cycle(id, uid);
 
   const landing = document.getElementById("info_token_landing");
-  for (var i = 0; i < roleJSON["reminders"].length; i++)
+  const allReminders = (roleJSON["reminders"] ?? []).concat(roleJSON["remindersGlobal"] ?? [])
+  for (const reminder of allReminders)
   {
-    const backing = generateReminderBacking(id, roleJSON["reminders"][i], uid);
+    const backing = generateReminderBacking(id, reminder, uid);
     // div.setAttribute("reminderId", i);
     document.getElementById("info_token_landing").appendChild(backing);
 
     const x = backing.getBoundingClientRect().x - landing.getBoundingClientRect().x;
     const y = backing.getBoundingClientRect().y - landing.getBoundingClientRect().y;
     // x, y, roleName, reminder info, id
-    spawnReminderGhost(x, y, id, roleJSON["reminders"][i], backing.id);
+    spawnReminderGhost(x, y, id, reminder, backing.id);
   }
 }
 
@@ -1847,18 +1850,23 @@ function gen_fabled_tab(token_JSON, inPlay)
   div.classList = "night_order_tab";
   div.id = token_JSON.id + "_night_order_tab";
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , " + color + ")";
+
   var span = document.createElement("span");
   span.classList = "night_order_span"
   span.innerHTML = token_JSON["ability"];
   span.id = token_JSON.id + "_night_order_tab_span";
   div.appendChild(span);
+
   var img = document.createElement("img");
   img.classList = "night_order_img";
   img.src = token_JSON.image;
+  div.appendChild(img);
+
   var token_landing = document.createElement("div");
   token_landing.classList = "night_order_fabled_token_container"
   token_landing.id = "night_order_" + token_JSON.id;
-  token_JSON["reminders"].forEach((token) =>
+  const allReminders = (token_JSON["reminders"] ?? []).concat(token_JSON["remindersGlobal"] ?? []);
+  allReminders.forEach((token) =>
   {
     var uid = new Date().getTime()
     var token_perm = generateReminderBacking(token_JSON.id, token, uid)
@@ -1876,7 +1884,6 @@ function gen_fabled_tab(token_JSON, inPlay)
   div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
   div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('" + token_JSON.id + "_night_order_tab')");
-  div.appendChild(img);
 }
 //generates an html page that can be printed to a pdf from currently loaded script (WIP)
 //this is almost entirely written by chatGPT
