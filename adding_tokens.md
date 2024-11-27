@@ -10,19 +10,17 @@
         "name": "Token Name", 
         // Copy the text from the BOTC wiki
         "ability": "Your team wins. Everyone goes home and praises the developers",
-        // GOOD, EVIL, or BOTH. 
-        "alignment": "GOOD", 
          // townsfolk, outsider, minion, demon, traveler, or fabled. 
         "class": "townsfolk",
-        "tokens": [
+        "reminders": [
             // The phrase that should appear on each reminder. 
             // Do not put duplicates. 
             "No Ability" 
         ],
         // What the ST should do on the first night with this character.
-        "first_night_desc": "The role points at a player. Something Bad Happens.",
+        "firstNightReminder": "The role points at a player. Something Bad Happens.",
         // What the ST should do on other nights with this character. 
-        "other_night_desc": "",
+        "otherNightReminder": "",
         // If the character affects setup, it does so here. 
         "change_makeup": [
             // Each entry is an object with one elemnet. For some reason.
@@ -41,11 +39,7 @@
                     "atheist"
                 ]
             }
-        ],
-        // Does nothing, leave false.
-        "hide_token": false,
-        // If the face should be shown when in Town Square mode. false for travellers. 
-        "hide_face": true
+        ]
     },
 ```
 - add role to `data/scripts/Gang's All Here.json` or `data/scripts/Unreleased Experimental.json`, based on type.

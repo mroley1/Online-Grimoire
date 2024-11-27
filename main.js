@@ -1053,16 +1053,16 @@ async function infoCall(id, uid)
   update_info_death_cycle(id, uid);
 
   const landing = document.getElementById("info_token_landing");
-  for (var i = 0; i < roleJSON["tokens"].length; i++)
+  for (var i = 0; i < roleJSON["reminders"].length; i++)
   {
-    const backing = generateReminderBacking(id, roleJSON["tokens"][i], uid);
+    const backing = generateReminderBacking(id, roleJSON["reminders"][i], uid);
     // div.setAttribute("reminderId", i);
     document.getElementById("info_token_landing").appendChild(backing);
 
     const x = backing.getBoundingClientRect().x - landing.getBoundingClientRect().x;
     const y = backing.getBoundingClientRect().y - landing.getBoundingClientRect().y;
     // x, y, roleName, reminder info, id
-    spawnReminderGhost(x, y, id, roleJSON["tokens"][i], backing.id);
+    spawnReminderGhost(x, y, id, roleJSON["reminders"][i], backing.id);
   }
 }
 
@@ -1684,7 +1684,7 @@ function gen_night_order_tab_role(token_JSON, night, dead)
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , " + color + ")";
   span = document.createElement("span");
   span.classList = "night_order_span"
-  span.innerHTML = token_JSON[night.substring(0, 5) + "_night_desc"];
+  span.innerHTML = token_JSON[night.substring(0, 5) + "NightReminder"];
   span.id = token_JSON.id + "_night_order_tab_span";
   div.appendChild(span);
   img = document.createElement("img");
@@ -1853,7 +1853,7 @@ function gen_fabled_tab(token_JSON, inPlay)
   var token_landing = document.createElement("div");
   token_landing.classList = "night_order_fabled_token_container"
   token_landing.id = "night_order_" + token_JSON.id;
-  token_JSON["tokens"].forEach((token) =>
+  token_JSON["reminders"].forEach((token) =>
   {
     var uid = new Date().getTime()
     var token_perm = generateReminderBacking(token_JSON.id, token, uid)

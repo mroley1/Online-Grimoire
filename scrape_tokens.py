@@ -47,7 +47,7 @@ def sync_ability(entry):
     summary = summary_element.text[1:-2]
 
     # Step 3: determine if an update is necessary.
-    if "ability" in summary and summary == entry["ability"]: return
+    if "ability" in entry and summary == entry["ability"]: return
 
     entry["ability"] = summary
     print("UPDATE " + (entry["name"] + ": ").ljust(20) + summary)
@@ -144,9 +144,9 @@ def force_compatibility(entry):
         # OLD --> NEW
         "class": "team",
         "description": "ability",
-        # "tokens": "reminders",
-        # "first_night_desc": "firstNightReminder",
-        # "other_night_desc": "otherNightReminder",
+        "tokens": "reminders",
+        "first_night_desc": "firstNightReminder",
+        "other_night_desc": "otherNightReminder",
     }
     
     new_entry = dict()
