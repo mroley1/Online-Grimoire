@@ -141,9 +141,27 @@ async function load_game_state_json(state)
   document.getElementById("player_count").value = state.playercount;
   document.getElementById("body_actual").setAttribute("night", state.night);
   document.getElementById("body_actual").style.setProperty("--BG-IMG", state.background);
-  for (let i = 0; i < state.players.length; i++)
-  {
-    spawnToken(state.players[i].role, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+  // Backwards compatibility for the old category names
+  const BC_CONVERT = {
+    "TOWN": "townsfolk",
+    "OUT": "outsider",
+    "MIN": "minion",
+    "DEM": "demon",
+    "TRAV": "traveler"
+  }
+  for (const player of state.players) {
+    if (BC_CONVERT[player.cat] != undefined) {
+      player.cat = BC_CONVERT[player.cat];
+    }
+    spawnToken(player.role, 
+               player.uid, 
+               player.visibility, 
+               player.cat, 
+               player.hide_face, 
+               player.viability, 
+               player.left, 
+               player.top, 
+               player.name);
   }
   for (const reminder of state.reminders) 
   {
