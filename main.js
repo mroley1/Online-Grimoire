@@ -5,6 +5,7 @@ var base_roles;
 var roles;
 var loading = false;
 var CURRENT_SCRIPT;
+var night_order_ref;
 class NightCounter
 {
   constructor()
@@ -144,11 +145,11 @@ async function load_game_state_json(state)
   document.getElementById("body_actual").style.setProperty("--BG-IMG", state.background);
   // Backwards compatibility for the old category names
   const BC_CONVERT = {
-    "TOWN": "townsfolk",
-    "OUT": "outsider",
-    "MIN": "minion",
-    "DEM": "demon",
-    "TRAV": "traveler"
+    "townsfolk": "townsfolk",
+    "outsider": "outsider",
+    "minion": "minion",
+    "demon": "demon",
+    "traveler": "traveler"
   }
   for (const player of state.players) {
     if (BC_CONVERT[player.cat] != undefined) {
@@ -509,10 +510,10 @@ function mutate_menu(id, uid)
   }
   document.getElementById("mutate_menu_main").style.display = "inherit";
   return;
-  var town = document.getElementById("mutate_menu_townsfolk").children;
-  for (i = 0; i < town.length; i++)
+  var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
+  for (i = 0; i < townsfolk.length; i++)
   {
-    town[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + town[i].id.match(/(?<=mutate_menu_).*/) + "')")
+    townsfolk[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
   var outsiders = document.getElementById("mutate_menu_outsider").children;
   for (i = 0; i < outsiders.length; i++)
@@ -539,6 +540,7 @@ function mutate_menu(id, uid)
 function close_mutate_menu()
 {
   document.getElementById("mutate_menu_main").style.display = "none";
+  document.getElementById("mutate_menu_all_main").style.display = "none";
 }
 
 function mutate_token(idFrom, uid, idTo)
@@ -759,7 +761,7 @@ async function populate_script(script)
     landing.appendChild(ratio);
     landing.insertAdjacentHTML("beforeend", "<hr style='margin-block-end: 0em;'>");
   }
-  function options(type, tokenNames)
+  function options(type, tokenNames, text)
   {
     var landing = document.getElementById(type)
     for (i = 0; i < tokenNames.length; i++)
@@ -787,6 +789,21 @@ async function populate_script(script)
         landing.appendChild(outer_div)
       }
     }
+    //edit by @The-ai123
+    //Add button to add offscreen of each category
+    var outer_div = document.createElement("div");
+        outer_div.classList = "menu_list_div";
+        outer_div.title = title="Add offscript " + text;
+        outer_div.setAttribute("onclick", "add_offscript_character('"+ type +"')");
+        var label = document.createElement("label");
+        label.classList = "menu_list";
+        label.innerHTML = "Add Offscript " + text;
+        outer_div.appendChild(label);
+        outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
+        var hr = document.createElement("hr");
+        hr.style.marginBlockEnd = "0em";
+        outer_div.appendChild(hr);
+        landing.appendChild(outer_div)
   }
   function clear(div)
   {
@@ -806,20 +823,20 @@ async function populate_script(script)
   })
 
   clear("townsfolk")
-  header("Townsfolk", "townsfolk", "#0033cc")
-  options("townsfolk", scriptTokens)
+  header("Town", "townsfolk", "#0033cc")
+  options("townsfolk", scriptTokens, "Town")
   clear("outsider")
   header("Outsiders", "outsider", "#1a53ff")
-  options("outsider", scriptTokens)
+  options("outsider", scriptTokens, "Outsiders")
   clear("minion")
   header("Minions", "minion", "#b30000")
-  options("minion", scriptTokens)
+  options("minion", scriptTokens, "Minions")
   clear("demon")
   header("Demons", "demon", "#e60000")
-  options("demon", scriptTokens)
+  options("demon", scriptTokens, "Demons")
   clear("traveler")
   header("Travellers", "traveler", "#6600ff")
-  options("traveler", scriptTokens)
+  options("traveler", scriptTokens, "Travellers")
   player_count_change();
   update_role_counts();
   clear_mutate_menu();
@@ -851,106 +868,110 @@ function player_count_change()
   var table = [[3, 0, 1, 1], [3, 1, 1, 1], [5, 0, 1, 1], [5, 1, 1, 1], [5, 2, 1, 1], [7, 0, 2, 1], [7, 1, 2, 1], [7, 2, 2, 1], [9, 0, 3, 1], [9, 1, 3, 1], [9, 2, 3, 1], [10, 2, 3, 1], [11, 2, 3, 1], [11, 3, 3, 1]]
   var counts = [0, 0, 0, 0, 0];
   tokens = document.getElementsByClassName("role_token");
-  if (!loading)
-  { //dont try to update player counts before menu is loaded
-    var expected = new Object();
+  if (loading) return;
+
+
+  //dont try to update player counts before menu is loaded
+  var expected = new Object();
+  const TYPES = ["townsfolk", "outsider", "minion", "demon", "traveler"];
+  for (let i = 0; i < 4; i++) {
     // [hard modifier, soft positive modifier, soft negative modifier, locked?]
-    expected.town = [table[tableIndex][0], 0, 0, false];
-    expected.out = [table[tableIndex][1], 0, 0, false];
-    expected.min = [table[tableIndex][2], 0, 0, false];
-    expected.dem = [table[tableIndex][3], 0, 0, false];
-    expected.trav = [0, 0, 0, false];
-    async function makeupMod(id)
+    expected[TYPES[i]] = [table[tableIndex][i], 0, 0, false];
+  }
+  expected.traveler = [0, 0, 0, false];
+  async function makeupMod(id)
+  {
+    try
     {
-      try
-      {
-        let lambdas = {
-          "HARD": ((cat, mod) => { expected[cat][0] += mod }),
-          "SOFTPOS": ((cat, mod) => { expected[cat][1] += mod }),
-          "SOFTNEG": ((cat, mod) => { expected[cat][2] += mod }),
-          "REQ": ((cat, val) => { }),
-          "LOCK": ((cat, val) =>
-          {
-            if (val == -1)
-            {
-              expected[cat][0] = player_count;
-            } else
-            {
-              expected[cat][0] = val;
-            }
-            expected[cat][3] = true;
-            expected[cat][1] = 0;
-            expected[cat][2] = 0;
-          })
-        }
-        let json = roles[id];
-        json["change_makeup"].forEach(element =>
+      let lambdas = {
+        "HARD": ((cat, mod) => { expected[cat][0] += mod }),
+        "SOFTPOS": ((cat, mod) => { expected[cat][1] += mod }),
+        "SOFTNEG": ((cat, mod) => { expected[cat][2] += mod }),
+        "REQ": ((cat, val) => { }),
+        "LOCK": ((cat, val) =>
         {
-          let changeKey = Object.keys(element)[0];
-          if (!expected[element[changeKey][0]][3])
+          if (val == -1)
           {
-            lambdas[changeKey](element[changeKey][0], element[changeKey][1]);
+            expected[cat][0] = player_count;
+          } else
+          {
+            expected[cat][0] = val;
           }
-        });
-      } catch { }
-      return Promise.resolve();
-    }
-    for (i = 0; i < tokens.length; i++)
+          expected[cat][3] = true;
+          expected[cat][1] = 0;
+          expected[cat][2] = 0;
+        })
+      }
+      let json = roles[id];
+      json["change_makeup"].forEach(element =>
+      {
+        let changeKey = Object.keys(element)[0];
+        if (!expected[element[changeKey][0]][3])
+        {
+          lambdas[changeKey](element[changeKey][0], element[changeKey][1]);
+        }
+      });
+    } catch { }
+    return Promise.resolve();
+  }
+  for (i = 0; i < tokens.length; i++)
+  {
+    let visibility = tokens[i].getAttribute("visibility");
+    switch (tokens[i].getAttribute("cat"))
     {
-      let visibility = tokens[i].getAttribute("visibility");
-      switch (tokens[i].getAttribute("cat"))
-      {
-        case "townsfolk":
-          if (visibility == "show") { counts[0]++; }
-          break;
-        case "outsider":
-          if (visibility == "show") { counts[1]++; }
-          break;
-        case "minion":
-          if (visibility == "show") { counts[2]++; }
-          break;
-        case "demon":
-          if (visibility == "show") { counts[3]++; }
-          break;
-        case "traveler":
-          if (visibility == "show") { counts[4]++; }
-          break;
-      }
+      case "townsfolk":
+        if (visibility == "show") { counts[0]++; }
+        break;
+      case "outsider":
+        if (visibility == "show") { counts[1]++; }
+        break;
+      case "minion":
+        if (visibility == "show") { counts[2]++; }
+        break;
+      case "demon":
+        if (visibility == "show") { counts[3]++; }
+        break;
+      case "traveler":
+        if (visibility == "show") { counts[4]++; }
+        break;
     }
-    for (i = 0; i < tokens.length; i++)
+  }
+  for (i = 0; i < tokens.length; i++)
+  {
+    makeupMod(tokens[i].id.match(/.*(?=_token_)/)[0])
+  }
+  function genSoftModString(pos, neg)
+  {
+    var string = " "
+    var combined = 0;
+    while (pos > 0 && neg > 0)
     {
-      makeupMod(tokens[i].id.match(/.*(?=_token_)/)[0])
+      combined++;
+      pos--;
+      neg--;
     }
-    function genSoftModString(pos, neg)
+    if (combined > 0)
     {
-      var string = " "
-      var combined = 0;
-      while (pos > 0 && neg > 0)
-      {
-        combined++;
-        pos--;
-        neg--;
-      }
-      if (combined > 0)
-      {
-        string += String.fromCharCode(177) + combined;
-      }
-      if (pos > 0)
-      {
-        string += " +" + pos;
-      }
-      if (neg > 0)
-      {
-        string += " -" + neg;
-      }
-      return string;
+      string += String.fromCharCode(177) + combined;
     }
-    document.getElementById("ratio_townsfolk").innerHTML = counts[0] + "/" + expected["town"][0] + genSoftModString(expected["town"][1], expected["town"][2]);
-    document.getElementById("ratio_outsider").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
-    document.getElementById("ratio_minion").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
-    document.getElementById("ratio_demon").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
-    if (player_count > 15 && !expected["trav"][3]) { expected["trav"][0] += player_count - 15 }
-    document.getElementById("ratio_traveler").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
+    if (pos > 0)
+    {
+      string += " +" + pos;
+    }
+    if (neg > 0)
+    {
+      string += " -" + neg;
+    }
+    return string;
+  }
+  if (player_count > 15 && !expected["trav"][3]) { expected["trav"][0] += player_count - 15 }
+  for (let i = 0; i < 5; i++) {
+    const team = TYPES[i];
+    const teamCount = expected[team];
+    const softmod = genSoftModString(teamCount[1], teamCount[2])
+
+    const ratio = document.getElementById(`ratio_${team}`);
+    ratio.innerHTML = `${teamCount[0]}/${teamCount[0]}${softmod}`;
   }
 }
 function update_role_counts()
@@ -1620,6 +1641,7 @@ function clean_night_order()
 }
 async function populate_night_order()
 {
+  // Weird tab sheanigans. Who calls this not expecting a night order?
   const tab = document.getElementById("nightorder_button_container").getAttribute("nightOrder");
   if (tab == "jinx")
   {
@@ -1641,6 +1663,7 @@ async function populate_night_order()
   const alive = new Set(tokens
       .filter(isInPlay)
       .map(x => x.getAttribute("role")));
+  // Add custom fabled to the night order, if necessary.
   Object.entries(CURRENT_SCRIPT)
       .map(x => x[1])
       .filter(x => x["id"] != "_meta" && x["team"] == "fabled")
@@ -1912,112 +1935,157 @@ function gen_fabled_tab(token_JSON, inPlay)
 //generates an html page that can be printed to a pdf from currently loaded script (WIP)
 //this is almost entirely written by chatGPT
 //Author @The-ai123
-function generateHTMLDocument() {
-  
+async function generateHTMLDocument() {
+  update_current_script()
 
   // Start the HTML structure
-  let html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${CURRENT_SCRIPT[0].name}</title>
-  <style>
-    body {
-      margin: 10px;
-      font-family: Arial, sans-serif;
-      font-size:x-small;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0;
-      padding: 0;
-    }
-    td {
-      vertical-align: top;
-      padding: 3px;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-  </style>
-</head>
-<body>
-<p>Townsfolk<p>
-<table>`;
+    let html = `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${CURRENT_SCRIPT[0].name}</title>
+    <style>
+      @font-face {
+        font-family: PiratesBay;
+        src: url(sansation_light.woff);
+      }
+      body {
+        margin: 10px;
+        font-family: PiratesBay;
+        font-size:x-small;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        
+      }
+      td {
+        vertical-align: top;
+        padding: 3px;
+        font-size:15px
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      h1 {
+       font-size:30px
+      }
+       h2 {
+       font-size:20px
+      }
+    </style>
+    <script>
+      alert("Print page to pdf");
+    </script>
+  </head>
+  <body>
+  <h1>${CURRENT_SCRIPT[0].name}</h1>`;
 
-  // Generate rows from the provided arrays for town
-  for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(roles[CURRENT_SCRIPT[i].id].team == 'townsfolk'){
-      html += `
-    <tr>
-      <td style="width: 7.5%;"><img src="${roles[CURRENT_SCRIPT[i].id].image}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
-    </tr>`;
-    }
+  // Generate rows from the provided arrays for townsfolk
+  const roleIds = ["townsfolk", "outsider", "minion", "demon"];
+  const roleNames = ["Townsfolk", "Outsider", "Minions", "Demons"];
+
+  for (let i = 0; i < 4; i++) {
+    const team = roleIds[i];
+    const name = roleNames[i];
+
+    html += generateRoleTable(team, name);
+        
   }
+  // Night Order
 
-html += `
-</table>
+  const nightRoles = Object.entries(CURRENT_SCRIPT)
+      .map(x => x[1])
+      .filter(x => x["id"] != "_meta")
+      .map(x => x["id"]);
 
-<p>Outsiders<p>
-<table>`;
+  const firstNightSorted = nightRoles.filter(x => roles[x].firstNight != 0)
+      .filter(x => !!roles[x].firstNight)
+      .sort((x, y) => roles[x].firstNight - roles[y].firstNight);
+  
+  const otherNightSorted = nightRoles.filter(x => roles[x].otherNight != 0)
+      .filter(x => !!roles[x].otherNight)
+      .sort((x, y) => roles[x].otherNight - roles[y].otherNight);
 
-  // Generate rows from the provided arrays for outsiders
-  for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(roles[CURRENT_SCRIPT[i].id].team == 'outsider'){
-      html += `
-    <tr>
-      <td style="width: 7.5%;"><img src="${roles[CURRENT_SCRIPT[i].id].image}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
-    </tr>`;
+  html +=`
+  <table>
+        <tr>
+            <th><h2>First Night</h2></th>
+            <th><h2>Other Nights</h2></th>
+        </tr>`;
+
+  const nightOrderLength = Math.max(firstNightSorted.length, otherNightSorted.length)
+
+  for (let i = 0; i < nightOrderLength; i++) {
+    html+=`
+    <tr><td>`;
+    if (i < firstNightSorted.length) {
+      const role = roles[firstNightSorted[i]];
+      html += `<img style="width: 7.5%" src="${role.image}" alt="${role.name}"> <b>${role.name}</b>`;
     }
-  }
-  html += `
-</table>
-
-<p>Minions<p>
-<table>`;
-
-  // Generate rows from the provided arrays for minions
-  for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(roles[CURRENT_SCRIPT[i].id].team == 'minion'){
-      html += `
-    <tr>
-      <td style="width: 7.5%;"><img src="${roles[CURRENT_SCRIPT[i].id].image}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
-    </tr>`;
+    html += `</td><td>`;
+    if (i < otherNightSorted.length) {
+      const role = roles[otherNightSorted[i]];
+      html += `<img style="width: 7.5%" src="${role.image}" alt="${role.name}"> <b>${role.name}</b>`;
     }
+    html += `</td></tr>`;
   }
-  html += `
-</table>
+  html += "</table>";
 
-<p>Demons<p>
-<table>`;
 
-  // Generate rows from the provided arrays for Demons
-  for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(roles[CURRENT_SCRIPT[i].id].team == 'demon'){
-      html += `
-    <tr>
-      <td style="width: 7.5%;"><img src="${roles[CURRENT_SCRIPT[i].id].image}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
-    </tr>`;
-    }
+  //Print jinxes
+  // Not touching this with a 10-foot pole. For now. -AD
+  jinxes = await get_JSON("jinx.json");
+  anyjinx = false
+  for(i = 0; i <  jinxes.length; i++){
+    for(j = 0; j < CURRENT_SCRIPT.length; j++){
+      //if the first role in the pair is in the current script
+      if(jinxes[i].id == CURRENT_SCRIPT[j].id){
+        for(k = 0; k < jinxes[i].jinx.length; k++){
+          jinx = jinxes[i].jinx[k];         
+          for(l = 0; l < CURRENT_SCRIPT.length; l++){
+            //if the second role in the pair is in the current script
+            if(jinx.id == CURRENT_SCRIPT[l].id){
+              if(!anyjinx){               
+                html +=`
+                <h2>Jinxes<h2>
+                <table>`;
+                anyjinx = true
+              }
+              html += `
+              <tr>
+                <td style="width: 7.5%;"><img src="assets/icons/official/${jinxes[i].id}.png" alt="${roles[jinxes[i].id].name}"></td>
+                <td style="width: 15%; font-weight: bold;">${roles[jinxes[i].id].name}</td>
+                <td style="width: 7.5%;"><img src="assets/icons/official/${jinx.id}.png" alt="${roles[jinx.id].name}"></td>
+                <td style="width: 15%; font-weight: bold;">${roles[jinx.id].name}</td>
+                <td style="width: 70%;">${jinx.reason}</td>
+              </tr>`;
+            }
+          }          
+        }
+      }
+    }  
   }
+  if(anyjinx){
+    //end table
+    html+=`      
+    </table>`
+  }
+  
 
-// Close the HTML structure
-  html += `
-</table>
-</body>
-</html>`;
+  //Print travelers and fables
+  html += generateRoleTable("traveler", "Travelers");
+  html += generateRoleTable("fabled", "Fabled");
+
+  // Close the HTML structure
+  html +=`
+  </body>
+  </html>`;
 
   // Optional: Automatically open the generated HTML in a new window
   const newWindow = window.open();
@@ -2025,8 +2093,33 @@ html += `
   newWindow.document.close();
 }
 
+function generateRoleTable(team, name) {
+  let table = `<h2>${name}<table>`;
+
+  CURRENT_SCRIPT
+      .filter(x => x.id != '_meta')
+      .map(x => roles[x.id])
+      .filter(x => x.team == team)
+      .reverse()
+      .forEach(role => {
+        table += `
+          <tr>
+          <td style="width: 7.5%;"><img src="${role.image}" alt="${role.name}"></td>
+          <td style="width: 15%; font-weight: bold;">${role.name}</td>
+          <td style="width: 75%;">${role.ability}</td>
+          </tr>`;
+      });
+
+  table += "</table>";
+
+  return table;
+}
+
+//Downloads the script of onscreen tokens in a .json file
+//author @The-ai123
 function download_current_script()
 {
+  update_current_script()
   var element = document.createElement('a');
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(CURRENT_SCRIPT)));
   element.setAttribute('download', CURRENT_SCRIPT[0].name + ".json");
@@ -2035,6 +2128,52 @@ function download_current_script()
   element.click();
   document.body.removeChild(element);
 }
+
+//Updates the current script name to reflect the inputted name
+//author @The-ai123
+function update_current_script_name(){
+  CURRENT_SCRIPT[0].name = document.getElementById("script_upload_feedback").textContent;
+}
+
+//updates the current to script to on screen tokens
+//author @The-ai123
+function update_current_script(){
+  //clear current script except for fabled
+  CURRENT_SCRIPT = CURRENT_SCRIPT.filter(element => element.id == CURRENT_SCRIPT[0].id || element.team == "fabled");
+  //repopulated based on tokens currently on screen(and not hidden or dead)
+  onscreen_tokens = document.getElementById("token_layer").getElementsByClassName("role_token");
+  for (i = 0; i < onscreen_tokens.length; i++) {
+    if(onscreen_tokens[i].getAttribute("visibility")=="show" && onscreen_tokens[i].getAttribute("viability") == "alive"){
+      let newElement = {"id":onscreen_tokens[i].role}
+      if (!CURRENT_SCRIPT.some(element => element.id == newElement.id)) {
+        CURRENT_SCRIPT.push(newElement); // Add the element only if it doesn't exist
+      }
+    }   
+  }
+}
+
+//Opens a mutate menu of all tokens of a set class
+//And when selected the token will be spawned on the board
+//Author: @The-ai123
+function add_offscript_character(team){ 
+  document.getElementById("mutate_menu_all").innerHTML = "";
+  for (const key in roles) {
+    const element = roles[key];
+    if (element.team == team)
+    {      
+      try {
+        var div = document.createElement("div");
+        div.id = "mutate_menu_all";
+        generateSampleToken(element["id"], div);
+        div.classList = "background_image mutate_menu_token";
+        div.setAttribute("onclick","spawnTokenDefault('" + element["id"] + "', 'show', '"+ team + "', 'alive')")
+        document.getElementById("mutate_menu_all").appendChild(div);
+        } catch { }
+    }
+  }
+  document.getElementById("mutate_menu_all_main").style.display = "inherit";
+}
+
 // function spawnNightOrderGhost(x, y, imgUrl, id, fabled) {
 //   var time = new Date();
 //   var uid = time.getTime();
@@ -2052,4 +2191,3 @@ function download_current_script()
 //   document.getElementById("token_drag_" + fabled + "_night_order_tab").prepend(div);
 //   dragInit();
 // }
-

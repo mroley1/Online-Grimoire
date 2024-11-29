@@ -146,7 +146,7 @@
                         <label for="script_upload" id="script_upload_label">Upload Script</label><br>
                         <input style="opacity: 0;" type="file" id="script_upload" accept=".json" onchange="javascript:script_upload()">
                         <hr>
-                        <span id="script_upload_feedback" used="select">No File Loaded</span>
+                        <span contenteditable="true" oninput="update_current_script_name()" id="script_upload_feedback" used="select">No File Loaded</span>
                         <hr>
                         <br>
                         <span style="color: white; text-shadow: 0 0 10px black; font-size: 25pt;"># Of Players</span><br>
@@ -236,6 +236,24 @@
                     <div id="mutate_menu_traveler"></div><br>
                     <div class="menu_header" style="color: #b3b300; display: inline-block;">Fabled</div><br>
                     <div id="mutate_menu_fabled"></div><br>
+                </div>
+            </div>
+        </div>
+        <div id="mutate_menu_all_main" class="mutate_menu_main" onclick="javascript:close_mutate_menu()">
+            <div style="height: 70%; width: 100%; position: absolute; top: calc(15% - 50px); text-align: center; pointer-events: none;">
+                <div class="mutate_menu_scroll_body">
+                    <div class="menu_header" style="color: #0033cc; display: inline-block;"></div>                   
+                    <br>
+                    <div id="mutate_menu_all"></div><br>
+                </div>
+            </div>
+        </div>
+        <div id="mutate_menu_all_main" class="mutate_menu_main" onclick="javascript:close_mutate_menu()">
+            <div style="height: 70%; width: 100%; position: absolute; top: calc(15% - 50px); text-align: center; pointer-events: none;">
+                <div class="mutate_menu_scroll_body">
+                    <div class="menu_header" style="color: #0033cc; display: inline-block;"></div>                   
+                    <br>
+                    <div id="mutate_menu_all"></div><br>
                 </div>
             </div>
         </div>

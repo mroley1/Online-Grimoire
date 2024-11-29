@@ -475,7 +475,7 @@ svg {pointer-events: none; user-select: none;}
 .player_count_increment { width: 51px; height: 51px; display: inline-block; position: relative; top: -6px; line-height: 2; cursor: pointer; user-select: none;}
 #player_count::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button {-webkit-appearance: none; margin: 0;}
 #script_upload_label {color: white; background-color: rgb(45, 146, 75); padding: 10px; border-radius: 10px; cursor: pointer;}
-#script_gen_html_label {color: white; background-color: rgb(45, 146, 75); padding: 10px; border-radius: 10px; cursor: pointer;}
+#script_gen_html_label {color: white; background-color: rgb(45, 146, 75); padding: 10px; border-radius: 10px; cursor: pointer;font-family: PiratesBay;}
 #script_upload_feedback {font-size: 20pt; color: white; height: 30px; font-weight: bold; font-family: PiratesBay;}
 #script_upload_feedback:is([used="upload"]) {color: rgb(0, 63, 5); text-shadow: 0 0 3px white;}
 #script_upload_feedback:is([used="select"]) {color: rgb(0, 36, 199); text-shadow: 0 0 1px white;}
