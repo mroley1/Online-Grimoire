@@ -352,6 +352,8 @@ function update_night_wedge_text()
 //token functions
 function spawnToken(id, uid, visibility, cat, viability, left, top, nameText)
 {
+  if (loading && !(id in roles)) return;
+
   // Force tokens to appear if we try to add one. 
   // (Why can we even see the rolelist in townsquare mode?)
   if (document.getElementById("body_actual").getAttribute("night") == "true") {
@@ -1061,7 +1063,7 @@ async function infoCall(id, uid)
 
   const landing = document.getElementById("info_token_landing");
   const allReminders = (roleJSON["reminders"] ?? []).concat(roleJSON["remindersGlobal"] ?? [])
-  for (const reminder of allReminders)
+  for (const reminder of new Set(allReminders))
   {
     const backing = generateReminderBacking(id, reminder, uid);
     // div.setAttribute("reminderId", i);
@@ -1592,28 +1594,24 @@ function neutralClick()
 //night order and jinx
 function toggle_night_order_buttons(type)
 {
-  if (document.getElementById("nightorder_button_container").getAttribute("nightOrder") == type)
+  const container = document.getElementById("nightorder_button_container");
+  if (container.getAttribute("nightOrder") == type)
   {
     clean_night_order();
-    document.getElementById("nightorder_button_container").setAttribute("nightOrder", "none");
+    container.setAttribute("nightOrder", "none");
   } else
   {
+    container.setAttribute("nightOrder", type);
     switch (type)
     {
       case "fabled":
-        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "fabled");
         populate_fabled();
         break;
       case "jinx":
-        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "jinx");
         populate_jinx();
         break;
-      case "firstnight":
-        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "firstnight");
-        populate_night_order();
-        break;
-      case "othernight":
-        document.getElementById("nightorder_button_container").setAttribute("nightOrder", "othernight");
+      case "first":
+        case "other":
         populate_night_order();
         break;
     }
@@ -1628,36 +1626,61 @@ function clean_night_order()
 }
 async function populate_night_order()
 {
-  night = document.getElementById("nightorder_button_container").getAttribute("nightOrder");
-  if (night == "jinx")
+  const tab = document.getElementById("nightorder_button_container").getAttribute("nightOrder");
+  if (tab == "jinx")
   {
     populate_jinx();
     return;
   }
   clean_night_order();
-  if (night == "none") { return; }
-  var order = await get_JSON("nightsheet.json")
-  order = order[night];
-  tokens = document.getElementById("token_layer").children;
-  var inPlay = new Set();
-  var alive = new Set();
-  for (i = 0; i < tokens.length; i++)
-  {
-    var id = tokens[i].getAttribute("role");
-    if (tokens[i].getAttribute("viability") == "alive" && tokens[i].getAttribute("visibility") != "bluff") { alive.add(id); }
-    if (tokens[i].getAttribute("visibility") != "bluff") { inPlay.add(id); }
-  }
-  for (i = 0; i < order.length; i++)
-  {
-    if (inPlay.has(order[i]))
-    {
-      gen_night_order_tab_role(roles[order[i]], night, (alive.has(order[i])) ? false : true)
-    }
-    if (order[i].toUpperCase() == order[i])
-    {
-      gen_night_order_tab_info(order[i])
-    }
-  }
+  if (tab == "none") { return; }
+
+  const scriptKey = tab + "Night";
+
+  const isInPlay = x => x.getAttribute("visibility") != "bluff";
+  const isAlive = x => x.getAttribute("viability") == "alive";
+
+  const tokens = Array.from(document.getElementById("token_layer").children);
+  const inPlay = new Set(tokens
+      .filter(x => isInPlay(x) && isAlive(x))
+      .map(x => x.getAttribute("role")));
+  const alive = new Set(tokens
+      .filter(isInPlay)
+      .map(x => x.getAttribute("role")));
+      
+  
+  gen_night_order_tab_info("DUSK");
+
+  Array.from(inPlay)
+      .filter(id => (roles[id][scriptKey] ?? 0) != 0)
+      .sort((x, y) => roles[x][scriptKey] - roles[y][scriptKey])
+      .forEach(id => gen_night_order_tab_role(roles[id], tab, !alive.has(id)));
+
+  gen_night_order_tab_info("DAWN"); // Super scuffed, because this technically isn't true anymore.
+
+
+  // const order = await get_JSON("nightsheet.json")
+  // // order = order[night];
+  // tokens = document.getElementById("token_layer").children;
+  // const inPlay = new Array();
+  // const alive = new Set();
+  // for (i = 0; i < tokens.length; i++)
+  // {
+  //   var id = tokens[i].getAttribute("role");
+  //   if (tokens[i].getAttribute("viability") == "alive" && tokens[i].getAttribute("visibility") != "bluff") { alive.add(id); }
+  //   if (tokens[i].getAttribute("visibility") != "bluff") { inPlay.push(id); }
+  // }
+  // for (i = 0; i < order.length; i++)
+  // {
+  //   if (inPlay.has(order[i]))
+  //   {
+  //     gen_night_order_tab_role(roles[order[i]], night, (alive.has(order[i])) ? false : true)
+  //   }
+  //   if (order[i].toUpperCase() == order[i])
+  //   {
+  //     gen_night_order_tab_info(order[i])
+  //   }
+  // }
 }
 function clear_night_order()
 {
@@ -1866,7 +1889,7 @@ function gen_fabled_tab(token_JSON, inPlay)
   token_landing.classList = "night_order_fabled_token_container"
   token_landing.id = "night_order_" + token_JSON.id;
   const allReminders = (token_JSON["reminders"] ?? []).concat(token_JSON["remindersGlobal"] ?? []);
-  allReminders.forEach((token) =>
+  new Set(allReminders).forEach((token) =>
   {
     var uid = new Date().getTime()
     var token_perm = generateReminderBacking(token_JSON.id, token, uid)

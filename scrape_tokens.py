@@ -7,6 +7,7 @@ from functools import cache
 from requests.exceptions import HTTPError
 
 WIKI_URL = "https://wiki.bloodontheclocktower.com"
+NIGHTSHEET_JSON = json.loads(requests.get("https://script.bloodontheclocktower.com/data/nightsheet.json", timeout=1).content)
 
 @cache
 def get_soup(uri: str) -> BeautifulSoup | None:
@@ -24,11 +25,6 @@ def get_soup(uri: str) -> BeautifulSoup | None:
 def get_soup_by_name(name: str):
     character_path = "/" + name.replace(" ", "_")
     return get_soup(WIKI_URL + character_path)
-
-
-def is_offical(entry):
-    # An official character has a wiki page for itself.
-    return get_soup_by_name(entry["name"]) != None
 
 def sync_ability(entry):
     # Step 1: Get the HTML for the character.
@@ -68,8 +64,7 @@ def sync_flavor(entry):
     flavor_text = '"' + flavor_text + '"'
     print("FLAVOR " + (entry["name"] + ": ").ljust(20) + flavor_text)
 
-
-def sync_image(entry):
+def sync_image_url(entry):
     icon_url = "https://wiki.bloodontheclocktower.com/File:Icon_{}.png"
     name = entry["name"]
     id = entry["id"]
@@ -119,12 +114,35 @@ def sync_image(entry):
     #     img_file.write(img_response.content)
     # print("DOWNLOAD " + (name + ": ").ljust(20) + f"{id}.png")
 
-def check_type(entry, official_keys, homebrew_keys):
-    # Unofficial characters will break the parser if we try to search for
-    # Them. 
-    if is_offical(entry): 
-        official_keys.append(entry["id"])
-    homebrew_keys.append(entry["id"])
+def sync_nightorder(entry):
+    # Step 1: get night order from TPI
+    firstList: list = NIGHTSHEET_JSON["firstNight"]
+    otherList = NIGHTSHEET_JSON["otherNight"]
+
+
+    if entry["id"] in firstList:
+        first = firstList.index(entry["id"]) + 1
+    else:
+        first = 0
+
+    if entry["id"] in otherList:
+        other = otherList.index(entry["id"]) + 1
+    else:
+        other = 0
+
+    if "firstNight" not in entry or entry["firstNight"] != first:
+        if "firstNight" not in entry:
+            print("N1 SET " + (entry["name"] + ": ").ljust(20) + str(first))
+        else:
+            print("N1 UPDATE " + (entry["name"] + ": ").ljust(20) + f"{entry["firstNight"]} --> {first}")
+        entry["firstNight"] = first
+
+    if "otherNight" not in entry or entry["otherNight"] != other:
+        if "otherNight" not in entry:
+            print("EN SET " + (entry["name"] + ": ").ljust(20) + str(other))
+        else:
+            print("EN UPDATE " + (entry["name"] + ": ").ljust(20) + f"{entry["otherNight"]} --> {other}")
+        entry["otherNight"] = other
 
 def force_compatibility(entry):
     ALLOWED = set([
@@ -135,6 +153,8 @@ def force_compatibility(entry):
         "tokens", "reminders", "remindersGlobal", # All the same, for most purposes
         "first_night_desc", "firstNightReminder",
         "other_night_desc", "otherNightReminder",
+        "firstNight",
+        "otherNight",
         "change_makeup", # TODO: depreciate
         "image",
         "flavor"
@@ -164,36 +184,26 @@ def main():
     with open("data/tokens.json") as f:
         data: dict = json.loads(f.read())
 
+    official_keys = sorted(data.keys())
+
+    with cf.ThreadPoolExecutor(max_workers=16) as executor:
+        cacher = [executor.submit(get_soup_by_name, v) for v in official_keys]
+
     data = {k: force_compatibility(v) for k, v in data.items()}
 
-    official_keys = list()
-    homebrew_keys = list()
-
     with cf.ThreadPoolExecutor(max_workers=16) as executor:
-        official_threader = [executor.submit(check_type, data[k], official_keys, homebrew_keys) for k in data.keys()]
-        cf.wait(official_threader)
-
-    # print(official_keys)
-
-    with cf.ThreadPoolExecutor(max_workers=16) as executor:
-        # download_image(entry)
-        # sync_description(entry)
-        downloader_threader = [executor.submit(sync_image, data[k]) for k in official_keys]
+        downloader_threader = [executor.submit(sync_image_url, data[k]) for k in official_keys]
         desc_threader = [executor.submit(sync_ability, data[k]) for k in official_keys]
         flavor_threader = [executor.submit(sync_flavor, data[k]) for k in official_keys]
+        order_threader = [executor.submit(sync_nightorder, data[k]) for k in official_keys]
         cf.wait(downloader_threader)
         cf.wait(desc_threader)
         cf.wait(flavor_threader)
-
-    # The tokens.json file is intended to be sorted in alphabetical order.
-    # However, unofficial characters MUST come after official characters.
-    homebrew_keys.sort()
-    official_keys.sort()
+        cf.wait(order_threader)
 
     new_data = dict()
+
     for k in official_keys:
-        new_data[k] = data[k]
-    for k in homebrew_keys:
         new_data[k] = data[k]
 
     # Put the data back in the box.

@@ -435,8 +435,8 @@ svg {pointer-events: none; user-select: none;}
 .night_select {width: 100px; display: block; height: 41px; text-align: center; font-family: PiratesBay; font-size: 28pt; border: black 2px solid; background-image: url("assets/vines.png"); color: #afafaf; cursor: pointer; user-select: none;}
 #nightorder_button_container[nightOrder="fabled"] #fabled_toggle {color: rgb(244, 244, 244);}
 #nightorder_button_container[nightOrder="jinx"] #jinx_toggle {color: rgb(244, 244, 244);}
-#nightorder_button_container[nightOrder="firstnight"] #first_night {color: rgb(244, 244, 244);} 
-#nightorder_button_container[nightOrder="othernight"] #other_night {color: rgb(244, 244, 244);}
+#nightorder_button_container[nightOrder="first"] #first_night {color: rgb(244, 244, 244);} 
+#nightorder_button_container[nightOrder="other"] #other_night {color: rgb(244, 244, 244);}
 
 #night_order_landing_container {position: absolute; width: 520px; right: 0px; top: 45px; word-wrap: normal; text-align: right; height: calc(100% - 160px); pointer-events: none; overflow-y: scroll; scrollbar-width: none;}
 #night_order_landing_container::-webkit-scrollbar {display: none;}
