@@ -1819,23 +1819,18 @@ async function populate_jinx()
     var id = tokens[i].getAttribute("role");
     if (tokens[i].getAttribute("visibility") != "bluff") { inPlay.add(id); }
   }
-  for (const token of inPlay)
-  {
-    for (i = 0; i < jinxes.length; i++)
-    {
-      if (jinxes[i].id == token)
-      {
-        for (j = 0; j < jinxes[i].jinx.length; j++)
-        {
-          if (inPlay.has(jinxes[i].jinx[j].id))
-          {
-            gen_jinxes_tab(jinxes[i].id, jinxes[i].jinx[j].id, jinxes[i].jinx[j].reason)
-          }
-        }
-      }
+
+  for (const char1 of inPlay) {
+    const jinxList = roles[char1].jinx
+    if (jinxList === undefined) continue;
+
+    for (entry of jinxList) {
+      const char2 = entry.id
+      if (!inPlay.has(char2)) continue;
+
+      gen_jinxes_tab(char1, char2, entry.reason)
     }
   }
-
 }
 function gen_jinxes_tab(id1, id2, reason)
 {
@@ -2039,43 +2034,7 @@ async function generateHTMLDocument() {
 
 
   //Print jinxes
-  // Not touching this with a 10-foot pole. For now. -AD
-  jinxes = await get_JSON("jinx.json");
-  anyjinx = false
-  for(i = 0; i <  jinxes.length; i++){
-    for(j = 0; j < CURRENT_SCRIPT.length; j++){
-      //if the first role in the pair is in the current script
-      if(jinxes[i].id == CURRENT_SCRIPT[j].id){
-        for(k = 0; k < jinxes[i].jinx.length; k++){
-          jinx = jinxes[i].jinx[k];         
-          for(l = 0; l < CURRENT_SCRIPT.length; l++){
-            //if the second role in the pair is in the current script
-            if(jinx.id == CURRENT_SCRIPT[l].id){
-              if(!anyjinx){               
-                html +=`
-                <h2>Jinxes<h2>
-                <table>`;
-                anyjinx = true
-              }
-              html += `
-              <tr>
-                <td style="width: 7.5%;"><img src="assets/icons/official/${jinxes[i].id}.png" alt="${roles[jinxes[i].id].name}"></td>
-                <td style="width: 15%; font-weight: bold;">${roles[jinxes[i].id].name}</td>
-                <td style="width: 7.5%;"><img src="assets/icons/official/${jinx.id}.png" alt="${roles[jinx.id].name}"></td>
-                <td style="width: 15%; font-weight: bold;">${roles[jinx.id].name}</td>
-                <td style="width: 70%;">${jinx.reason}</td>
-              </tr>`;
-            }
-          }          
-        }
-      }
-    }  
-  }
-  if(anyjinx){
-    //end table
-    html+=`      
-    </table>`
-  }
+  html += generateJinxesTable();
   
 
   //Print travelers and fables
@@ -2115,6 +2074,33 @@ function generateRoleTable(team, name) {
   return table;
 }
 
+function generateJinxesTable() {
+  const chars = new Set(CURRENT_SCRIPT.map(x => x.id).filter(x => x != "_meta"))
+  let table = `<h2>Jinxes<h2><table>`;
+  for (const char1 of chars) {
+    const jinxList = roles[char1].jinx
+    if (jinxList === undefined) continue;
+
+    for (const jinx of jinxList) {
+      const char2 = jinx.id
+      if (!chars.has(char2)) continue;
+      console.log(jinx)
+
+      table += `
+              <tr>
+                <td style="width: 7.5%;"><img src="${roles[char1].image}" alt="${roles[char1].name}"></td>
+                <td style="width: 15%; font-weight: bold;">${roles[char1].name}</td>
+                <td style="width: 7.5%;"><img src="${roles[char2].image}" alt="${roles[char2].name}"></td>
+                <td style="width: 15%; font-weight: bold;">${roles[char2].name}</td>
+                <td style="width: 70%;">${jinx.reason}</td>
+              </tr>`;
+    }
+  }
+  table += "</table>";
+  if (table === "<h2>Jinxes<h2><table></table>") return "";
+  return table;
+}
+
 //Downloads the script of onscreen tokens in a .json file
 //author @The-ai123
 function download_current_script()
@@ -2145,6 +2131,8 @@ function update_current_script(){
   for (i = 0; i < onscreen_tokens.length; i++) {
     if(onscreen_tokens[i].getAttribute("visibility")=="show" && onscreen_tokens[i].getAttribute("viability") == "alive"){
       let newElement = {"id":onscreen_tokens[i].role}
+      // Deal with more complex homebrew, which must preserve all of their content.
+      if (!(onscreen_tokens[i].role in base_roles)) newElement = roles[onscreen_tokens[i].role];
       if (!CURRENT_SCRIPT.some(element => element.id == newElement.id)) {
         CURRENT_SCRIPT.push(newElement); // Add the element only if it doesn't exist
       }

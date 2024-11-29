@@ -8,6 +8,8 @@ from requests.exceptions import HTTPError
 
 WIKI_URL = "https://wiki.bloodontheclocktower.com"
 NIGHTSHEET_JSON = json.loads(requests.get("https://script.bloodontheclocktower.com/data/nightsheet.json", timeout=1).content)
+JINX_JSON = json.loads(requests.get("https://script.bloodontheclocktower.com/data/jinx.json", timeout=1).content)
+JINX_JSON = {x["id"]: x for x in JINX_JSON}
 
 @cache
 def get_soup(uri: str) -> BeautifulSoup | None:
@@ -144,6 +146,14 @@ def sync_nightorder(entry):
             print("EN UPDATE " + (entry["name"] + ": ").ljust(20) + f"{entry["otherNight"]} --> {other}")
         entry["otherNight"] = other
 
+def sync_jinxes(entry):
+    if entry["id"] not in JINX_JSON: return
+    jinxes = JINX_JSON[entry["id"]]["jinx"]
+    if "jinx" in entry and entry["jinx"] == jinxes: return
+
+    entry["jinx"] = jinxes
+    print("JINXES " + (entry["name"] + ": ").ljust(20) + str(len(jinxes)) + " jinxes")
+
 def force_compatibility(entry):
     ALLOWED = set([
         "id", 
@@ -196,10 +206,12 @@ def main():
         desc_threader = [executor.submit(sync_ability, data[k]) for k in official_keys]
         flavor_threader = [executor.submit(sync_flavor, data[k]) for k in official_keys]
         order_threader = [executor.submit(sync_nightorder, data[k]) for k in official_keys]
+        jinx_threader = [executor.submit(sync_jinxes, data[k]) for k in official_keys]
         cf.wait(downloader_threader)
         cf.wait(desc_threader)
         cf.wait(flavor_threader)
         cf.wait(order_threader)
+        cf.wait(jinx_threader)
 
     new_data = dict()
 
