@@ -352,6 +352,7 @@ function update_night_wedge_text()
 //token functions
 function spawnToken(id, uid, visibility, cat, viability, left, top, nameText)
 {
+  // Safety for homebrew shenanigans. Delete irrecoverable tokens.
   if (loading && !(id in roles)) return;
 
   // Force tokens to appear if we try to add one. 
@@ -498,6 +499,16 @@ function clean_tokens(uid)
 }
 function mutate_menu(id, uid)
 {
+  const types = ["townsfolk", "outsider", "minion", "demon", "traveler"];
+  for (const type of types) {
+    const tokens = document.getElementById(`mutate_menu_${type}`).children;
+    for (const token of tokens) {
+      const matcher = token.id.match(/(?<=mutate_menu_).*/);
+      token.setAttribute("onclick", `mutate_token('${id}', '${uid}', '${matcher}')`);
+    }
+  }
+  document.getElementById("mutate_menu_main").style.display = "inherit";
+  return;
   var town = document.getElementById("mutate_menu_townsfolk").children;
   for (i = 0; i < town.length; i++)
   {
@@ -606,10 +617,7 @@ function populate_mutate_menu(tokens)
     div.id = "mutate_menu_" + element["id"];
     generateSampleToken(element["id"], div);
     div.classList = "background_image mutate_menu_token";
-    if (element["team"] != "fabled")
-    {
-      document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
-    }
+    document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
   })
 }
 
@@ -975,6 +983,7 @@ function clear_mutate_menu()
   document.getElementById("mutate_menu_minion").innerHTML = "";
   document.getElementById("mutate_menu_demon").innerHTML = "";
   document.getElementById("mutate_menu_traveler").innerHTML = "";
+  document.getElementById("mutate_menu_fabled").innerHTML = "";
 }
 function toggle_menu_collapse()
 {
@@ -1358,8 +1367,10 @@ function load_playerinfo_shroud(typeId)
         }
         new ResizeObserver(recalcHeight).observe(input);
         input.id = "playerinfo_input"
+        input.value = "You learn..."
         document.getElementById("playerinfo_character_landing").prepend(document.createElement("br"));
         document.getElementById("playerinfo_character_landing").prepend(input);
+        document.getElementById("playerinfo_character_landing").prepend(document.createElement("br"));
         break;
     }
   }
@@ -1396,30 +1407,13 @@ function load_playerinfo_shroud(typeId)
 
 function trigger_playerinfo_character_select(id)
 {
-  var town = document.getElementById("mutate_menu_townsfolk").children;
-  for (i = 0; i < town.length; i++)
-  {
-    town[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + town[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var outsiders = document.getElementById("mutate_menu_outsider").children;
-  for (i = 0; i < outsiders.length; i++)
-  {
-    outsiders[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var minions = document.getElementById("mutate_menu_minion").children;
-  for (i = 0; i < minions.length; i++)
-  {
-    minions[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var demons = document.getElementById("mutate_menu_demon").children;
-  for (i = 0; i < demons.length; i++)
-  {
-    demons[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var travellers = document.getElementById("mutate_menu_traveler").children;
-  for (i = 0; i < travellers.length; i++)
-  {
-    travellers[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
+  const types = ["townsfolk", "outsider", "minion", "demon", "traveler", "fabled"];
+  for (const type of types) {
+    const tokens = document.getElementById(`mutate_menu_${type}`).children;
+    for (const token of tokens) {
+      const matcher = token.id.match(/(?<=mutate_menu_).*/);
+      token.setAttribute("onclick", `select_playerinfo_character('${id}', '${matcher}')`);
+    }
   }
   document.getElementById("mutate_menu_main").style.display = "inherit";
 }
@@ -1647,6 +1641,12 @@ async function populate_night_order()
   const alive = new Set(tokens
       .filter(isInPlay)
       .map(x => x.getAttribute("role")));
+  Object.entries(CURRENT_SCRIPT)
+      .map(x => x[1])
+      .filter(x => x["id"] != "_meta" && x["team"] == "fabled")
+      .filter(x => (x[scriptKey] ?? 0) != 0)
+      .map(x => x["id"])
+      .forEach(x => {alive.add(x); inPlay.add(x)})
       
   
   gen_night_order_tab_info("DUSK");
@@ -1707,6 +1707,7 @@ function gen_night_order_tab_role(token_JSON, night, dead)
     case "minion": color = "#e62e00"; break;
     case "demon": color = "#cc0000"; break;
     case "traveler": color = "#6600ff"; break;
+    case "fabled": color = "#b3b300"; break;
   }
   if (dead) { color = "#000000"; }
   div = document.createElement("div");
