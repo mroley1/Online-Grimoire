@@ -1916,6 +1916,7 @@ function saoIndex(text) {
     "Once per game",
     "On your 1st night",
     "On your 1st day",
+    "On Night X",
 
     "You think",
     "You are",
@@ -1951,6 +1952,12 @@ function saoIndex(text) {
     // Fallthrough: 
     "",
   ];
+
+  // Atheist -- hardcoded exception
+  if (text.startsWith("The Storyteller can break the game rules")) {
+    return Infinity;
+  }
+
   for (const [i, prefix] of SAO_PREFIXES.entries()) {
     if (text.startsWith(prefix))
       return i;
