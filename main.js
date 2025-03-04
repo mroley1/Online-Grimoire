@@ -149,7 +149,7 @@ async function load_game_state_json(state)
     "outsider": "outsider",
     "minion": "minion",
     "demon": "demon",
-    "traveller": "traveller"
+    "traveler": "traveller"
   }
   for (const player of state.players) {
     if (BC_CONVERT[player.cat] != undefined) {
@@ -507,33 +507,6 @@ function mutate_menu(id, uid)
       const matcher = token.id.match(/(?<=mutate_menu_).*/);
       token.setAttribute("onclick", `mutate_token('${id}', '${uid}', '${matcher}')`);
     }
-  }
-  document.getElementById("mutate_menu_main").style.display = "inherit";
-  return;
-  var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
-  for (i = 0; i < townsfolk.length; i++)
-  {
-    townsfolk[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var outsiders = document.getElementById("mutate_menu_outsider").children;
-  for (i = 0; i < outsiders.length; i++)
-  {
-    outsiders[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var minions = document.getElementById("mutate_menu_minion").children;
-  for (i = 0; i < minions.length; i++)
-  {
-    minions[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var demons = document.getElementById("mutate_menu_demon").children;
-  for (i = 0; i < demons.length; i++)
-  {
-    demons[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var travellers = document.getElementById("mutate_menu_traveler").children;
-  for (i = 0; i < travellers.length; i++)
-  {
-    travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
   document.getElementById("mutate_menu_main").style.display = "inherit";
 }
@@ -1003,7 +976,7 @@ function clear_mutate_menu()
   document.getElementById("mutate_menu_outsider").innerHTML = "";
   document.getElementById("mutate_menu_minion").innerHTML = "";
   document.getElementById("mutate_menu_demon").innerHTML = "";
-  document.getElementById("mutate_menu_traveler").innerHTML = "";
+  document.getElementById("mutate_menu_traveller").innerHTML = "";
   document.getElementById("mutate_menu_fabled").innerHTML = "";
 }
 function toggle_menu_collapse()
@@ -2155,7 +2128,6 @@ function generateJinxesTable() {
     for (const jinx of jinxList) {
       const char2 = jinx.id
       if (!chars.has(char2)) continue;
-      console.log(jinx)
 
       table += `
               <tr>
