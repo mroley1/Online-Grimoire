@@ -10,7 +10,7 @@
         "name": "Token Name", 
         // Copy the text from the BOTC wiki
         "ability": "Your team wins. Everyone goes home and praises the developers",
-         // townsfolk, outsider, minion, demon, traveler, or fabled. 
+         // townsfolk, outsider, minion, demon, traveller, or fabled. 
         "class": "townsfolk",
         "reminders": [
             // The phrase that should appear on each reminder. 

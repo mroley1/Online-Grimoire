@@ -422,7 +422,7 @@
         ],
         "name": "Bon Vivant",
         "team": "townsfolk",
-        "ability": "Your alive neighbouring players are drunk (not including Travelers).",
+        "ability": "Your alive neighbouring players are drunk (not including Travellers).",
         "attribution": "Should be a party horn"
     },
     {

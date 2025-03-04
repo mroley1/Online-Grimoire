@@ -149,7 +149,7 @@ async function load_game_state_json(state)
     "outsider": "outsider",
     "minion": "minion",
     "demon": "demon",
-    "traveler": "traveler"
+    "traveller": "traveller"
   }
   for (const player of state.players) {
     if (BC_CONVERT[player.cat] != undefined) {
@@ -373,7 +373,7 @@ function spawnToken(id, uid, visibility, cat, viability, left, top, nameText)
   div.setAttribute("uid", uid);
   div.setAttribute("visibility", visibility);
   div.setAttribute("cat", cat);
-  div.setAttribute("show_face", cat == "traveler");
+  div.setAttribute("show_face", cat == "traveller");
 
   // Actual picture.
   var role = document.createElement("img");
@@ -406,9 +406,9 @@ function spawnToken(id, uid, visibility, cat, viability, left, top, nameText)
   vote.id = id + "_" + uid + "_vote";
   div.appendChild(vote);
 
-  // The role of travelers, when shown in TS mode. 
+  // The role of travellers, when shown in TS mode. 
   var outsider_betray = document.createElement("div");
-  if (cat == "traveler")
+  if (cat == "traveller")
   {
     outsider_betray.style.backgroundImage = `url('${roles[id].image}')`
   }
@@ -500,7 +500,7 @@ function clean_tokens(uid)
 }
 function mutate_menu(id, uid)
 {
-  const types = ["townsfolk", "outsider", "minion", "demon", "traveler"];
+  const types = ["townsfolk", "outsider", "minion", "demon", "traveller"];
   for (const type of types) {
     const tokens = document.getElementById(`mutate_menu_${type}`).children;
     for (const token of tokens) {
@@ -551,13 +551,13 @@ function mutate_token(idFrom, uid, idTo)
 
   subject.setAttribute("cat", new_json["team"]);
   const townSquareImage = subject.getElementsByClassName("token_outsider_betray")[0]
-  if (new_json["team"] == "traveler") {
+  if (new_json["team"] == "traveller") {
     townSquareImage.style.backgroundImage = `url('${roles[idTo].image}')`;
   } else { 
     townSquareImage.style.backgroundImage = "";
   }
 
-  subject.setAttribute("show_face", new_json["team"] == "traveler");
+  subject.setAttribute("show_face", new_json["team"] == "traveller");
   subject.setAttribute("role", new_json["id"]);
   subject.style.backgroundImage = "url('assets/token.png')";
   subject.setAttribute("onclick", "javascript:infoCall('" + idTo + "', " + uid + ")");
@@ -834,9 +834,9 @@ async function populate_script(script)
   clear("demon")
   header("Demons", "demon", "#e60000")
   options("demon", scriptTokens, "Demons")
-  clear("traveler")
-  header("Travellers", "traveler", "#6600ff")
-  options("traveler", scriptTokens, "Travellers")
+  clear("traveller")
+  header("Travellers", "traveller", "#6600ff")
+  options("traveller", scriptTokens, "Travellers")
   player_count_change();
   update_role_counts();
   clear_mutate_menu();
@@ -873,12 +873,12 @@ function player_count_change()
 
   //dont try to update player counts before menu is loaded
   var expected = new Object();
-  const TYPES = ["townsfolk", "outsider", "minion", "demon", "traveler"];
+  const TYPES = ["townsfolk", "outsider", "minion", "demon", "traveller"];
   for (let i = 0; i < 4; i++) {
     // [hard modifier, soft positive modifier, soft negative modifier, locked?]
     expected[TYPES[i]] = [table[tableIndex][i], 0, 0, false];
   }
-  expected.traveler = [0, 0, 0, false];
+  expected.traveller = [0, 0, 0, false];
   async function makeupMod(id)
   {
     try
@@ -931,7 +931,7 @@ function player_count_change()
       case "demon":
         if (visibility == "show") { counts[3]++; }
         break;
-      case "traveler":
+      case "traveller":
         if (visibility == "show") { counts[4]++; }
         break;
     }
@@ -1428,7 +1428,7 @@ function load_playerinfo_shroud(typeId)
 
 function trigger_playerinfo_character_select(id)
 {
-  const types = ["townsfolk", "outsider", "minion", "demon", "traveler", "fabled"];
+  const types = ["townsfolk", "outsider", "minion", "demon", "traveller", "fabled"];
   for (const type of types) {
     const tokens = document.getElementById(`mutate_menu_${type}`).children;
     for (const token of tokens) {
@@ -1729,7 +1729,7 @@ function gen_night_order_tab_role(token_JSON, night, dead)
     case "outsider": color = "#0086b3"; break;
     case "minion": color = "#e62e00"; break;
     case "demon": color = "#cc0000"; break;
-    case "traveler": color = "#6600ff"; break;
+    case "traveller": color = "#6600ff"; break;
     case "fabled": color = "#b3b300"; break;
   }
   if (dead) { color = "#000000"; }
@@ -2107,8 +2107,8 @@ async function generateHTMLDocument() {
   html += generateJinxesTable();
   
 
-  //Print travelers and fables
-  html += generateRoleTable("traveler", "Travelers");
+  //Print travellers and fables
+  html += generateRoleTable("traveller", "Travellers");
   html += generateRoleTable("fabled", "Fabled");
 
   // Close the HTML structure
