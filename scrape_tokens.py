@@ -7,8 +7,8 @@ from functools import cache
 from requests.exceptions import HTTPError
 
 WIKI_URL = "https://wiki.bloodontheclocktower.com"
-NIGHTSHEET_JSON = json.loads(requests.get("https://script.bloodontheclocktower.com/data/nightsheet.json", timeout=1).content)
-JINX_JSON = json.loads(requests.get("https://script.bloodontheclocktower.com/data/jinx.json", timeout=1).content)
+NIGHTSHEET_JSON = json.loads(requests.get("https://script.bloodontheclocktower.com/data/nightsheet.json", timeout=10).content)
+JINX_JSON = json.loads(requests.get("https://script.bloodontheclocktower.com/data/jinx.json", timeout=10).content)
 JINX_JSON = {x["id"]: x for x in JINX_JSON}
 
 @cache
@@ -75,46 +75,57 @@ def sync_image_url(entry):
     soup = get_soup(icon_url.format(id))
 
     if soup is None:
-        print(f"Image page for ID {id} not found.")
+        print(f"ERROR " + (name + ":").ljust(20) + "Image page not found.")
+        return
 
     # Step 2: Parse HTML to find the element with id "file"
     file_element = soup.find(id='file')
 
     if file_element is None:
-        print(f"No element with id 'file' found for ID {id}.")
+        print(f"ERROR " + (name + ":").ljust(20) + "No element with id 'file' found")
         return
 
     # Step 3: Get the first child which should be an <img> tag
     img_tag = file_element.find('img')
     if not img_tag or 'src' not in img_tag.attrs:
-        print(f"No <img> found for ID {id}.")
+        print(f"ERROR " + (name + ":").ljust(20) + "No <img> found")
         return
     
     # Step 4: Get the relative src url
-    # Cut off the trailing URL metadata, which changes constantly and is redundant.
+    # Cut off the trailing URL metadata, which only serves to stop caching
     relative_url = img_tag['src'].split("?")[0]
     full_image_url = WIKI_URL + relative_url
 
-    if "image" in entry and full_image_url == entry["image"]: return
+    # # Step 5: Download and save the image
+    try:
+        img_response = requests.get(full_image_url)
+        img_response.raise_for_status()
+    except HTTPError as e:
+        if e.response.reason == "Not Found":
+            print("ERROR " + (name + ": ").ljust(20) + relative_url.ljust(30) + " NOT FOUND!")
+            return
+        raise e
 
-    entry["image"] = full_image_url
+    # Step 6: Compare to existing image, and see if an edit is necessary.
+    overwrite = True
+    file_path = f"assets/icons/official/{id}.png"
+    if os.path.exists(file_path): 
+        with open(file_path, "rb") as f:
+            if f.read() == img_response.content:
+                overwrite = False
+
+    # Save the image
+    if overwrite:
+        with open(file_path, 'wb') as img_file:
+            img_file.write(img_response.content)
+        print("DOWNLOAD " + (name + ": ").ljust(20) + f"{id}.png")
+
+    if "image" in entry and file_path == entry["image"]: return
+
+    entry["image"] = file_path
     print("IMAGE " + (name + ": ").ljust(20) + relative_url)
 
-    # # Step 5: Download and save the image
-    # img_response = requests.get(full_image_url)
-    # img_response.raise_for_status()
-
-    # # Step 6: Compare to existing image, and see if an edit is necessary.
-    # filePath = f"assets/icons/official/{id}.png"
-    # if os.path.exists(filePath): 
-    #     with open(filePath, "rb") as f:
-    #         if f.read() == img_response.content:
-    #             return
-
-    # # Save the image
-    # with open(filePath, 'wb') as img_file:
-    #     img_file.write(img_response.content)
-    # print("DOWNLOAD " + (name + ": ").ljust(20) + f"{id}.png")
+    
 
 def sync_nightorder(entry):
     # Step 1: get night order from TPI
@@ -190,29 +201,41 @@ def force_compatibility(entry):
     return new_entry
 
 def main():
-
+    print("TOKEN SCRAPER")
+    print("LOADING DATA...")
     with open("data/tokens.json") as f:
         data: dict = json.loads(f.read())
 
     official_keys = sorted(data.keys())
 
+    print("CACHING WIKI PAGES...")
     with cf.ThreadPoolExecutor(max_workers=16) as executor:
         cacher = [executor.submit(get_soup_by_name, v) for v in official_keys]
 
     data = {k: force_compatibility(v) for k, v in data.items()}
 
     with cf.ThreadPoolExecutor(max_workers=16) as executor:
+        print("SYNCING IMAGES...")
         downloader_threader = [executor.submit(sync_image_url, data[k]) for k in official_keys]
-        desc_threader = [executor.submit(sync_ability, data[k]) for k in official_keys]
-        flavor_threader = [executor.submit(sync_flavor, data[k]) for k in official_keys]
-        order_threader = [executor.submit(sync_nightorder, data[k]) for k in official_keys]
-        jinx_threader = [executor.submit(sync_jinxes, data[k]) for k in official_keys]
         cf.wait(downloader_threader)
+
+        print("SYNCING DESCRIPTION...")
+        desc_threader = [executor.submit(sync_ability, data[k]) for k in official_keys]
         cf.wait(desc_threader)
+
+        print("SYNCING FLAVOR...")
+        flavor_threader = [executor.submit(sync_flavor, data[k]) for k in official_keys]
         cf.wait(flavor_threader)
+
+        print("SYNCING NGIHT ORDER...")
+        order_threader = [executor.submit(sync_nightorder, data[k]) for k in official_keys]
         cf.wait(order_threader)
+
+        print("SYNCING JINXES...")
+        jinx_threader = [executor.submit(sync_jinxes, data[k]) for k in official_keys]
         cf.wait(jinx_threader)
 
+    print("FINALIZING...")
     new_data = dict()
 
     for k in official_keys:
