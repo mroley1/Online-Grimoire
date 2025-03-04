@@ -1927,6 +1927,76 @@ function gen_fabled_tab(token_JSON, inPlay)
   div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
   div.setAttribute("onclick", "javascript:expand_night_order_tab('" + token_JSON.id + "_night_order_tab')");
 }
+
+function saoIndex(text) {
+  // https://bloodontheclocktower.com/news/sort-order-sao-update
+  SAO_PREFIXES = [
+    "You start knowing",
+    "At night",
+    "Each dusk*",
+    "Each night",
+    "Each night*",
+    "Each day",
+    "Once per game, at night",
+    "Once per game, at night*",
+    "Once per game, during the day",
+    "Once per game",
+    "On your 1st night",
+    "On your 1st day",
+
+    "You think",
+    "You are",
+    "You have",
+    "You do not know",
+    "You might",
+    "You",
+
+    "When you die",
+    "When you learn that you died",
+    "When",
+
+    "If you die",
+    "If you died",
+    "If you are \"mad\"",
+    "If you",
+    "If the Demon dies",
+    "If the Demon kills",
+    "If the Demon",
+    "If both",
+    "If there are 5 or more players alive",
+    "If",
+
+    "All players",
+    "All",
+    "The 1st time",
+    "The",
+
+    "Good",
+    "Evil",
+    "Players",
+    "Minions",
+    // Fallthrough: 
+    "",
+  ];
+  for (const [i, prefix] of SAO_PREFIXES.entries()) {
+    if (text.startsWith(prefix))
+      return i;
+  }
+}
+
+function compareRoles(first, second) {
+  out = saoIndex(second["ability"]) - saoIndex(first["ability"]);
+  if (out == 0) {
+    out = second["ability"].length - first["ability"].length;
+  }
+  if (out == 0) {
+    out = second["name"].length - first["name"].length;
+  }
+  if (out == 0) {
+    out = second["name"] > first["name"] ? 1 : -1;
+  }
+  return out;
+}
 //generates an html page that can be printed to a pdf from currently loaded script (WIP)
 //this is almost entirely written by chatGPT
 //Author @The-ai123
@@ -2057,6 +2127,7 @@ function generateRoleTable(team, name) {
 
   CURRENT_SCRIPT
       .filter(x => x.id != '_meta')
+      .sort(compareRoles)
       .map(x => roles[x.id])
       .filter(x => x.team == team)
       .reverse()
