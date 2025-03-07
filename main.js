@@ -1463,6 +1463,7 @@ function dragStart(e)
     return;
   }
   active = token;
+  active.style.zIndex = 1;
   console.log("NEW DRAG: " + active)
   var pos = getComputedStyle(token)
   if (e.type === "touchstart") {
@@ -1520,6 +1521,10 @@ function dragEnd(e)
     }
     e.target.parentNode.removeChild(e.target);
   }
+  active.style.zIndex = ""; // The default, for some reason
+  const container = active.parentElement;
+  container.removeChild(active);
+  container.appendChild(active);
   active = null;
   if (!loading) { 
     save_game_state();
