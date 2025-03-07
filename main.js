@@ -1456,8 +1456,7 @@ function makeDraggable(element) {
  * Initialize the logic for dragging an element.
  * @param {Event} e The event that triggered this function.
  */
-function dragStart(e)
-{
+function dragStart(e) {
   const token = getActualDragged(e.target);
   if (!draggingEnabledFor(token)) {
     return;
@@ -1479,8 +1478,7 @@ function dragStart(e)
  * Finalize the dragging of an element. 
  * @param {Event} e The event that triggered this function.
  */
-function dragEnd(e)
-{
+function dragEnd(e) {
   if (active == null) return; // Can happen if you release click over a token
   // The good, evil, and generic reminder tokens.
   if (active.getAttribute("disposable-reminder"))
@@ -1521,10 +1519,14 @@ function dragEnd(e)
     }
     e.target.parentNode.removeChild(e.target);
   }
+
   active.style.zIndex = ""; // The default, for some reason
   const container = active.parentElement;
-  container.removeChild(active);
-  container.appendChild(active);
+  if (container != null) {
+    container.removeChild(active);
+    container.appendChild(active);
+  }
+
   active = null;
   if (!loading) { 
     save_game_state();
@@ -1532,11 +1534,10 @@ function dragEnd(e)
 }
 
 /**
- * Drag a toen for a single frame. 
+ * Drag a token for a single frame. 
  * @param {Event} e The event that triggered this.
  */
-function drag(e)
-{
+function drag(e) {
   if (active == null) return;
   e.preventDefault();
   let moved = active;
@@ -1559,7 +1560,8 @@ function drag(e)
 
   setTranslate(currentX, currentY);
 }
-function setTranslate(xPos, yPos, el)
+
+function setTranslate(xPos, yPos)
 {
   active.style.left = xPos + "px"
   active.style.top = yPos + "px"
