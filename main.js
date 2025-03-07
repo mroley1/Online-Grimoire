@@ -405,7 +405,7 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
   // Random admin stuff.
   update_role_counts();
   player_count_change();
-  dragInit();
+  makeDraggable(div);
   populate_night_order();
 
   // This function is used by the loading code to place all the tokens.
@@ -607,8 +607,8 @@ function dragPipLayerSpawn(type, left, top, stacked)
   img.src = "assets/delete.png";
   img.id = type + "_" + uid + "_img";
   div.appendChild(img);
+  makeDraggable(div);
   document.getElementById("dragPipLayer").prepend(div);
-  dragInit();
   if (!loading) { save_game_state(); }
 }
 function dragPipLayerSpawnDefault(type)
@@ -1173,7 +1173,7 @@ function spawnReminderGhost(left, top, roleName, reminder, longId)
   div.appendChild(text);
 
   document.getElementById("info_token_dragbox").prepend(div);
-  dragInit();
+  makeDraggable(div);
 }
 
 function spawnReminder(roleName, reminder, uid, left, top)
@@ -1213,7 +1213,7 @@ function spawnReminder(roleName, reminder, uid, left, top)
   div.appendChild(trash);
 
   document.getElementById("remainerLayer").appendChild(div);
-  dragInit();
+  makeDraggable(div);
   if (!loading) { save_game_state(); }
 }
 
@@ -1432,33 +1432,28 @@ function close_playerinfo_shroud()
 
 //drag functions
 var active;
-function dragInit()
-{
-  const dragSpots = document.getElementsByClassName("drag");
-  for (var i = 0; i < dragSpots.length; i++)
-  {
-    var container = dragSpots[i];
+var xOffset;
+var yOffset;
 
-    container.addEventListener("touchstart", dragStart, false);
-    container.addEventListener("touchend", dragEnd, false);
-    container.addEventListener("touchmove", drag, false);
+function makeDraggable(element) {
+  element.addEventListener("touchstart", dragStart, false);
+  element.addEventListener("touchend", dragEnd, false);
+  element.addEventListener("touchmove", drag, false);
 
-    container.addEventListener("mousedown", dragStart, false);
-    container.addEventListener("mouseup", dragEnd, false);
-    container.addEventListener("mousemove", drag, false);
-  }
+  element.addEventListener("mousedown", dragStart, false);
+  element.addEventListener("mouseup", dragEnd, false);
+  element.addEventListener("mousemove", drag, false);
 }
+
 function dragStart(e)
 {
   if (document.getElementById("move_toggle").style.backgroundColor != "green" && isRoleToken(e.target)) { return }
   const token = getActualDragged(e.target);
   var pos = getComputedStyle(token)
-  if (e.type === "touchstart")
-  {
+  if (e.type === "touchstart") {
     xOffset = e.touches[0].clientX - pos.getPropertyValue('left').match(/\d+/)[0];
     yOffset = e.touches[0].clientY - pos.getPropertyValue('top').match(/\d+/)[0];
-  } else
-  {
+  } else {
     xOffset = e.clientX - pos.getPropertyValue('left').match(/\d+/)[0];
     yOffset = e.clientY - pos.getPropertyValue('top').match(/\d+/)[0];
   }
@@ -1467,6 +1462,7 @@ function dragStart(e)
     active = true;
   }
 }
+
 function dragEnd(e)
 {
   const el = e.target;
@@ -2188,21 +2184,3 @@ function add_offscript_character(token_class){
   }
   document.getElementById("mutate_menu_all_main").style.display = "inherit";
 }
-
-// function spawnNightOrderGhost(x, y, imgUrl, id, fabled) {
-//   var time = new Date();
-//   var uid = time.getTime();
-//   var div = document.createElement("div");
-//   div.classList = "info_tokens_drag drag";
-//   div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 80px; height: 80px;";
-//   div.id = id + "_" + uid;
-//   div.setAttribute("ghost", "true");
-//   div.setAttribute("token_from", "night_order");
-//   var img = document.createElement("img");
-//   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
-//   img.src = "assets/delete.png";
-//   img.id = id + "_" + uid + "_img";
-//   div.appendChild(img);
-//   document.getElementById("token_drag_" + fabled + "_night_order_tab").prepend(div);
-//   dragInit();
-// }
