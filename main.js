@@ -1463,8 +1463,7 @@ function dragStart(e) {
   }
   active = token;
   active.style.zIndex = 1;
-  console.log("NEW DRAG: " + active)
-  var pos = getComputedStyle(token)
+  var pos = getComputedStyle(token);
   if (e.type === "touchstart") {
     xOffset = e.touches[0].clientX - pos.getPropertyValue('left').match(/\d+/)[0];
     yOffset = e.touches[0].clientY - pos.getPropertyValue('top').match(/\d+/)[0];
