@@ -452,7 +452,18 @@ svg {pointer-events: none; user-select: none;}
 .background_select_scroll_body {display: inline-flex; width: 70%; height: calc(100% - 100px); pointer-events: all; padding: 50px; overflow-y: scroll; scrollbar-width: none; display: inline-flex; flex-flow: wrap; justify-content: center;}
 .background_select_scroll_body::-webkit-scrollbar {display: none;}
 
-#playerinfo_close {position: absolute; top: 5px; right: 5px; width: 85px; height: 85px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png");}
+#playerinfo_close {
+    position: absolute; 
+    top: 5px; 
+    right: 5px; 
+    z-index: 1;
+    width: 85px; 
+    height: 85px; 
+    opacity: 0.4; 
+    transition: opacity linear 0.1s; 
+    cursor: pointer; 
+    background-image: url("assets/close.png");
+}
 #playerinfo_close:hover {opacity: 0.6;}
 #playerinfo_character_landing {text-align: center; width: 100%; pointer-events: all;}
 .playerinfo_character {

@@ -1376,7 +1376,6 @@ function load_playerinfo_shroud(typeId)
     add_playerinfo_character_box()
   }
   mapped_specials(typeId);
-  document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
 }
 
 function add_playerinfo_character_box() {
@@ -1386,6 +1385,8 @@ function add_playerinfo_character_box() {
   div.classList = "playerinfo_character";
   div.setAttribute("onclick", "javascript:trigger_playerinfo_character_select(" + id + ")")
   document.getElementById("playerinfo_character_landing").appendChild(div);
+  console.log("calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)");
+  document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
 }
 
 function trigger_playerinfo_character_select(id)
