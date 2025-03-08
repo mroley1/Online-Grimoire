@@ -1308,7 +1308,11 @@ function update_info_death_cycle(id, uid)
   }
 }
 
-
+/** 
+ * Shroud-specific data for what card to show for given IDs. 
+ * The title is what's shown at the top of the shroud. 
+ * The players is the number of characters shown, by default, on the shroud.
+ */
 const CARDS = {
   0: { "title": "Use Your Ability?", "players": 0 },
   1: { "title": "Choose a Player", "players": 0 },
@@ -1324,6 +1328,10 @@ const CARDS = {
   11: { "title": "Make your Choice", "players": 1 },
 }
 
+/**
+ * Show a particular shroud (information display screen), to show to a player.
+ * @param {Number} typeId The ID of the shroud to show the player.
+ */
 function load_playerinfo_shroud(typeId)
 {
   function mapped_specials(typeId)
@@ -1378,6 +1386,9 @@ function load_playerinfo_shroud(typeId)
   mapped_specials(typeId);
 }
 
+/**
+ * Add a character box to the playerinfo shroud currently being displayed.
+ */
 function add_playerinfo_character_box() {
   const id = document.getElementById("playerinfo_character_landing").childElementCount;
   var div = document.createElement("div");
