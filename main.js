@@ -1334,6 +1334,7 @@ function load_playerinfo_shroud(typeId)
         }
         break;
       case 5:
+      case 6:
         select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
         break;
       case 10:
@@ -1356,7 +1357,7 @@ function load_playerinfo_shroud(typeId)
     3: { "title": "This Is Your Demon", "players": 0 },
     4: { "title": "These Are Your Minions", "players": 0 },
     5: { "title": "You Are", "players": 1 },
-    6: { "title": "This Player Is", "players": 1 },
+    6: { "title": "This Player Is", "players": 2 },
     7: { "title": "Character Selected You", "players": 1 },
     8: { "title": "Did You Vote Today?", "players": 0 },
     9: { "title": "Did You Nominate Today?", "players": 0 },
