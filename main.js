@@ -110,20 +110,18 @@ function generate_game_state_json()
     state.reminders[i].left = reminders[i].style.left;
     state.reminders[i].top = reminders[i].style.top;
   }
-  state.pips = [];
-  pips = document.getElementById("dragPipLayer").getElementsByClassName("reminder");
-  var j = 0;
-  for (i = 0; i < pips.length; i++)
-  {
-    if (pips[i].getAttribute("stacked") == "false")
-    {
-      state.pips[j] = new Object();
-      state.pips[j].type = pips[i].getAttribute("alignment");
-      state.pips[j].left = pips[i].style.left;
-      state.pips[j].top = pips[i].style.top;
-      j++;
-    }
-  }
+
+  // Pips are the alignment and "special" tokens on the left.
+  state.pips = Array.from(document.getElementById("dragPipLayer").getElementsByClassName("reminder"))
+    // The "generator" pips have the "stacked" attribute set.
+    .filter(pip => pip.getAttribute("stacked") === "false")
+    .map(pip => {
+      return {
+        type: pip.getAttribute("alignment"),
+        left: pip.style.left,
+        top: pip.style.top,
+      }
+    });
   return JSON.stringify(state);
 }
 
@@ -155,9 +153,9 @@ async function load_game_state_json(state)
     } 
     spawnReminder(reminder.id, reminder.text, reminder.uid, reminder.left, reminder.top);
   }
-  for (let i = 0; i < state.pips.length; i++)
+  for (const pip of state.pips)
   {
-    dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top, "false")
+    dragPipLayerSpawn(pip.type, pip.left, pip.top, "false")
   }
   if (state.orientation != getOrientation())
   {
