@@ -111,14 +111,14 @@ function generate_game_state_json()
     state.reminders[i].top = reminders[i].style.top;
   }
   state.pips = [];
-  pips = document.getElementById("interactivePlane").getElementsByClassName("reminder");
+  pips = document.getElementById("dragPipLayer").getElementsByClassName("reminder");
   var j = 0;
   for (i = 0; i < pips.length; i++)
   {
     if (pips[i].getAttribute("stacked") == "false")
     {
       state.pips[j] = new Object();
-      state.pips[j].type = pips[i].getAttribute("role");
+      state.pips[j].type = pips[i].getAttribute("alignment");
       state.pips[j].left = pips[i].style.left;
       state.pips[j].top = pips[i].style.top;
       j++;
