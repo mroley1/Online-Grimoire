@@ -1336,6 +1336,11 @@ function load_playerinfo_shroud(typeId)
 {
   function mapped_specials(typeId)
   {
+    if (typeId == 8 || typeId == 9) {
+      document.getElementById("playerinfo_extra_button").style.display = "none";
+    } else {
+      document.getElementById("playerinfo_extra_button").style.display = "inline-block";
+    }
     switch (typeId)
     {
       case 2:
@@ -1384,6 +1389,8 @@ function load_playerinfo_shroud(typeId)
     add_playerinfo_character_box()
   }
   mapped_specials(typeId);
+  // For displays without any character boxes
+  document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
 }
 
 /**
@@ -1396,7 +1403,6 @@ function add_playerinfo_character_box() {
   div.classList = "playerinfo_character";
   div.setAttribute("onclick", "javascript:trigger_playerinfo_character_select(" + id + ")")
   document.getElementById("playerinfo_character_landing").appendChild(div);
-  console.log("calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)");
   document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
 }
 
