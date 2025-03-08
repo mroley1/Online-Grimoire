@@ -469,6 +469,21 @@ svg {pointer-events: none; user-select: none;}
     background-size: auto 80%; 
     background-repeat: no-repeat;
 }
+#playerinfo_extra_button {
+    position: relative;
+    margin: 10px; 
+    width: 50px; 
+    height: 50px; 
+    background-color: #44444494; 
+    border-radius: 25px; 
+    display: inline-block; 
+    cursor: pointer; 
+    pointer-events: all;
+    background-image: url(assets/person_add.png); 
+    background-position: center; 
+    background-size: auto 80%; 
+    background-repeat: no-repeat;
+}
 #playerinfo_input {height: 70px; width: 65%; font-size: 40pt; text-align: center;}
 #playerinfo_body {pointer-events: none;}
 
