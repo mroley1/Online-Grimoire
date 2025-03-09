@@ -456,7 +456,6 @@ svg {pointer-events: none; user-select: none;}
     position: absolute; 
     top: 5px; 
     right: 5px; 
-    z-index: 1;
     width: 85px; 
     height: 85px; 
     opacity: 0.4; 
