@@ -1404,6 +1404,15 @@ function add_playerinfo_character_box() {
   div.setAttribute("onclick", "javascript:trigger_playerinfo_character_select(" + id + ")")
   document.getElementById("playerinfo_character_landing").appendChild(div);
   document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
+
+  // We want the last item to be a copy of the prior. 
+  // If the dreamer needs an extra slot for the "this player is" entry, then
+  // the first one will be the actual character! We want some measure of
+  // randomness for this.
+  if (id == 0) return;
+  const character = document.getElementById("playerinfo_character_" + (id-1)).firstChild;
+  if (character == null) return;
+  div.appendChild(character.cloneNode(true));
 }
 
 function trigger_playerinfo_character_select(id)
