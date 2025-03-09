@@ -1409,8 +1409,9 @@ function add_playerinfo_character_box() {
   // If the dreamer needs an extra slot for the "this player is" entry, then
   // the first one will be the actual character! We want some measure of
   // randomness for this.
-  if (id == 0) return;
-  const character = document.getElementById("playerinfo_character_" + (id-1)).firstChild;
+  const prevNode = document.getElementById("playerinfo_character_" + (id-1));
+  if (prevNode == null) return;
+  const character = prevNode.firstChild;
   if (character == null) return;
   div.appendChild(character.cloneNode(true));
 }
