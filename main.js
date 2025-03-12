@@ -2107,8 +2107,8 @@ function generateRoleTable(team, name) {
 
   CURRENT_SCRIPT
       .filter(x => x.id != '_meta')
-      .sort(compareRoles)
       .map(x => roles[x.id])
+      .sort(compareRoles)
       .filter(x => x.team == team)
       .reverse()
       .forEach(role => {
