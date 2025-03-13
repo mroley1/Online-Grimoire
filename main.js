@@ -252,6 +252,16 @@ async function loaded()
   base_roles = await get_JSON("tokens.json");
   // Make a copy...
   roles = JSON.parse(JSON.stringify(base_roles));
+
+  // Add unreleased experimental, as a failsafe backwards compatibility
+  const unreleased = await get_JSON("scripts/Unreleased Experimental.json")
+  for (const role of unreleased) {
+    const id = role.id.split("_", 2)[0];
+    if (id == "") continue;
+    role.id = id;
+    roles[id] = role;
+  }
+
   dragPipLayerSpawnDefault("good");
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
@@ -786,6 +796,7 @@ async function populate_script(script)
   script.forEach(element =>
   {
     if (element.id == "_meta") return;
+    console.log(element.id)
     // More complex things have more than an ID.
     if (Object.keys(element).length > 1) {
       roles[element.id] = element;
@@ -794,6 +805,8 @@ async function populate_script(script)
       scriptTokens.push(roles[element.id]) 
     } catch {}
   })
+
+  console.log(scriptTokens)
 
   clear("townsfolk")
   header("Town", "townsfolk", "#0033cc")
