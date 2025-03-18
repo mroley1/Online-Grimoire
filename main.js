@@ -405,7 +405,7 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
   // Random admin stuff.
   update_role_counts();
   player_count_change();
-  dragInit();
+  makeDraggable(div);
   populate_night_order();
 
   // This function is used by the loading code to place all the tokens.
@@ -607,8 +607,8 @@ function dragPipLayerSpawn(type, left, top, stacked)
   img.src = "assets/delete.png";
   img.id = type + "_" + uid + "_img";
   div.appendChild(img);
+  makeDraggable(div);
   document.getElementById("dragPipLayer").prepend(div);
-  dragInit();
   if (!loading) { save_game_state(); }
 }
 function dragPipLayerSpawnDefault(type)
@@ -1173,7 +1173,7 @@ function spawnReminderGhost(left, top, roleName, reminder, longId)
   div.appendChild(text);
 
   document.getElementById("info_token_dragbox").prepend(div);
-  dragInit();
+  makeDraggable(div);
 }
 
 function spawnReminder(roleName, reminder, uid, left, top)
@@ -1213,7 +1213,7 @@ function spawnReminder(roleName, reminder, uid, left, top)
   div.appendChild(trash);
 
   document.getElementById("remainerLayer").appendChild(div);
-  dragInit();
+  makeDraggable(div);
   if (!loading) { save_game_state(); }
 }
 
@@ -1431,74 +1431,82 @@ function close_playerinfo_shroud()
 
 
 //drag functions
-var active;
-function dragInit()
-{
-  const dragSpots = document.getElementsByClassName("drag");
-  for (var i = 0; i < dragSpots.length; i++)
-  {
-    var container = dragSpots[i];
+/** The element that is currently being dragged. */
+var active = null;
+/** The X offset between the cursor and a dragged element */
+var xOffset = 0;
+/** The Y offset between the cursor and a dragged element */
+var yOffset = 0;
 
-    container.addEventListener("touchstart", dragStart, false);
-    container.addEventListener("touchend", dragEnd, false);
-    container.addEventListener("touchmove", drag, false);
+/**
+ * Make an element draggable.
+ * @param {HTMLElement} element An element to give the drag callbacks to.
+ */
+function makeDraggable(element) {
+  element.addEventListener("touchstart", dragStart, false);
+  element.addEventListener("touchend", dragEnd, false);
+  element.addEventListener("touchmove", drag, false);
 
-    container.addEventListener("mousedown", dragStart, false);
-    container.addEventListener("mouseup", dragEnd, false);
-    container.addEventListener("mousemove", drag, false);
-  }
+  element.addEventListener("mousedown", dragStart, false);
+  element.addEventListener("mouseup", dragEnd, false);
+  element.addEventListener("mousemove", drag, false);
 }
-function dragStart(e)
-{
-  if (document.getElementById("move_toggle").style.backgroundColor != "green" && isRoleToken(e.target)) { return }
+
+/**
+ * Initialize the logic for dragging an element.
+ * @param {Event} e The event that triggered this function.
+ */
+function dragStart(e) {
   const token = getActualDragged(e.target);
-  var pos = getComputedStyle(token)
-  if (e.type === "touchstart")
-  {
+  if (!draggingEnabledFor(token)) {
+    return;
+  }
+  active = token;
+  active.style.zIndex = 1;
+  var pos = getComputedStyle(token);
+  if (e.type === "touchstart") {
     xOffset = e.touches[0].clientX - pos.getPropertyValue('left').match(/\d+/)[0];
     yOffset = e.touches[0].clientY - pos.getPropertyValue('top').match(/\d+/)[0];
-  } else
-  {
+  } else {
     xOffset = e.clientX - pos.getPropertyValue('left').match(/\d+/)[0];
     yOffset = e.clientY - pos.getPropertyValue('top').match(/\d+/)[0];
   }
-  if (token.classList.contains("drag"))
-  {
-    active = true;
-  }
 }
-function dragEnd(e)
-{
-  const el = e.target;
+
+/**
+ * Finalize the dragging of an element. 
+ * @param {Event} e The event that triggered this function.
+ */
+function dragEnd(e) {
+  if (active == null) return; // Can happen if you release click over a token
   // The good, evil, and generic reminder tokens.
-  if (el.getAttribute("disposable-reminder"))
+  if (active.getAttribute("disposable-reminder"))
   {
-    if (el.getAttribute("stacked") == "true")
+    if (active.getAttribute("stacked") == "true")
     {
-      dragPipLayerSpawnDefault(el.getAttribute("alignment"));
+      dragPipLayerSpawnDefault(active.getAttribute("alignment"));
     }
-    el.setAttribute("stacked", false);
-    el.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + el.id + "')");
-    el.style.cursor = "pointer";
+    active.setAttribute("stacked", false);
+    active.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + active.id + "')");
+    active.style.cursor = "pointer";
   }
   
   // If a new reminder token is to be instantiated.
-  if (el.getAttribute("ghost") == "true")
+  if (active.getAttribute("ghost") == "true")
   {
-    const role = el.getAttribute("role");
-    const reminder = el.children[2].innerText;
+    const role = active.getAttribute("role");
+    const reminder = active.children[2].innerText;
     spawnReminder(
         role,
         reminder,
-        //el.id.substring(5, e.target.id.length - (2 * UID_LENGTH) - 2), 
-        el.id.substring(e.target.id.length - (2 * UID_LENGTH) - 1, e.target.id.length), 
-        el.getBoundingClientRect().left + 12.5, 
+        active.id.substring(e.target.id.length - (2 * UID_LENGTH) - 1, e.target.id.length), 
+        active.getBoundingClientRect().left + 12.5, 
         e.target.getBoundingClientRect().top + 12.5
     );
     if (e.target.getAttribute("token_from") == "info")
     {
-      let x = document.getElementById(el.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
-      let y = document.getElementById(el.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
+      let x = document.getElementById(active.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
+      let y = document.getElementById(active.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
       // SCUFFED AF
       spawnReminderGhost(
           x, 
@@ -1507,46 +1515,55 @@ function dragEnd(e)
           reminder,
           e.target.id.substring(0, e.target.id.length - UID_LENGTH - 1)
       );
-    }// else if (e.target.getAttribute("token_from") == "night_order") {
-    //   let x = document.getElementById("night_order_" + e.target.id.substring(0, e.target.id.length-UID_LENGTH-1))
-    //   let y = document.getElementById("night_order_" + e.target.id.substring(0, e.target.id.length-UID_LENGTH-1))
-    //   spawnNightOrderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
-    // }
+    }
     e.target.parentNode.removeChild(e.target);
   }
-  active = false;
-  if (!loading) { save_game_state(); }
-}
-function drag(e)
-{
-  if (active)
-  {
 
-    e.preventDefault();
-    let moved = e.target;
+  active.style.zIndex = ""; // The default, for some reason
+  const container = active.parentElement;
+  if (container != null) {
+    container.removeChild(active);
+    container.appendChild(active);
+  }
 
-    while (moved.localName != "html" && moved.localName != "div") {
-      moved = moved.parentElement;
-    }
-    //if (!moved.classList.contains("role_token")) return;
-
-    if (e.type === "touchmove")
-    {
-      currentX = e.touches[0].clientX - xOffset;
-      currentY = e.touches[0].clientY - yOffset;
-    } else
-    {
-      currentX = e.clientX - xOffset;
-      currentY = e.clientY - yOffset;
-    }
-
-    setTranslate(currentX, currentY, moved);
+  active = null;
+  if (!loading) { 
+    save_game_state();
   }
 }
-function setTranslate(xPos, yPos, el)
+
+/**
+ * Drag a token for a single frame. 
+ * @param {Event} e The event that triggered this.
+ */
+function drag(e) {
+  if (active == null) return;
+  e.preventDefault();
+  let moved = active;
+
+  while (moved.localName != "html" && moved.localName != "div") {
+    console.log(moved)
+    moved = moved.parentElement;
+  }
+  //if (!moved.classList.contains("role_token")) return;
+
+  if (e.type === "touchmove")
+  {
+    currentX = e.touches[0].clientX - xOffset;
+    currentY = e.touches[0].clientY - yOffset;
+  } else
+  {
+    currentX = e.clientX - xOffset;
+    currentY = e.clientY - yOffset;
+  }
+
+  setTranslate(currentX, currentY);
+}
+
+function setTranslate(xPos, yPos)
 {
-  el.style.left = xPos + "px"
-  el.style.top = yPos + "px"
+  active.style.left = xPos + "px"
+  active.style.top = yPos + "px"
 }
 
 function getActualDragged(el) {
@@ -1566,11 +1583,23 @@ function isRoleToken(el) {
   return false;
 }
 
+/**
+ * Determine if the clicked item is actually draggable.
+ * @param {EventTarget} target The item that is being clicked.
+ * @returns 
+ */
+function draggingEnabledFor(target) {
+  if (document.getElementById("move_toggle").style.backgroundColor != "green" && isRoleToken(target)) {
+    return false;
+  }
+  return target.classList.contains("drag");
+}
+
 
 //if you click on black space
 function neutralClick()
 {
-  active = false;
+  active = null;
   hideInfo()
   close_menu()
   unprompt_reminders()
@@ -2188,21 +2217,3 @@ function add_offscript_character(token_class){
   }
   document.getElementById("mutate_menu_all_main").style.display = "inherit";
 }
-
-// function spawnNightOrderGhost(x, y, imgUrl, id, fabled) {
-//   var time = new Date();
-//   var uid = time.getTime();
-//   var div = document.createElement("div");
-//   div.classList = "info_tokens_drag drag";
-//   div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 80px; height: 80px;";
-//   div.id = id + "_" + uid;
-//   div.setAttribute("ghost", "true");
-//   div.setAttribute("token_from", "night_order");
-//   var img = document.createElement("img");
-//   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
-//   img.src = "assets/delete.png";
-//   img.id = id + "_" + uid + "_img";
-//   div.appendChild(img);
-//   document.getElementById("token_drag_" + fabled + "_night_order_tab").prepend(div);
-//   dragInit();
-// }
