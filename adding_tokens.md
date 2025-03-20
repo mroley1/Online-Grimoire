@@ -9,12 +9,12 @@
         // Full name, with spaces and capitalization
         "name": "Token Name", 
         // Copy the text from the BOTC wiki
-        "description": "Your team wins. Everyone goes home and praises the developers",
+        "ability": "Your team wins. Everyone goes home and praises the developers",
         // GOOD, EVIL, or BOTH. 
         "alignment": "GOOD", 
          // TOWN, OUT, MIN, DEM, TRAV, or FAB. 
         "class": "TOWN",
-        "tokens": [
+        "reminders": [
             // The phrase that should appear on each reminder. 
             // Do not put duplicates. 
             "No Ability" 
