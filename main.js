@@ -385,7 +385,7 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
 
   // The role of travelers, when shown in TS mode. 
   var outsider_betray = document.createElement("div");
-  if (cat == "TRAV")
+  if (cat == "traveller")
   {
     outsider_betray.style.backgroundImage = "url('assets/icons/official/" + id + ".png')"
   }
@@ -477,27 +477,27 @@ function clean_tokens(uid)
 }
 function mutate_menu(id, uid)
 {
-  var town = document.getElementById("mutate_menu_TOWN").children;
-  for (i = 0; i < town.length; i++)
+  var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
+  for (i = 0; i < townsfolk.length; i++)
   {
-    town[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + town[i].id.match(/(?<=mutate_menu_).*/) + "')")
+    townsfolk[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  var outsiders = document.getElementById("mutate_menu_outsider").children;
   for (i = 0; i < outsiders.length; i++)
   {
     outsiders[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var minions = document.getElementById("mutate_menu_MIN").children;
+  var minions = document.getElementById("mutate_menu_minion").children;
   for (i = 0; i < minions.length; i++)
   {
     minions[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var demons = document.getElementById("mutate_menu_DEM").children;
+  var demons = document.getElementById("mutate_menu_demon").children;
   for (i = 0; i < demons.length; i++)
   {
     demons[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  var travellers = document.getElementById("mutate_menu_traveller").children;
   for (i = 0; i < travellers.length; i++)
   {
     travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
@@ -517,7 +517,7 @@ function mutate_token(idFrom, uid, idTo)
   let subject = document.getElementById(idFrom + "_token_" + uid);
 
   subject.setAttribute("cat", new_json["team"]);
-  if (new_json["team"] == "TRAV") { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = "url('assets/icons/official/" + idTo + ".png')" }
+  if (new_json["team"] == "traveller") { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = "url('assets/icons/official/" + idTo + ".png')" }
   else { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = "" }
 
   subject.setAttribute("show_face", !new_json["hide_face"]);
@@ -582,7 +582,7 @@ function populate_mutate_menu(tokens)
     div.id = "mutate_menu_" + element["id"];
     generateSampleToken(element["id"], div);
     div.classList = "background_image mutate_menu_token";
-    if (element["team"] != "FAB")
+    if (element["team"] != "fabled")
     {
       document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
     }
@@ -786,24 +786,21 @@ async function populate_script(script)
     }
   })
 
-  console.log(script);
-  console.log(scriptTokens);
-
-  clear("TOWN")
-  header("Town", "TOWN", "#0033cc")
-  options("TOWN", scriptTokens, "Town")
-  clear("OUT")
-  header("Outsiders", "OUT", "#1a53ff")
-  options("OUT", scriptTokens, "Outsiders")
-  clear("MIN")
-  header("Minions", "MIN", "#b30000")
-  options("MIN", scriptTokens, "Minions")
-  clear("DEM")
-  header("Demons", "DEM", "#e60000")
-  options("DEM", scriptTokens, "Demons")
-  clear("TRAV")
-  header("Travellers", "TRAV", "#6600ff")
-  options("TRAV", scriptTokens, "Travellers")
+  clear("townsfolk")
+  header("townsfolk", "townsfolk", "#0033cc")
+  options("townsfolk", scriptTokens, "townsfolk")
+  clear("outsider")
+  header("Outsiders", "outsider", "#1a53ff")
+  options("outsider", scriptTokens, "Outsiders")
+  clear("minion")
+  header("Minions", "minion", "#b30000")
+  options("minion", scriptTokens, "Minions")
+  clear("demon")
+  header("Demons", "demon", "#e60000")
+  options("demon", scriptTokens, "Demons")
+  clear("traveller")
+  header("Travellers", "traveller", "#6600ff")
+  options("traveller", scriptTokens, "Travellers")
   player_count_change();
   update_role_counts();
   clear_mutate_menu();
@@ -839,7 +836,7 @@ function player_count_change()
   { //dont try to update player counts before menu is loaded
     var expected = new Object();
     // [hard modifier, soft positive modifier, soft negative modifier, locked?]
-    expected.town = [table[tableIndex][0], 0, 0, false];
+    expected.townsfolk = [table[tableIndex][0], 0, 0, false];
     expected.out = [table[tableIndex][1], 0, 0, false];
     expected.min = [table[tableIndex][2], 0, 0, false];
     expected.dem = [table[tableIndex][3], 0, 0, false];
@@ -884,19 +881,19 @@ function player_count_change()
       let visibility = tokens[i].getAttribute("visibility");
       switch (tokens[i].getAttribute("cat"))
       {
-        case "TOWN":
+        case "townsfolk":
           if (visibility == "show") { counts[0]++; }
           break;
-        case "OUT":
+        case "outsider":
           if (visibility == "show") { counts[1]++; }
           break;
-        case "MIN":
+        case "minion":
           if (visibility == "show") { counts[2]++; }
           break;
-        case "DEM":
+        case "demon":
           if (visibility == "show") { counts[3]++; }
           break;
-        case "TRAV":
+        case "traveller":
           if (visibility == "show") { counts[4]++; }
           break;
       }
@@ -929,12 +926,12 @@ function player_count_change()
       }
       return string;
     }
-    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + expected["town"][0] + genSoftModString(expected["town"][1], expected["town"][2]);
-    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
-    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
-    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
+    document.getElementById("ratio_townsfolk").innerHTML = counts[0] + "/" + expected["townsfolk"][0] + genSoftModString(expected["townsfolk"][1], expected["townsfolk"][2]);
+    document.getElementById("ratio_outsider").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
+    document.getElementById("ratio_minion").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
+    document.getElementById("ratio_demon").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
     if (player_count > 15 && !expected["trav"][3]) { expected["trav"][0] += player_count - 15 }
-    document.getElementById("ratio_TRAV").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
+    document.getElementById("ratio_traveller").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
   }
 }
 function update_role_counts()
@@ -962,11 +959,11 @@ function update_role_counts()
 }
 function clear_mutate_menu()
 {
-  document.getElementById("mutate_menu_TOWN").innerHTML = "";
-  document.getElementById("mutate_menu_OUT").innerHTML = "";
-  document.getElementById("mutate_menu_MIN").innerHTML = "";
-  document.getElementById("mutate_menu_DEM").innerHTML = "";
-  document.getElementById("mutate_menu_TRAV").innerHTML = "";
+  document.getElementById("mutate_menu_townsfolk").innerHTML = "";
+  document.getElementById("mutate_menu_outsider").innerHTML = "";
+  document.getElementById("mutate_menu_minion").innerHTML = "";
+  document.getElementById("mutate_menu_demon").innerHTML = "";
+  document.getElementById("mutate_menu_traveller").innerHTML = "";
 }
 function toggle_menu_collapse()
 {
@@ -1385,27 +1382,27 @@ function load_playerinfo_shroud(typeId)
 
 function trigger_playerinfo_character_select(id)
 {
-  var town = document.getElementById("mutate_menu_TOWN").children;
-  for (i = 0; i < town.length; i++)
+  var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
+  for (i = 0; i < townsfolk.length; i++)
   {
-    town[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + town[i].id.match(/(?<=mutate_menu_).*/) + "')")
+    townsfolk[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  var outsiders = document.getElementById("mutate_menu_outsider").children;
   for (i = 0; i < outsiders.length; i++)
   {
     outsiders[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var minions = document.getElementById("mutate_menu_MIN").children;
+  var minions = document.getElementById("mutate_menu_minion").children;
   for (i = 0; i < minions.length; i++)
   {
     minions[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var demons = document.getElementById("mutate_menu_DEM").children;
+  var demons = document.getElementById("mutate_menu_demon").children;
   for (i = 0; i < demons.length; i++)
   {
     demons[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  var travellers = document.getElementById("mutate_menu_traveller").children;
   for (i = 0; i < travellers.length; i++)
   {
     travellers[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
@@ -1545,7 +1542,6 @@ function drag(e) {
   let moved = active;
 
   while (moved.localName != "html" && moved.localName != "div") {
-    console.log(moved)
     moved = moved.parentElement;
   }
   //if (!moved.classList.contains("role_token")) return;
@@ -1699,11 +1695,11 @@ function gen_night_order_tab_role(token_JSON, night, dead)
   var color;
   switch (token_JSON.team)
   {
-    case "TOWN": color = "#0033cc"; break;
-    case "OUT": color = "#0086b3"; break;
-    case "MIN": color = "#e62e00"; break;
-    case "DEM": color = "#cc0000"; break;
-    case "TRAV": color = "#6600ff"; break;
+    case "townsfolk": color = "#0033cc"; break;
+    case "outsider": color = "#0086b3"; break;
+    case "minion": color = "#e62e00"; break;
+    case "demon": color = "#cc0000"; break;
+    case "traveller": color = "#6600ff"; break;
   }
   if (dead) { color = "#000000"; }
   div = document.createElement("div");
@@ -1848,7 +1844,7 @@ function populate_fabled()
     if (entry.id != "_meta")
     {
       var token = tokens_ref[entry.id];
-      if (token["team"] == "FAB")
+      if (token["team"] == "fabled")
       {
         fabled.add(entry.id);
       }
@@ -1957,9 +1953,9 @@ async function generateHTMLDocument() {
   <h2>Townsfolk<h2>
   <table>`;
 
-    // Generate rows from the provided arrays for town
+    // Generate rows from the provided arrays for townsfolk
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'TOWN'){
+      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'townsfolk'){
         html += `
       <tr>
         <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
@@ -1977,7 +1973,7 @@ async function generateHTMLDocument() {
 
     // Generate rows from the provided arrays for OUTsiders
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'OUT'){
+      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'outsider'){
         html += `
       <tr>
         <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
@@ -1994,7 +1990,7 @@ async function generateHTMLDocument() {
 
     // Generate rows from the provided arrays for minions
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'MIN'){
+      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'minion'){
         html += `
       <tr>
         <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
@@ -2011,7 +2007,7 @@ async function generateHTMLDocument() {
 
   // Generate rows from the provided arrays for Demons
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'DEM'){
+    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'demon'){
       html += `
     <tr>
       <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
@@ -2030,13 +2026,13 @@ async function generateHTMLDocument() {
   for(i = 0; i < order["firstnight"].length; i++){
     id = order["firstnight"][i]
     for(j=0; j < CURRENT_SCRIPT.length; j++){
-      if(CURRENT_SCRIPT[j].id === id  && tokens_ref[id].team != "TRAV"){first_night.push(id)}
+      if(CURRENT_SCRIPT[j].id === id  && tokens_ref[id].team != "traveller"){first_night.push(id)}
     }
   }
   for(i = 0; i < order["othernight"].length; i++){
     id = order["othernight"][i]
     for(j=0; j < CURRENT_SCRIPT.length; j++){
-      if(CURRENT_SCRIPT[j].id === id && tokens_ref[id].team != "TRAV"){other_night.push(id)}
+      if(CURRENT_SCRIPT[j].id === id && tokens_ref[id].team != "traveller"){other_night.push(id)}
     }
   }
   //fill night order table
@@ -2118,7 +2114,7 @@ async function generateHTMLDocument() {
 
   // Generate rows For travelers
   for (element in tokens_ref) {
-    if(tokens_ref[element].team == 'TRAV'){
+    if(tokens_ref[element].team == 'traveller'){
       html += `
     <tr>
       <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[element].id}.png" alt="${tokens_ref[element].name}"></td>
@@ -2136,7 +2132,7 @@ async function generateHTMLDocument() {
   <h2>Fables<h2>
   <table>`;
   for (element in tokens_ref) {
-    if(tokens_ref[element].team == 'FAB'){
+    if(tokens_ref[element].team == 'fabled'){
       html += `
     <tr>
       <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[element].id}.png" alt="${tokens_ref[element].name}"></td>

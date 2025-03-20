@@ -12,8 +12,8 @@
         "ability": "Your team wins. Everyone goes home and praises the developers",
         // GOOD, EVIL, or BOTH. 
         "alignment": "GOOD", 
-         // TOWN, OUT, MIN, DEM, TRAV, or FAB. 
-        "class": "TOWN",
+         // townsfolk, outsider, minion, demon, traveller, or fabled. 
+        "class": "townsfolk",
         "reminders": [
             // The phrase that should appear on each reminder. 
             // Do not put duplicates. 
@@ -37,14 +37,14 @@
             {
                 "REQ": [
                     // Type of character, and what character must also be added.
-                    "town",
+                    "townsfolk",
                     "atheist"
                 ]
             }
         ],
         // Does nothing, leave false.
         "hide_token": false,
-        // If the face should be shown when in Town Square mode. false for travellers. 
+        // If the face should be shown when in townsfolk Square mode. false for travellers. 
         "hide_face": true
     },
 ```
