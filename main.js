@@ -352,9 +352,11 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
   div.setAttribute("cat", cat);
   div.setAttribute("show_face", !hide_face);
 
+  let imageLink = getTokenImageLink(id);
+
   // Actual picture.
   var role = document.createElement("img");
-  role.src = `assets/icons/official/${id}.png`;
+  role.src = imageLink;
   role.id = `${id}_${uid}_image`;
   role.classList = "token_image background_image";
   div.appendChild(role);
@@ -387,7 +389,7 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
   var outsider_betray = document.createElement("div");
   if (cat == "traveller")
   {
-    outsider_betray.style.backgroundImage = "url('assets/icons/official/" + id + ".png')"
+    outsider_betray.style.backgroundImage = `url('${imageLink}')`
   }
   outsider_betray.classList = "token_outsider_betray background_image";
   outsider_betray.id = id + "_" + uid + "_outsider_betray";
@@ -447,6 +449,16 @@ function createRoleNameElement(id, uid)
   return roleName;
 }
 
+function getTokenImageLink(id) {
+  const image = tokens_ref[id]["image"];
+  if (typeof image === "object") {
+    // in the BOTC schema, the "image" object can be either a single link,
+    // or an array of links. 
+    // This future-proofs us against 
+    return image[0];
+  }
+  return image;
+}
 
 function spawnTokenDefault(id, visibility, cat, hide_face)
 {
@@ -517,7 +529,7 @@ function mutate_token(idFrom, uid, idTo)
   let subject = document.getElementById(idFrom + "_token_" + uid);
 
   subject.setAttribute("cat", new_json["team"]);
-  if (new_json["team"] == "traveller") { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = "url('assets/icons/official/" + idTo + ".png')" }
+  if (new_json["team"] == "traveller") { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = `url(${getTokenImageLink(idTo)})` }
   else { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = "" }
 
   subject.setAttribute("show_face", !new_json["hide_face"]);
@@ -528,7 +540,7 @@ function mutate_token(idFrom, uid, idTo)
 
   const image = document.getElementById(`${idFrom}_${uid}_image`);
   image.id = `${idTo}_${uid}_image`;
-  image.src = `assets/icons/official/${idTo}.png`;
+  image.src = getTokenImageLink(idTo);
 
   document.getElementById(idFrom + "_" + uid + "_death").id = idTo + "_" + uid + "_death";
   document.getElementById(idFrom + "_" + uid + "_visibility_pip").id = idTo + "_" + uid + "_visibility_pip";
@@ -1074,7 +1086,7 @@ function generateSampleToken(id, el) {
   var role = document.createElement("img");
   role.id = "info_img_role";
   role.style.position = "absolute";
-  role.src = `assets/icons/official/${id}.png`;
+  role.src = getTokenImageLink(id);
   el.appendChild(role);
 
   var roleName = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -1126,7 +1138,7 @@ function generateReminderBacking(roleName, reminder, uid) {
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = `assets/icons/official/${roleName}.png`;
+  role.src = getTokenImageLink(roleName);
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1164,7 +1176,7 @@ function spawnReminderGhost(left, top, roleName, reminder, longId)
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = `assets/icons/official/${roleName}.png`;
+  role.src = getTokenImageLink(roleName);
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1198,7 +1210,7 @@ function spawnReminder(roleName, reminder, uid, left, top)
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = `assets/icons/official/${roleName}.png`;
+  role.src = getTokenImageLink(roleName);
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1713,7 +1725,7 @@ function gen_night_order_tab_role(token_JSON, night, dead)
   div.appendChild(span);
   img = document.createElement("img");
   img.classList = "night_order_img";
-  img.src = "assets/icons/official/" + token_JSON.id + ".png";
+  img.src = getTokenImageLink(token_JSON.id);
   div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
   div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
   div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
@@ -1820,10 +1832,10 @@ function gen_jinxes_tab(id1, id2, reason)
   imgDiv = document.createElement("div");
   imgDiv.classList = "night_order_img"
   img1 = document.createElement("img");
-  img1.src = "assets/icons/official/" + id1 + ".png";
+  img1.src = getTokenImageLink(id1);
   img1.style = "width: 70%; position: absolute; top: 0px; left: 0px"
   img2 = document.createElement("img");
-  img2.src = "assets/icons/official/" + id2 + ".png";
+  img2.src = getTokenImageLink(id2);
   img2.style = "width: 70%; position: absolute; bottom: 0px; right: 0px"
   imgDiv.appendChild(img1);
   imgDiv.appendChild(img2);
@@ -1873,7 +1885,7 @@ function gen_fabled_tab(token_JSON, inPlay)
   div.appendChild(span);
   var img = document.createElement("img");
   img.classList = "night_order_img";
-  img.src = "assets/icons/official/" + token_JSON.id + ".png";
+  img.src = getTokenImageLink(token_JSON.id);
   var token_landing = document.createElement("div");
   token_landing.classList = "night_order_fabled_token_container"
   token_landing.id = "night_order_" + token_JSON.id;
@@ -1958,7 +1970,7 @@ async function generateHTMLDocument() {
       if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'townsfolk'){
         html += `
       <tr>
-        <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
         <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
         <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
       </tr>`;
@@ -1976,7 +1988,7 @@ async function generateHTMLDocument() {
       if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'outsider'){
         html += `
       <tr>
-        <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
         <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
         <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
       </tr>`;
@@ -1993,7 +2005,7 @@ async function generateHTMLDocument() {
       if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'minion'){
         html += `
       <tr>
-        <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
         <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
         <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
       </tr>`;
@@ -2010,7 +2022,7 @@ async function generateHTMLDocument() {
     if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'demon'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
+      <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
       <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
@@ -2049,14 +2061,14 @@ async function generateHTMLDocument() {
     <tr>`
     if(tokens_ref[first_id]){
       html+=`
-      <td><img style="width: 7.5%" src="assets/icons/official/${first_id}.png" alt="${tokens_ref[first_id].name}"> <b>${tokens_ref[first_id].name}</b></td>`
+      <td><img style="width: 7.5%" src="${getTokenImageLink(first_id)}" alt="${tokens_ref[first_id].name}"> <b>${tokens_ref[first_id].name}</b></td>`
     }else{
       html+=`
       <td></td>`
     };
     if(tokens_ref[other_id]){
       html+=`
-        <td><img style="width: 7.5%" src="assets/icons/official/${other_id}.png" alt="${tokens_ref[other_id].name}"> <b>${tokens_ref[other_id].name}</b></td>`
+        <td><img style="width: 7.5%" src="${getTokenImageLink(other_id)}" alt="${tokens_ref[other_id].name}"> <b>${tokens_ref[other_id].name}</b></td>`
     }else{
       html+=`
       <td></td>`
@@ -2088,9 +2100,9 @@ async function generateHTMLDocument() {
               }
               html += `
               <tr>
-                <td style="width: 7.5%;"><img src="assets/icons/official/${jinxes[i].id}.png" alt="${tokens_ref[jinxes[i].id].name}"></td>
+                <td style="width: 7.5%;"><img src="${getTokenImageLink(jinxes[i].id)}" alt="${tokens_ref[jinxes[i].id].name}"></td>
                 <td style="width: 15%; font-weight: bold;">${tokens_ref[jinxes[i].id].name}</td>
-                <td style="width: 7.5%;"><img src="assets/icons/official/${jinx.id}.png" alt="${tokens_ref[jinx.id].name}"></td>
+                <td style="width: 7.5%;"><img src="${getTokenImageLink(jinx.id)}" alt="${tokens_ref[jinx.id].name}"></td>
                 <td style="width: 15%; font-weight: bold;">${tokens_ref[jinx.id].name}</td>
                 <td style="width: 70%;">${jinx.reason}</td>
               </tr>`;
@@ -2117,7 +2129,7 @@ async function generateHTMLDocument() {
     if(tokens_ref[element].team == 'traveller'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[element].id}.png" alt="${tokens_ref[element].name}"></td>
+      <td style="width: 7.5%;"><img src="${getTokenImageLink(tokens_ref[element].id)}" alt="${tokens_ref[element].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[element].name}</td>
       <td style="width: 75%;">${tokens_ref[element].ability}</td>
     </tr>`;
@@ -2135,7 +2147,7 @@ async function generateHTMLDocument() {
     if(tokens_ref[element].team == 'fabled'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[element].id}.png" alt="${tokens_ref[element].name}"></td>
+      <td style="width: 7.5%;"><img src="${getTokenImageLink(tokens_ref[element].id)}" alt="${tokens_ref[element].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[element].name}</td>
       <td style="width: 75%;">${tokens_ref[element].ability}</td>
     </tr>`;
