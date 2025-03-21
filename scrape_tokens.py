@@ -75,6 +75,11 @@ def sync_image_url(entry):
     soup = get_soup(icon_url.format(id))
 
     if soup is None:
+        file_path = f"assets/icons/official/{id}.png"
+        if "image" in entry and file_path == entry["image"]: return
+
+        entry["image"] = file_path
+        print("IMAGE " + (name + ": ").ljust(20) + file_path)
         print(f"ERROR " + (name + ":").ljust(20) + "Image page not found.")
         return
 
