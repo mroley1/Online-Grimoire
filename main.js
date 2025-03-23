@@ -116,20 +116,18 @@ function generate_game_state_json()
     state.reminders[i].left = reminders[i].style.left;
     state.reminders[i].top = reminders[i].style.top;
   }
-  state.pips = [];
-  pips = document.getElementById("interactivePlane").getElementsByClassName("reminder");
-  var j = 0;
-  for (i = 0; i < pips.length; i++)
-  {
-    if (pips[i].getAttribute("stacked") == "false")
-    {
-      state.pips[j] = new Object();
-      state.pips[j].type = pips[i].getAttribute("role");
-      state.pips[j].left = pips[i].style.left;
-      state.pips[j].top = pips[i].style.top;
-      j++;
-    }
-  }
+
+  // Pips are the alignment and "special" tokens on the left.
+  state.pips = Array.from(document.getElementById("dragPipLayer").getElementsByClassName("reminder"))
+    // The "generator" pips have the "stacked" attribute set.
+    .filter(pip => pip.getAttribute("stacked") === "false")
+    .map(pip => {
+      return {
+        type: pip.getAttribute("alignment"),
+        left: pip.style.left,
+        top: pip.style.top,
+      }
+    });
   return JSON.stringify(state);
 }
 
@@ -161,9 +159,9 @@ async function load_game_state_json(state)
     } 
     spawnReminder(reminder.id, reminder.text, reminder.uid, reminder.left, reminder.top);
   }
-  for (let i = 0; i < state.pips.length; i++)
+  for (const pip of state.pips)
   {
-    dragPipLayerSpawn(state.pips[i].type, state.pips[i].left, state.pips[i].top, "false")
+    dragPipLayerSpawn(pip.type, pip.left, pip.top, "false")
   }
   if (state.orientation != getOrientation())
   {
@@ -357,9 +355,11 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
   div.setAttribute("cat", cat);
   div.setAttribute("show_face", !hide_face);
 
+  let imageLink = getTokenImageLink(id);
+
   // Actual picture.
   var role = document.createElement("img");
-  role.src = `assets/icons/official/${id}.png`;
+  role.src = imageLink;
   role.id = `${id}_${uid}_image`;
   role.classList = "token_image background_image";
   div.appendChild(role);
@@ -390,9 +390,9 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
 
   // The role of travelers, when shown in TS mode. 
   var outsider_betray = document.createElement("div");
-  if (cat == "TRAV")
+  if (cat == "traveller")
   {
-    outsider_betray.style.backgroundImage = "url('assets/icons/official/" + id + ".png')"
+    outsider_betray.style.backgroundImage = `url('${imageLink}')`
   }
   outsider_betray.classList = "token_outsider_betray background_image";
   outsider_betray.id = id + "_" + uid + "_outsider_betray";
@@ -415,7 +415,7 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
   // Random admin stuff.
   update_role_counts();
   player_count_change();
-  dragInit();
+  makeDraggable(div);
   populate_night_order();
 
   // This function is used by the loading code to place all the tokens.
@@ -457,6 +457,16 @@ function createRoleNameElement(id, uid)
   return roleName;
 }
 
+function getTokenImageLink(id) {
+  const image = tokens_ref[id]["image"];
+  if (typeof image === "object") {
+    // in the BOTC schema, the "image" object can be either a single link,
+    // or an array of links. 
+    // This future-proofs us against 
+    return image[0];
+  }
+  return image;
+}
 
 function spawnTokenDefault(id, visibility, cat, hide_face)
 {
@@ -487,27 +497,27 @@ function clean_tokens(uid)
 }
 function mutate_menu(id, uid)
 {
-  var town = document.getElementById("mutate_menu_TOWN").children;
-  for (i = 0; i < town.length; i++)
+  var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
+  for (i = 0; i < townsfolk.length; i++)
   {
-    town[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + town[i].id.match(/(?<=mutate_menu_).*/) + "')")
+    townsfolk[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  var outsiders = document.getElementById("mutate_menu_outsider").children;
   for (i = 0; i < outsiders.length; i++)
   {
     outsiders[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var minions = document.getElementById("mutate_menu_MIN").children;
+  var minions = document.getElementById("mutate_menu_minion").children;
   for (i = 0; i < minions.length; i++)
   {
     minions[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var demons = document.getElementById("mutate_menu_DEM").children;
+  var demons = document.getElementById("mutate_menu_demon").children;
   for (i = 0; i < demons.length; i++)
   {
     demons[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  var travellers = document.getElementById("mutate_menu_traveller").children;
   for (i = 0; i < travellers.length; i++)
   {
     travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
@@ -526,8 +536,8 @@ function mutate_token(idFrom, uid, idTo)
 
   let subject = document.getElementById(idFrom + "_token_" + uid);
 
-  subject.setAttribute("cat", new_json["class"]);
-  if (new_json["class"] == "TRAV") { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = "url('assets/icons/official/" + idTo + ".png')" }
+  subject.setAttribute("cat", new_json["team"]);
+  if (new_json["team"] == "traveller") { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = `url(${getTokenImageLink(idTo)})` }
   else { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = "" }
 
   subject.setAttribute("show_face", !new_json["hide_face"]);
@@ -538,7 +548,7 @@ function mutate_token(idFrom, uid, idTo)
 
   const image = document.getElementById(`${idFrom}_${uid}_image`);
   image.id = `${idTo}_${uid}_image`;
-  image.src = `assets/icons/official/${idTo}.png`;
+  image.src = getTokenImageLink(idTo);
 
   document.getElementById(idFrom + "_" + uid + "_death").id = idTo + "_" + uid + "_death";
   document.getElementById(idFrom + "_" + uid + "_visibility_pip").id = idTo + "_" + uid + "_visibility_pip";
@@ -592,9 +602,9 @@ function populate_mutate_menu(tokens)
     div.id = "mutate_menu_" + element["id"];
     generateSampleToken(element["id"], div);
     div.classList = "background_image mutate_menu_token";
-    if (element["class"] != "FAB")
+    if (element["team"] != "fabled")
     {
-      document.getElementById("mutate_menu_" + element["class"]).appendChild(div);
+      document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
     }
   })
 }
@@ -617,8 +627,8 @@ function dragPipLayerSpawn(type, left, top, stacked)
   img.src = "assets/delete.png";
   img.id = type + "_" + uid + "_img";
   div.appendChild(img);
+  makeDraggable(div);
   document.getElementById("dragPipLayer").prepend(div);
-  dragInit();
   if (!loading) { save_game_state(); }
 }
 function dragPipLayerSpawnDefault(type)
@@ -749,12 +759,12 @@ async function populate_script(script)
     for (i = 0; i < tokenNames.length; i++)
     {
       var tokenJSON = tokenNames[i];
-      if (tokenJSON.class == type)
+      if (tokenJSON.team == type)
       {
         var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
-        outer_div.title = tokenJSON["description"];
-        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('" + tokenJSON["id"] + "', " + (tokenJSON["hide_token"] == "true" ? "'hidden'" : "'show'") + ", '" + tokenJSON["class"] + "', " + tokenJSON["hide_face"] + ", 'alive')");
+        outer_div.title = tokenJSON["ability"];
+        outer_div.setAttribute("onclick", "javascript:spawnTokenDefault('" + tokenJSON["id"] + "', " + (tokenJSON["hide_token"] == "true" ? "'hidden'" : "'show'") + ", '" + tokenJSON["team"] + "', " + tokenJSON["hide_face"] + ", 'alive')");
         var label = document.createElement("label");
         label.classList = "menu_list";
         label.innerHTML = tokenJSON["name"];
@@ -799,21 +809,21 @@ async function populate_script(script)
     }
   })
 
-  clear("TOWN")
-  header("Town", "TOWN", "#0033cc")
-  options("TOWN", scriptTokens, "Town")
-  clear("OUT")
-  header("Outsiders", "OUT", "#1a53ff")
-  options("OUT", scriptTokens, "Outsiders")
-  clear("MIN")
-  header("Minions", "MIN", "#b30000")
-  options("MIN", scriptTokens, "Minions")
-  clear("DEM")
-  header("Demons", "DEM", "#e60000")
-  options("DEM", scriptTokens, "Demons")
-  clear("TRAV")
-  header("Travellers", "TRAV", "#6600ff")
-  options("TRAV", scriptTokens, "Travellers")
+  clear("townsfolk")
+  header("Townsfolk", "townsfolk", "#0033cc")
+  options("townsfolk", scriptTokens, "Townsfolk")
+  clear("outsider")
+  header("Outsiders", "outsider", "#1a53ff")
+  options("outsider", scriptTokens, "Outsiders")
+  clear("minion")
+  header("Minions", "minion", "#b30000")
+  options("minion", scriptTokens, "Minions")
+  clear("demon")
+  header("Demons", "demon", "#e60000")
+  options("demon", scriptTokens, "Demons")
+  clear("traveller")
+  header("Travellers", "traveller", "#6600ff")
+  options("traveller", scriptTokens, "Travellers")
   player_count_change();
   update_role_counts();
   clear_mutate_menu();
@@ -849,7 +859,7 @@ function player_count_change()
   { //dont try to update player counts before menu is loaded
     var expected = new Object();
     // [hard modifier, soft positive modifier, soft negative modifier, locked?]
-    expected.town = [table[tableIndex][0], 0, 0, false];
+    expected.townsfolk = [table[tableIndex][0], 0, 0, false];
     expected.out = [table[tableIndex][1], 0, 0, false];
     expected.min = [table[tableIndex][2], 0, 0, false];
     expected.dem = [table[tableIndex][3], 0, 0, false];
@@ -894,19 +904,19 @@ function player_count_change()
       let visibility = tokens[i].getAttribute("visibility");
       switch (tokens[i].getAttribute("cat"))
       {
-        case "TOWN":
+        case "townsfolk":
           if (visibility == "show") { counts[0]++; }
           break;
-        case "OUT":
+        case "outsider":
           if (visibility == "show") { counts[1]++; }
           break;
-        case "MIN":
+        case "minion":
           if (visibility == "show") { counts[2]++; }
           break;
-        case "DEM":
+        case "demon":
           if (visibility == "show") { counts[3]++; }
           break;
-        case "TRAV":
+        case "traveller":
           if (visibility == "show") { counts[4]++; }
           break;
       }
@@ -939,12 +949,12 @@ function player_count_change()
       }
       return string;
     }
-    document.getElementById("ratio_TOWN").innerHTML = counts[0] + "/" + expected["town"][0] + genSoftModString(expected["town"][1], expected["town"][2]);
-    document.getElementById("ratio_OUT").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
-    document.getElementById("ratio_MIN").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
-    document.getElementById("ratio_DEM").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
+    document.getElementById("ratio_townsfolk").innerHTML = counts[0] + "/" + expected["townsfolk"][0] + genSoftModString(expected["townsfolk"][1], expected["townsfolk"][2]);
+    document.getElementById("ratio_outsider").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
+    document.getElementById("ratio_minion").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
+    document.getElementById("ratio_demon").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
     if (player_count > 15 && !expected["trav"][3]) { expected["trav"][0] += player_count - 15 }
-    document.getElementById("ratio_TRAV").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
+    document.getElementById("ratio_traveller").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
   }
 }
 function update_role_counts()
@@ -972,11 +982,11 @@ function update_role_counts()
 }
 function clear_mutate_menu()
 {
-  document.getElementById("mutate_menu_TOWN").innerHTML = "";
-  document.getElementById("mutate_menu_OUT").innerHTML = "";
-  document.getElementById("mutate_menu_MIN").innerHTML = "";
-  document.getElementById("mutate_menu_DEM").innerHTML = "";
-  document.getElementById("mutate_menu_TRAV").innerHTML = "";
+  document.getElementById("mutate_menu_townsfolk").innerHTML = "";
+  document.getElementById("mutate_menu_outsider").innerHTML = "";
+  document.getElementById("mutate_menu_minion").innerHTML = "";
+  document.getElementById("mutate_menu_demon").innerHTML = "";
+  document.getElementById("mutate_menu_traveller").innerHTML = "";
 }
 function toggle_menu_collapse()
 {
@@ -1046,7 +1056,7 @@ async function infoCall(id, uid)
   document.getElementById("info_title_field").innerHTML = roleJSON["name"];
   document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
   document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-  document.getElementById("info_desc_field").innerHTML = roleJSON["description"];
+  document.getElementById("info_desc_field").innerHTML = roleJSON["ability"];
   document.getElementById("info_list").setAttribute("current_player", id);
   document.getElementById("info_token_landing").innerHTML = "";
   document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('" + id + "', '" + uid + "')");
@@ -1062,16 +1072,16 @@ async function infoCall(id, uid)
   update_info_death_cycle(id, uid);
 
   const landing = document.getElementById("info_token_landing");
-  for (var i = 0; i < roleJSON["tokens"].length; i++)
+  for (var i = 0; i < roleJSON["reminders"].length; i++)
   {
-    const backing = generateReminderBacking(id, roleJSON["tokens"][i], uid);
+    const backing = generateReminderBacking(id, roleJSON["reminders"][i], uid);
     // div.setAttribute("reminderId", i);
     document.getElementById("info_token_landing").appendChild(backing);
 
     const x = backing.getBoundingClientRect().x - landing.getBoundingClientRect().x;
     const y = backing.getBoundingClientRect().y - landing.getBoundingClientRect().y;
     // x, y, roleName, reminder info, id
-    spawnReminderGhost(x, y, id, roleJSON["tokens"][i], backing.id);
+    spawnReminderGhost(x, y, id, roleJSON["reminders"][i], backing.id);
   }
 }
 
@@ -1087,7 +1097,7 @@ function generateSampleToken(id, el) {
   var role = document.createElement("img");
   role.id = "info_img_role";
   role.style.position = "absolute";
-  role.src = `assets/icons/official/${id}.png`;
+  role.src = getTokenImageLink(id);
   el.appendChild(role);
 
   var roleName = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -1139,7 +1149,7 @@ function generateReminderBacking(roleName, reminder, uid) {
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = `assets/icons/official/${roleName}.png`;
+  role.src = getTokenImageLink(roleName);
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1177,7 +1187,7 @@ function spawnReminderGhost(left, top, roleName, reminder, longId)
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = `assets/icons/official/${roleName}.png`;
+  role.src = getTokenImageLink(roleName);
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1186,7 +1196,7 @@ function spawnReminderGhost(left, top, roleName, reminder, longId)
   div.appendChild(text);
 
   document.getElementById("info_token_dragbox").prepend(div);
-  dragInit();
+  makeDraggable(div);
 }
 
 function spawnReminder(roleName, reminder, uid, left, top)
@@ -1211,7 +1221,7 @@ function spawnReminder(roleName, reminder, uid, left, top)
   role.id = "info_img_role";
   role.style.position = "absolute";
   role.style.pointerEvents = "none";
-  role.src = `assets/icons/official/${roleName}.png`;
+  role.src = getTokenImageLink(roleName);
   div.appendChild(role);
 
   var text = document.createElement("p");
@@ -1226,7 +1236,7 @@ function spawnReminder(roleName, reminder, uid, left, top)
   div.appendChild(trash);
 
   document.getElementById("reminder_layer").appendChild(div);
-  dragInit();
+  makeDraggable(div)
 
   attachTokenToToken(div);//Make new reminder tokens check to see if they should be attach to a character token
   if (!loading) { save_game_state(); }
@@ -1324,10 +1334,39 @@ function update_info_death_cycle(id, uid)
   }
 }
 
+/** 
+ * Shroud-specific data for what card to show for given IDs. 
+ * The title is what's shown at the top of the shroud. 
+ * The players is the number of characters shown, by default, on the shroud.
+ */
+const CARDS = {
+  0: { "title": "Use Your Ability?", "players": 0 },
+  1: { "title": "Choose a Player", "players": 0 },
+  2: { "title": "These Characters are Not In Play", "players": 3 },
+  3: { "title": "This Is Your Demon", "players": 0 },
+  4: { "title": "These Are Your Minions", "players": 0 },
+  5: { "title": "You Are", "players": 1 },
+  6: { "title": "This Player Is", "players": 1 },
+  7: { "title": "Character Selected You", "players": 1 },
+  8: { "title": "Did You Vote Today?", "players": 0 },
+  9: { "title": "Did You Nominate Today?", "players": 0 },
+  10: { "title": "Info", "players": 0 },
+  11: { "title": "Make your Choice", "players": 1 },
+}
+
+/**
+ * Show a particular shroud (information display screen), to show to a player.
+ * @param {Number} typeId The ID of the shroud to show the player.
+ */
 function load_playerinfo_shroud(typeId)
 {
   function mapped_specials(typeId)
   {
+    if (typeId == 8 || typeId == 9) {
+      document.getElementById("playerinfo_extra_button").style.display = "none";
+    } else {
+      document.getElementById("playerinfo_extra_button").style.display = "inline-block";
+    }
     switch (typeId)
     {
       case 2:
@@ -1350,6 +1389,8 @@ function load_playerinfo_shroud(typeId)
         }
         break;
       case 5:
+      case 6:
+      case 7:
         select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
         break;
       case 10:
@@ -1365,60 +1406,65 @@ function load_playerinfo_shroud(typeId)
         break;
     }
   }
-  let cards = {
-    0: { "title": "Use Your Ability?", "players": 0 },
-    1: { "title": "Choose a Player", "players": 0 },
-    2: { "title": "These Characters are Not In Play", "players": 3 },
-    3: { "title": "This Is Your Demon", "players": 0 },
-    4: { "title": "These Are Your Minions", "players": 0 },
-    5: { "title": "You Are", "players": 1 },
-    6: { "title": "This Player Is", "players": 1 },
-    7: { "title": "Character Selected You", "players": 1 },
-    8: { "title": "Did You Vote Today?", "players": 0 },
-    9: { "title": "Did You Nominate Today?", "players": 0 },
-    10: { "title": "Info", "players": 3 },
-    11: { "title": "Make your Choice", "players": 1 },
-    12: { "title": "Make your Choices", "players": 2 },
-    13: { "title": "Make your Choices", "players": 3 }
-  }
+  const card = CARDS[typeId];
   document.getElementById("playerinfo_shoud").style.display = "inherit";
-  document.getElementById("playerinfo_title").innerHTML = cards[typeId]["title"];
+  document.getElementById("playerinfo_title").innerHTML = card["title"];
   document.getElementById("playerinfo_character_landing").innerHTML = "";
-  for (i = 0; i < cards[typeId]["players"]; i++)
+  for (i = 0; i < card["players"]; i++)
   {
-    var div = document.createElement("div");
-    div.id = "playerinfo_character_" + i;
-    div.classList = "playerinfo_character";
-    div.setAttribute("onclick", "javascript:trigger_playerinfo_character_select(" + i + ")")
-    document.getElementById("playerinfo_character_landing").appendChild(div);
+    add_playerinfo_character_box()
   }
   mapped_specials(typeId);
+  // For displays without any character boxes
   document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
+}
+
+/**
+ * Add a character box to the playerinfo shroud currently being displayed.
+ */
+function add_playerinfo_character_box() {
+  const id = document.getElementById("playerinfo_character_landing").childElementCount;
+  var div = document.createElement("div");
+  div.id = "playerinfo_character_" + id;
+  div.classList = "playerinfo_character";
+  div.setAttribute("onclick", "javascript:trigger_playerinfo_character_select(" + id + ")")
+  document.getElementById("playerinfo_character_landing").appendChild(div);
+  document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
+
+  // We want the last item to be a copy of the prior. 
+  // If the dreamer needs an extra slot for the "this player is" entry, then
+  // the first one will be the actual character! We want some measure of
+  // randomness for this.
+  const prevNode = document.getElementById("playerinfo_character_" + (id-1));
+  if (prevNode == null) return;
+  const character = prevNode.firstChild;
+  if (character == null) return;
+  div.appendChild(character.cloneNode(true));
 }
 
 function trigger_playerinfo_character_select(id)
 {
-  var town = document.getElementById("mutate_menu_TOWN").children;
-  for (i = 0; i < town.length; i++)
+  var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
+  for (i = 0; i < townsfolk.length; i++)
   {
-    town[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + town[i].id.match(/(?<=mutate_menu_).*/) + "')")
+    townsfolk[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var outsiders = document.getElementById("mutate_menu_OUT").children;
+  var outsiders = document.getElementById("mutate_menu_outsider").children;
   for (i = 0; i < outsiders.length; i++)
   {
     outsiders[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var minions = document.getElementById("mutate_menu_MIN").children;
+  var minions = document.getElementById("mutate_menu_minion").children;
   for (i = 0; i < minions.length; i++)
   {
     minions[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var demons = document.getElementById("mutate_menu_DEM").children;
+  var demons = document.getElementById("mutate_menu_demon").children;
   for (i = 0; i < demons.length; i++)
   {
     demons[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
   }
-  var travellers = document.getElementById("mutate_menu_TRAV").children;
+  var travellers = document.getElementById("mutate_menu_traveller").children;
   for (i = 0; i < travellers.length; i++)
   {
     travellers[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
@@ -1447,26 +1493,32 @@ function close_playerinfo_shroud()
 
 
 //drag functions
-var active;
-function dragInit()
-{
-  const dragSpots = document.getElementsByClassName("drag");
-  for (var i = 0; i < dragSpots.length; i++)
-  {
-    var container = dragSpots[i];
+/** The element that is currently being dragged. */
+var active = null;
+/** The X offset between the cursor and a dragged element */
+var xOffset = 0;
+/** The Y offset between the cursor and a dragged element */
+var yOffset = 0;
 
-    container.addEventListener("touchstart", dragStart, false);
-    container.addEventListener("touchend", dragEnd, false);
-    container.addEventListener("touchmove", drag, false);
+/**
+ * Make an element draggable.
+ * @param {HTMLElement} element An element to give the drag callbacks to.
+ */
+function makeDraggable(element) {
+  element.addEventListener("touchstart", dragStart, false);
+  element.addEventListener("touchend", dragEnd, false);
+  element.addEventListener("touchmove", drag, false);
 
-    container.addEventListener("mousedown", dragStart, false);
-    container.addEventListener("mouseup", dragEnd, false);
-    container.addEventListener("mousemove", drag, false);
-  }
+  element.addEventListener("mousedown", dragStart, false);
+  element.addEventListener("mouseup", dragEnd, false);
+  element.addEventListener("mousemove", drag, false);
 }
-function dragStart(e)
-{
-  if (document.getElementById("move_toggle").style.backgroundColor != "green") { return }
+
+/**
+ * Initialize the logic for dragging an element.
+ * @param {Event} e The event that triggered this function.
+ */
+function dragStart(e) {
   const token = getActualDragged(e.target);
   if(e.target.parentNode.getAttribute("class")=="role_token drag"){
     tokenlayer = document.getElementById("reminder_layer");
@@ -1477,21 +1529,21 @@ function dragStart(e)
     token.style.position = 'absolute';
 
   }
-  var pos = getComputedStyle(token)
-  if (e.type === "touchstart")
-  {
+  if (!draggingEnabledFor(token)) {
+    return;
+  }
+  active = token;
+  active.style.zIndex = 1;
+  var pos = getComputedStyle(token);
+  if (e.type === "touchstart") {
     xOffset = e.touches[0].clientX - pos.getPropertyValue('left').match(/\d+/)[0];
     yOffset = e.touches[0].clientY - pos.getPropertyValue('top').match(/\d+/)[0];
-  } else
-  {
+  } else {
     xOffset = e.clientX - pos.getPropertyValue('left').match(/\d+/)[0];
     yOffset = e.clientY - pos.getPropertyValue('top').match(/\d+/)[0];
   }
-  if (token.classList.contains("drag"))
-  {
-    active = true;
-  }
 }
+
 //Attatches a token to another token
 //Intended to be reminder tokens, but adjusting to allow for character tokens shouldn't be that complicated
 function attachTokenToToken(div){
@@ -1521,42 +1573,44 @@ function attachTokenToToken(div){
   }
 }
 
-function dragEnd(e)
-{
-  const el = e.target;
+/**
+ * Finalize the dragging of an element. 
+ * @param {Event} e The event that triggered this function.
+ */
+function dragEnd(e) {
+  if (active == null) return; // Can happen if you release click over a token
   //if a reminder token is touching a role token it 'attaches' itself to the role token
-  if(el.getAttribute("class")=="reminder drag"){
+  if(active.getAttribute("class")=="reminder drag"){
     attachTokenToToken(el)
   }
   // The good, evil, and generic reminder tokens.
-  if (el.getAttribute("disposable-reminder"))
+  if (active.getAttribute("disposable-reminder"))
   {
-    if (el.getAttribute("stacked") == "true")
+    if (active.getAttribute("stacked") == "true")
     {
-      dragPipLayerSpawnDefault(el.getAttribute("alignment"));
+      dragPipLayerSpawnDefault(active.getAttribute("alignment"));
     }
-    el.setAttribute("stacked", false);
-    el.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + el.id + "')");
-    el.style.cursor = "pointer";
+    active.setAttribute("stacked", false);
+    active.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + active.id + "')");
+    active.style.cursor = "pointer";
   }
   
   // If a new reminder token is to be instantiated.
-  if (el.getAttribute("ghost") == "true")
+  if (active.getAttribute("ghost") == "true")
   {
-    const role = el.getAttribute("role");
-    const reminder = el.children[2].innerText;
+    const role = active.getAttribute("role");
+    const reminder = active.children[2].innerText;
     spawnReminder(
         role,
         reminder,
-        //el.id.substring(5, e.target.id.length - (2 * UID_LENGTH) - 2), 
-        el.id.substring(e.target.id.length - (2 * UID_LENGTH) - 1, e.target.id.length), 
-        el.getBoundingClientRect().left + 12.5, 
+        active.id.substring(e.target.id.length - (2 * UID_LENGTH) - 1, e.target.id.length), 
+        active.getBoundingClientRect().left + 12.5, 
         e.target.getBoundingClientRect().top + 12.5
     );
     if (e.target.getAttribute("token_from") == "info")
     {
-      let x = document.getElementById(el.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
-      let y = document.getElementById(el.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
+      let x = document.getElementById(active.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
+      let y = document.getElementById(active.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
       // SCUFFED AF
       spawnReminderGhost(
           x, 
@@ -1565,46 +1619,54 @@ function dragEnd(e)
           reminder,
           e.target.id.substring(0, e.target.id.length - UID_LENGTH - 1)
       );
-    }// else if (e.target.getAttribute("token_from") == "night_order") {
-    //   let x = document.getElementById("night_order_" + e.target.id.substring(0, e.target.id.length-UID_LENGTH-1))
-    //   let y = document.getElementById("night_order_" + e.target.id.substring(0, e.target.id.length-UID_LENGTH-1))
-    //   spawnNightOrderGhost(x, y, e.target.style.backgroundImage, e.target.id.substring(0, e.target.id.length-UID_LENGTH-1));
-    // }
+    }
     e.target.parentNode.removeChild(e.target);
   }
-  active = false;
-  if (!loading) { save_game_state(); }
-}
-function drag(e)
-{
-  if (active)
-  {
 
-    e.preventDefault();
-    let moved = e.target;
+  active.style.zIndex = ""; // The default, for some reason
+  const container = active.parentElement;
+  if (container != null) {
+    container.removeChild(active);
+    container.appendChild(active);
+  }
 
-    while (moved.localName != "html" && moved.localName != "div") {
-      moved = moved.parentElement;
-    }
-    //if (!moved.classList.contains("role_token")) return;
-
-    if (e.type === "touchmove")
-    {
-      currentX = e.touches[0].clientX - xOffset;
-      currentY = e.touches[0].clientY - yOffset;
-    } else
-    {
-      currentX = e.clientX - xOffset;
-      currentY = e.clientY - yOffset;
-    }
-
-    setTranslate(currentX, currentY, moved);
+  active = null;
+  if (!loading) { 
+    save_game_state();
   }
 }
-function setTranslate(xPos, yPos, el)
+
+/**
+ * Drag a token for a single frame. 
+ * @param {Event} e The event that triggered this.
+ */
+function drag(e) {
+  if (active == null) return;
+  e.preventDefault();
+  let moved = active;
+
+  while (moved.localName != "html" && moved.localName != "div") {
+    moved = moved.parentElement;
+  }
+  //if (!moved.classList.contains("role_token")) return;
+
+  if (e.type === "touchmove")
+  {
+    currentX = e.touches[0].clientX - xOffset;
+    currentY = e.touches[0].clientY - yOffset;
+  } else
+  {
+    currentX = e.clientX - xOffset;
+    currentY = e.clientY - yOffset;
+  }
+
+  setTranslate(currentX, currentY);
+}
+
+function setTranslate(xPos, yPos)
 {
-  el.style.left = xPos + "px"
-  el.style.top = yPos + "px"
+  active.style.left = xPos + "px"
+  active.style.top = yPos + "px"
 }
 
 function getActualDragged(el) {
@@ -1624,11 +1686,23 @@ function isRoleToken(el) {
   return false;
 }
 
+/**
+ * Determine if the clicked item is actually draggable.
+ * @param {EventTarget} target The item that is being clicked.
+ * @returns 
+ */
+function draggingEnabledFor(target) {
+  if (document.getElementById("move_toggle").style.backgroundColor != "green" && isRoleToken(target)) {
+    return false;
+  }
+  return target.classList.contains("drag");
+}
+
 
 //if you click on black space
 function neutralClick()
 {
-  active = false;
+  active = null;
   hideInfo()
   close_menu()
   unprompt_reminders()
@@ -1723,13 +1797,13 @@ function nightOrderScroll(enable)
 function gen_night_order_tab_role(token_JSON, night, dead)
 {
   var color;
-  switch (token_JSON.class)
+  switch (token_JSON.team)
   {
-    case "TOWN": color = "#0033cc"; break;
-    case "OUT": color = "#0086b3"; break;
-    case "MIN": color = "#e62e00"; break;
-    case "DEM": color = "#cc0000"; break;
-    case "TRAV": color = "#6600ff"; break;
+    case "townsfolk": color = "#0033cc"; break;
+    case "outsider": color = "#0086b3"; break;
+    case "minion": color = "#e62e00"; break;
+    case "demon": color = "#cc0000"; break;
+    case "traveller": color = "#6600ff"; break;
   }
   if (dead) { color = "#000000"; }
   div = document.createElement("div");
@@ -1739,7 +1813,7 @@ function gen_night_order_tab_role(token_JSON, night, dead)
   span = document.createElement("span");
   span.classList = "night_order_span"
   //implement dynamic night order
-  desc = token_JSON[night.substring(0, 5) + "_night_desc"];
+  let desc = token_JSON[night.substring(0, 5) + "NightReminder"];
   const start = desc.indexOf('{') + 1;
   let tempNightText = ""
   if(start != 0){
@@ -1795,7 +1869,7 @@ function gen_night_order_tab_role(token_JSON, night, dead)
   div.appendChild(span);
   img = document.createElement("img");
   img.classList = "night_order_img";
-  img.src = "assets/icons/official/" + token_JSON.id + ".png";
+  img.src = getTokenImageLink(token_JSON.id);
   div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
   div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
   div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
@@ -1902,10 +1976,10 @@ function gen_jinxes_tab(id1, id2, reason)
   imgDiv = document.createElement("div");
   imgDiv.classList = "night_order_img"
   img1 = document.createElement("img");
-  img1.src = "assets/icons/official/" + id1 + ".png";
+  img1.src = getTokenImageLink(id1);
   img1.style = "width: 70%; position: absolute; top: 0px; left: 0px"
   img2 = document.createElement("img");
-  img2.src = "assets/icons/official/" + id2 + ".png";
+  img2.src = getTokenImageLink(id2);
   img2.style = "width: 70%; position: absolute; bottom: 0px; right: 0px"
   imgDiv.appendChild(img1);
   imgDiv.appendChild(img2);
@@ -1926,7 +2000,7 @@ function populate_fabled()
     if (entry.id != "_meta")
     {
       var token = tokens_ref[entry.id];
-      if (token["class"] == "FAB")
+      if (token["team"] == "fabled")
       {
         fabled.add(entry.id);
       }
@@ -1950,16 +2024,16 @@ function gen_fabled_tab(token_JSON, inPlay)
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , " + color + ")";
   var span = document.createElement("span");
   span.classList = "night_order_span"
-  span.innerHTML = token_JSON["description"];
+  span.innerHTML = token_JSON["ability"];
   span.id = token_JSON.id + "_night_order_tab_span";
   div.appendChild(span);
   var img = document.createElement("img");
   img.classList = "night_order_img";
-  img.src = "assets/icons/official/" + token_JSON.id + ".png";
+  img.src = getTokenImageLink(token_JSON.id);
   var token_landing = document.createElement("div");
   token_landing.classList = "night_order_fabled_token_container"
   token_landing.id = "night_order_" + token_JSON.id;
-  token_JSON["tokens"].forEach((token) =>
+  token_JSON["reminders"].forEach((token) =>
   {
     var uid = new Date().getTime()
     var token_perm = generateReminderBacking(token_JSON.id, token, uid)
@@ -2033,14 +2107,14 @@ async function generateHTMLDocument() {
   <h2>Townsfolk<h2>
   <table>`;
 
-    // Generate rows from the provided arrays for town
+    // Generate rows from the provided arrays for townsfolk
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].class == 'TOWN'){
+      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'townsfolk'){
         html += `
       <tr>
-        <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
         <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].description}</td>
+        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
       </tr>`;
       }
     }
@@ -2053,12 +2127,12 @@ async function generateHTMLDocument() {
 
     // Generate rows from the provided arrays for OUTsiders
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].class == 'OUT'){
+      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'outsider'){
         html += `
       <tr>
-        <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
         <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].description}</td>
+        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
       </tr>`;
       }
     }
@@ -2070,12 +2144,12 @@ async function generateHTMLDocument() {
 
     // Generate rows from the provided arrays for minions
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].class == 'MIN'){
+      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'minion'){
         html += `
       <tr>
-        <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
         <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].description}</td>
+        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
       </tr>`;
       }
     }
@@ -2087,12 +2161,12 @@ async function generateHTMLDocument() {
 
   // Generate rows from the provided arrays for Demons
   for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].class == 'DEM'){
+    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'demon'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[CURRENT_SCRIPT[i].id].id}.png" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
+      <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].description}</td>
+      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
     </tr>`;
     }
   }
@@ -2106,13 +2180,13 @@ async function generateHTMLDocument() {
   for(i = 0; i < order["firstnight"].length; i++){
     id = order["firstnight"][i]
     for(j=0; j < CURRENT_SCRIPT.length; j++){
-      if(CURRENT_SCRIPT[j].id === id  && tokens_ref[id].class != "TRAV"){first_night.push(id)}
+      if(CURRENT_SCRIPT[j].id === id  && tokens_ref[id].team != "traveller"){first_night.push(id)}
     }
   }
   for(i = 0; i < order["othernight"].length; i++){
     id = order["othernight"][i]
     for(j=0; j < CURRENT_SCRIPT.length; j++){
-      if(CURRENT_SCRIPT[j].id === id && tokens_ref[id].class != "TRAV"){other_night.push(id)}
+      if(CURRENT_SCRIPT[j].id === id && tokens_ref[id].team != "traveller"){other_night.push(id)}
     }
   }
   //fill night order table
@@ -2129,14 +2203,14 @@ async function generateHTMLDocument() {
     <tr>`
     if(tokens_ref[first_id]){
       html+=`
-      <td><img style="width: 7.5%" src="assets/icons/official/${first_id}.png" alt="${tokens_ref[first_id].name}"> <b>${tokens_ref[first_id].name}</b></td>`
+      <td><img style="width: 7.5%" src="${getTokenImageLink(first_id)}" alt="${tokens_ref[first_id].name}"> <b>${tokens_ref[first_id].name}</b></td>`
     }else{
       html+=`
       <td></td>`
     };
     if(tokens_ref[other_id]){
       html+=`
-        <td><img style="width: 7.5%" src="assets/icons/official/${other_id}.png" alt="${tokens_ref[other_id].name}"> <b>${tokens_ref[other_id].name}</b></td>`
+        <td><img style="width: 7.5%" src="${getTokenImageLink(other_id)}" alt="${tokens_ref[other_id].name}"> <b>${tokens_ref[other_id].name}</b></td>`
     }else{
       html+=`
       <td></td>`
@@ -2168,9 +2242,9 @@ async function generateHTMLDocument() {
               }
               html += `
               <tr>
-                <td style="width: 7.5%;"><img src="assets/icons/official/${jinxes[i].id}.png" alt="${tokens_ref[jinxes[i].id].name}"></td>
+                <td style="width: 7.5%;"><img src="${getTokenImageLink(jinxes[i].id)}" alt="${tokens_ref[jinxes[i].id].name}"></td>
                 <td style="width: 15%; font-weight: bold;">${tokens_ref[jinxes[i].id].name}</td>
-                <td style="width: 7.5%;"><img src="assets/icons/official/${jinx.id}.png" alt="${tokens_ref[jinx.id].name}"></td>
+                <td style="width: 7.5%;"><img src="${getTokenImageLink(jinx.id)}" alt="${tokens_ref[jinx.id].name}"></td>
                 <td style="width: 15%; font-weight: bold;">${tokens_ref[jinx.id].name}</td>
                 <td style="width: 70%;">${jinx.reason}</td>
               </tr>`;
@@ -2194,12 +2268,12 @@ async function generateHTMLDocument() {
 
   // Generate rows For travelers
   for (element in tokens_ref) {
-    if(tokens_ref[element].class == 'TRAV'){
+    if(tokens_ref[element].team == 'traveller'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[element].id}.png" alt="${tokens_ref[element].name}"></td>
+      <td style="width: 7.5%;"><img src="${getTokenImageLink(tokens_ref[element].id)}" alt="${tokens_ref[element].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[element].name}</td>
-      <td style="width: 75%;">${tokens_ref[element].description}</td>
+      <td style="width: 75%;">${tokens_ref[element].ability}</td>
     </tr>`;
     }
   }
@@ -2212,12 +2286,12 @@ async function generateHTMLDocument() {
   <h2>Fables<h2>
   <table>`;
   for (element in tokens_ref) {
-    if(tokens_ref[element].class == 'FAB'){
+    if(tokens_ref[element].team == 'fabled'){
       html += `
     <tr>
-      <td style="width: 7.5%;"><img src="assets/icons/official/${tokens_ref[element].id}.png" alt="${tokens_ref[element].name}"></td>
+      <td style="width: 7.5%;"><img src="${getTokenImageLink(tokens_ref[element].id)}" alt="${tokens_ref[element].name}"></td>
       <td style="width: 15%; font-weight: bold;">${tokens_ref[element].name}</td>
-      <td style="width: 75%;">${tokens_ref[element].description}</td>
+      <td style="width: 75%;">${tokens_ref[element].ability}</td>
     </tr>`;
     }
   }
@@ -2278,7 +2352,7 @@ function add_offscript_character(token_class){
   for(let element in tokens_ref)
   {
     element = tokens_ref[element]
-    if (element.class == token_class)
+    if (element.team == token_class)
     {      
       try {
         var div = document.createElement("div");
@@ -2301,21 +2375,3 @@ document.addEventListener('keydown', function(event) {
     document.getElementById("menu_main").style.transform == "translateX(0px)" ? close_menu() : open_menu();   
   }
 });
-
-// function spawnNightOrderGhost(x, y, imgUrl, id, fabled) {
-//   var time = new Date();
-//   var uid = time.getTime();
-//   var div = document.createElement("div");
-//   div.classList = "info_tokens_drag drag";
-//   div.style = "background-image: "+imgUrl+"; left: "+x+"; top: "+y+"; border-radius: 100%; pointer-events: all; width: 80px; height: 80px;";
-//   div.id = id + "_" + uid;
-//   div.setAttribute("ghost", "true");
-//   div.setAttribute("token_from", "night_order");
-//   var img = document.createElement("img");
-//   img.style = "width: 80%; height: 80%; margin: 10%; pointer-events: none; display: none; border-radius: 100%; user-select: none";
-//   img.src = "assets/delete.png";
-//   img.id = id + "_" + uid + "_img";
-//   div.appendChild(img);
-//   document.getElementById("token_drag_" + fabled + "_night_order_tab").prepend(div);
-//   dragInit();
-// }

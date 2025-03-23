@@ -146,8 +146,8 @@ svg {pointer-events: none; user-select: none;}
     /* Center horizontally with this one weird trick! */
     left: 50%;
     transform: translate(-50%, 0);
-    width: 80%;
-    height: 80%;
+    width: 90%;
+    height: 90%;
     object-fit: contain;
 }
 #info_visibility_shade {position: absolute; top: 0px; left: 0px; height: 250px; width: 250px; pointer-events: none; background-color: black; opacity: 0.5; border-radius: 100%; display: none; transition: width ease-in-out 0.5s, height ease-in-out 0.5s, left ease-in-out 0.5s;}
@@ -452,7 +452,17 @@ svg {pointer-events: none; user-select: none;}
 .background_select_scroll_body {display: inline-flex; width: 70%; height: calc(100% - 100px); pointer-events: all; padding: 50px; overflow-y: scroll; scrollbar-width: none; display: inline-flex; flex-flow: wrap; justify-content: center;}
 .background_select_scroll_body::-webkit-scrollbar {display: none;}
 
-#playerinfo_close {position: absolute; top: 5px; right: 5px; width: 85px; height: 85px; opacity: 0.4; transition: opacity linear 0.1s; cursor: pointer; background-image: url("assets/close.png");}
+#playerinfo_close {
+    position: absolute; 
+    top: 5px; 
+    right: 5px; 
+    width: 85px; 
+    height: 85px; 
+    opacity: 0.4; 
+    transition: opacity linear 0.1s; 
+    cursor: pointer; 
+    background-image: url("assets/close.png");
+}
 #playerinfo_close:hover {opacity: 0.6;}
 #playerinfo_character_landing {text-align: center; width: 100%; pointer-events: all;}
 .playerinfo_character {
@@ -464,6 +474,21 @@ svg {pointer-events: none; user-select: none;}
     border-radius: 25px; 
     display: inline-block; 
     cursor: pointer; 
+    background-image: url(assets/person_add.png); 
+    background-position: center; 
+    background-size: auto 80%; 
+    background-repeat: no-repeat;
+}
+#playerinfo_extra_button {
+    position: relative;
+    margin: 10px; 
+    width: 50px; 
+    height: 50px; 
+    background-color: #44444494; 
+    border-radius: 25px; 
+    display: inline-block; 
+    cursor: pointer; 
+    pointer-events: all;
     background-image: url(assets/person_add.png); 
     background-position: center; 
     background-size: auto 80%; 
