@@ -100,7 +100,9 @@ function generate_game_state_json()
     state.players[i].name = players[i].getElementsByClassName("token_text")[0].innerHTML;
     reminders = [];
     reminderdivs = players[i].getElementsByClassName("reminder drag");
+    console.log(reminderdivs);
     for(j = 0; j < reminderdivs.length; j++){
+      console.log(reminderdivs, j);
       reminders.push([reminderdivs[j].getAttribute("role"),reminderdivs[j].getElementsByClassName("reminder_text")[0].innerHTML, reminderdivs[j].getAttribute("uid")])
     }
     state.players[i].reminders = reminders;
@@ -1524,8 +1526,12 @@ function dragStart(e) {
     tokenlayer = document.getElementById("reminder_layer");
     tokenlayer.appendChild(e.target);
     e.target.style.position = 'absolute';
-    e.target.style.left = e.touches[0].clientX-37.5
-    e.target.style.top = e.touches[0].clientY-37.5
+    let elementPos = e;
+    if (e.type == "touchstart") {
+      elementPos = e.touches[0];
+    }
+    e.target.style.left = elementPos.clientX-37.5
+    e.target.style.top = elementPos.clientY-37.5
     token.style.position = 'absolute';
 
   }
@@ -1547,9 +1553,9 @@ function dragStart(e) {
 //Attatches a token to another token
 //Intended to be reminder tokens, but adjusting to allow for character tokens shouldn't be that complicated
 function attachTokenToToken(div){
-  if(div.getAttribute("class")=="reminder drag"){
-    players = document.getElementById("token_layer").getElementsByClassName("role_token");
-    const radius = 112.5;
+  if(div.getAttribute("class") == "reminder drag"){
+    console.log("Attempting to attach...")
+    const players = document.getElementById("token_layer").getElementsByClassName("role_token");
     const left = parseInt(getComputedStyle(div).getPropertyValue('left'))
     const top =  parseInt(getComputedStyle(div).getPropertyValue('top'))
     for (const player in players) {
@@ -1560,6 +1566,8 @@ function attachTokenToToken(div){
           diffx = parseInt(playerstyle.getPropertyValue('left'))+37.5 - left;
           diffy = parseInt(playerstyle.getPropertyValue('top'))+37.5 - top;
           if(Math.sqrt(diffx*diffx + diffy * diffy) < 75){
+            console.log(`attaching to`)
+            console.log(players)
             players[player].appendChild(div);
             div.style.position = 'relative'
             div.style.left = '-50px'
@@ -1591,7 +1599,7 @@ function dragEnd(e) {
       dragPipLayerSpawnDefault(active.getAttribute("alignment"));
     }
     active.setAttribute("stacked", false);
-    active.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + active.id + "')");
+    // active.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + active.id + "')");
     active.style.cursor = "pointer";
   }
   
