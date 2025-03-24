@@ -322,6 +322,17 @@ function move_toggle()
     self.style.backgroundColor = "green";
   }
 }
+function attach_toggle()
+{
+  var self = document.getElementById("attach_toggle")
+  if (self.style.backgroundColor == "green")
+  {
+    self.style.backgroundColor = "rgb(66, 66, 66)";
+  } else
+  {
+    self.style.backgroundColor = "green";
+  }
+}
 function night_wedge_next_day()
 {
   counter.nextNight();
@@ -662,7 +673,6 @@ function prompt_delete_reminder(id)
   document.getElementById(id + "_img").style.display = "inherit";
   document.getElementById(id).setAttribute("onmouseup", null);
   setTimeout(function () { try { document.getElementById(id).setAttribute("onclick", "javascript:delete_reminder('" + id + "')"); } catch (TypeError) { null }; }, 30)
-  console.trace();
 }
 function delete_reminder(id)
 {
@@ -1579,6 +1589,7 @@ function dragStart(e) {
 //Attatches a token to another token
 //Intended to be reminder tokens, but adjusting to allow for character tokens shouldn't be that complicated
 function attachTokenToToken(div){
+  if (document.getElementById("attach_toggle").style.backgroundColor != "green") return;
   if(div.getAttribute("class") == "reminder drag"){
     const players = document.getElementById("token_layer").getElementsByClassName("role_token");
     const left = parseInt(getComputedStyle(div).getPropertyValue('left'))
