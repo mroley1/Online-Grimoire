@@ -86,6 +86,8 @@ function generate_game_state_json()
   state.background = document.getElementById("body_actual").style.getPropertyValue("--BG-IMG");
   state.players = [];
   players = document.getElementById("token_layer").getElementsByClassName("role_token");
+
+  // Each player and their tokens.
   for (i = 0; i < players.length; i++)
   {
     state.players[i] = new Object();
@@ -100,10 +102,18 @@ function generate_game_state_json()
     state.players[i].name = players[i].getElementsByClassName("token_text")[0].innerHTML;
     reminders = [];
     reminderdivs = players[i].getElementsByClassName("reminder drag");
-    console.log(reminderdivs);
-    for(j = 0; j < reminderdivs.length; j++){
-      console.log(reminderdivs, j);
-      reminders.push([reminderdivs[j].getAttribute("role"),reminderdivs[j].getElementsByClassName("reminder_text")[0].innerHTML, reminderdivs[j].getAttribute("uid")])
+    for(const attachedReminder of reminderdivs){
+      if (attachedReminder.getAttribute("role") == null) {
+        reminders.push([
+          attachedReminder.getAttribute("alignment")
+      ])
+      } else{
+        reminders.push([
+          attachedReminder.getAttribute("role"),
+          attachedReminder.getElementsByClassName("reminder_text")[0].innerHTML, 
+          attachedReminder.getAttribute("uid")
+      ])
+      }
     }
     state.players[i].reminders = reminders;
   }
@@ -163,7 +173,8 @@ async function load_game_state_json(state)
   }
   for (const pip of state.pips)
   {
-    dragPipLayerSpawn(pip.type, pip.left, pip.top, "false")
+    const div = dragPipLayerSpawn(pip.type, pip.left, pip.top, "false")
+    document.getElementById("dragPipLayer").prepend(div);
   }
   if (state.orientation != getOrientation())
   {
@@ -410,9 +421,15 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
   document.getElementById("token_layer").appendChild(div);
 
   // Add reminder tokens
-  for(i = 0; i < reminders.length; i++){
-    reminder = spawnReminder(reminders[i][0],reminders[i][1],reminders[i][2],'-50px','0px')
-    div.appendChild(reminder);
+  for(const reminder of reminders){
+    let reminderHTML;
+    if (reminder.length == 3) {
+      reminderHTML = spawnReminder(reminder[0], reminder[1], reminder[2],'-50px','0px');
+    } else {
+      reminderHTML = dragPipLayerSpawn(reminder[0], '-50px', '0px', "false");
+    }
+    reminderHTML.style.position = "relative";
+    div.appendChild(reminderHTML);
   }
   // Random admin stuff.
   update_role_counts();
@@ -630,19 +647,22 @@ function dragPipLayerSpawn(type, left, top, stacked)
   img.id = type + "_" + uid + "_img";
   div.appendChild(img);
   makeDraggable(div);
-  document.getElementById("dragPipLayer").prepend(div);
-  if (!loading) { save_game_state(); }
+  // document.getElementById("dragPipLayer").prepend(div);
+  // if (!loading) { save_game_state(); }
+  return div;
 }
 function dragPipLayerSpawnDefault(type)
 {
   const ref = { "good": "90px", "evil": "175px", "reminder_pip": "260px" }
-  dragPipLayerSpawn(type, "5px", ref[type], "true");
+  const div = dragPipLayerSpawn(type, "5px", ref[type], "true");
+  document.getElementById("dragPipLayer").prepend(div);
 }
 function prompt_delete_reminder(id)
 {
   document.getElementById(id + "_img").style.display = "inherit";
   document.getElementById(id).setAttribute("onmouseup", null);
   setTimeout(function () { try { document.getElementById(id).setAttribute("onclick", "javascript:delete_reminder('" + id + "')"); } catch (TypeError) { null }; }, 30)
+  console.trace();
 }
 function delete_reminder(id)
 {
@@ -1242,7 +1262,7 @@ function spawnReminder(roleName, reminder, uid, left, top)
 
   attachTokenToToken(div);//Make new reminder tokens check to see if they should be attach to a character token
   if (!loading) { save_game_state(); }
-  return(div);
+  return div;
 }
 
 function spawnFabledReminder(roleName, reminder)
@@ -1554,7 +1574,6 @@ function dragStart(e) {
 //Intended to be reminder tokens, but adjusting to allow for character tokens shouldn't be that complicated
 function attachTokenToToken(div){
   if(div.getAttribute("class") == "reminder drag"){
-    console.log("Attempting to attach...")
     const players = document.getElementById("token_layer").getElementsByClassName("role_token");
     const left = parseInt(getComputedStyle(div).getPropertyValue('left'))
     const top =  parseInt(getComputedStyle(div).getPropertyValue('top'))
@@ -1566,19 +1585,19 @@ function attachTokenToToken(div){
           diffx = parseInt(playerstyle.getPropertyValue('left'))+37.5 - left;
           diffy = parseInt(playerstyle.getPropertyValue('top'))+37.5 - top;
           if(Math.sqrt(diffx*diffx + diffy * diffy) < 75){
-            console.log(`attaching to`)
-            console.log(players)
             players[player].appendChild(div);
             div.style.position = 'relative'
             div.style.left = '-50px'
             div.style.top = '0px'
             //update night order
             populate_night_order()
+            return true;
           }
-        } catch (error) {console.log(error)}      
+        } catch (error) {console.error(error)}      
       }     
     }
   }
+  return false;
 }
 
 /**
@@ -1589,7 +1608,9 @@ function dragEnd(e) {
   if (active == null) return; // Can happen if you release click over a token
   //if a reminder token is touching a role token it 'attaches' itself to the role token
   if(active.getAttribute("class")=="reminder drag"){
-    attachTokenToToken(el)
+    if (attachTokenToToken(active)) {
+      e.preventDefault();
+    }
   }
   // The good, evil, and generic reminder tokens.
   if (active.getAttribute("disposable-reminder"))
@@ -1860,7 +1881,7 @@ function gen_night_order_tab_role(token_JSON, night, dead)
                 }
               }            
             }
-          } catch (error) {console.log(error)}      
+          } catch (error) {console.error(error)}      
         }     
       }
       if(!reminderExists){
