@@ -672,21 +672,27 @@ function delete_reminder(id)
 }
 function unprompt_reminders()
 {
-  tokens = document.getElementById("dragPipLayer").children;
-  for (var i = 0; i < tokens.length; i++)
+  const specialReminders = document.getElementById("dragPipLayer").children;
+  for (const reminder of specialReminders)
   {
-    var element = tokens[i];
-    document.getElementById(element.id + "_img").style.display = "none";
-    element.setAttribute("onclick", null);
-    element.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + element.id + "')");
+    document.getElementById(reminder.id + "_img").style.display = "none";
+    reminder.setAttribute("onclick", null);
+    reminder.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + reminder.id + "')");
   }
-  tokens = document.getElementById("reminder_layer").children;
-  for (var i = 0; i < tokens.length; i++)
+
+  const looseRoleReminders = document.getElementById("reminder_layer").children;
+  for (const reminder of looseRoleReminders)
   {
-    var element = tokens[i];
-    document.getElementById(element.id + "_img").style.display = "none";
-    element.setAttribute("onclick", null);
-    element.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + element.id + "')");
+    document.getElementById(reminder.id + "_img").style.display = "none";
+    reminder.setAttribute("onclick", null);
+    reminder.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + reminder.id + "')");
+  }
+  const attachedRoleReminders = document.getElementsByClassName("reminder drag");
+  for (const reminder of attachedRoleReminders)
+  {
+    document.getElementById(reminder.id + "_img").style.display = "none";
+    reminder.setAttribute("onclick", null);
+    reminder.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + reminder.id + "')");
   }
 }
 
@@ -1620,7 +1626,6 @@ function dragEnd(e) {
       dragPipLayerSpawnDefault(active.getAttribute("alignment"));
     }
     active.setAttribute("stacked", false);
-    // active.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + active.id + "')");
     active.style.cursor = "pointer";
   }
   
