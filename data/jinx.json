@@ -263,7 +263,7 @@
     "jinx": [
       {
         "id": "alchemist",
-        "reason": "The Alchemist can not have the Spy ability."
+        "reason": "If the Alchemist has the Spy ability, they do not see the Grimoire, and the real Spy cannot register falsely."
       },
       {
         "id": "damsel",
@@ -364,10 +364,6 @@
         "reason": "If the Vizier is in play, the Alsaahir must also guess which Demon(s) are in play."
       },
       {
-        "id": "alchemist",
-        "reason": "If the Alchemist has the Vizier ability, they may only choose to execute immediately if three or more players voted, regardless of those players' alignment."
-      },
-      {
         "id": "courtier",
         "reason": "If the Vizier loses their ability, they learn this. If the Vizier is executed while they have their ability, their team wins."
       },
@@ -402,7 +398,7 @@
     "jinx": [
       {
         "id": "alchemist",
-        "reason": "The Alchemist can not have the Widow ability."
+        "reason": "If the Alchemist has the Widow ability, they do not see the Grimoire."
       },
       {
         "id": "damsel",

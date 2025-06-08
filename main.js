@@ -86,6 +86,8 @@ function generate_game_state_json()
   state.background = document.getElementById("body_actual").style.getPropertyValue("--BG-IMG");
   state.players = [];
   players = document.getElementById("token_layer").getElementsByClassName("role_token");
+
+  // Each player and their tokens.
   for (i = 0; i < players.length; i++)
   {
     state.players[i] = new Object();
@@ -98,9 +100,25 @@ function generate_game_state_json()
     state.players[i].left = players[i].style.left;
     state.players[i].top = players[i].style.top;
     state.players[i].name = players[i].getElementsByClassName("token_text")[0].innerHTML;
+    reminders = [];
+    reminderdivs = players[i].getElementsByClassName("reminder drag");
+    for(const attachedReminder of reminderdivs){
+      if (attachedReminder.getAttribute("role") == null) {
+        reminders.push([
+          attachedReminder.getAttribute("alignment")
+      ])
+      } else{
+        reminders.push([
+          attachedReminder.getAttribute("role"),
+          attachedReminder.getElementsByClassName("reminder_text")[0].innerHTML, 
+          attachedReminder.getAttribute("uid")
+      ])
+      }
+    }
+    state.players[i].reminders = reminders;
   }
   state.reminders = [];
-  reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
+  reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
   for (i = 0; i < reminders.length; i++)
   {
     state.reminders[i] = new Object();
@@ -142,7 +160,7 @@ async function load_game_state_json(state)
   document.getElementById("body_actual").style.setProperty("--BG-IMG", state.background);
   for (let i = 0; i < state.players.length; i++)
   {
-    spawnToken(state.players[i].role, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name)
+    spawnToken(state.players[i].role, state.players[i].uid, state.players[i].visibility, state.players[i].cat, state.players[i].hide_face, state.players[i].viability, state.players[i].left, state.players[i].top, state.players[i].name, state.players[i].reminders)
   }
   for (const reminder of state.reminders) 
   {
@@ -155,7 +173,8 @@ async function load_game_state_json(state)
   }
   for (const pip of state.pips)
   {
-    dragPipLayerSpawn(pip.type, pip.left, pip.top, "false")
+    const div = dragPipLayerSpawn(pip.type, pip.left, pip.top, "false")
+    document.getElementById("dragPipLayer").prepend(div);
   }
   if (state.orientation != getOrientation())
   {
@@ -211,7 +230,7 @@ function orientationChange()
   {
     swapObjectOrientation(players[i]);
   }
-  reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
+  reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
   for (i = 0; i < reminders.length; i++)
   {
     swapObjectOrientation(reminders[i]);
@@ -303,6 +322,17 @@ function move_toggle()
     self.style.backgroundColor = "green";
   }
 }
+function attach_toggle()
+{
+  var self = document.getElementById("attach_toggle")
+  if (self.style.backgroundColor == "green")
+  {
+    self.style.backgroundColor = "rgb(66, 66, 66)";
+  } else
+  {
+    self.style.backgroundColor = "green";
+  }
+}
 function night_wedge_next_day()
 {
   counter.nextNight();
@@ -329,10 +359,9 @@ function update_night_wedge_text()
 }
 
 //token functions
-function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, nameText)
+function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, nameText, reminders)
 {
   // Force tokens to appear if we try to add one. 
-  // (Why can we even see the rolelist in townsquare mode?)
   if (document.getElementById("body_actual").getAttribute("night") == "true") {
     visibility_toggle()
   }
@@ -402,6 +431,17 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
 
   document.getElementById("token_layer").appendChild(div);
 
+  // Add reminder tokens
+  for(const reminder of reminders){
+    let reminderHTML;
+    if (reminder.length == 3) {
+      reminderHTML = spawnReminder(reminder[0], reminder[1], reminder[2],'-50px','0px');
+    } else {
+      reminderHTML = dragPipLayerSpawn(reminder[0], '-50px', '0px', "false");
+    }
+    reminderHTML.style.position = "relative";
+    div.appendChild(reminderHTML);
+  }
   // Random admin stuff.
   update_role_counts();
   player_count_change();
@@ -462,7 +502,7 @@ function spawnTokenDefault(id, visibility, cat, hide_face)
 {
   var time = new Date();
   var uid = time.getTime()
-  spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width / 2) - 75) + "px", "calc(50% - 75px)", "");
+  spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width / 2) - 75) + "px", "calc(50% - 75px)", "", []);
 }
 function remove_token(id, uid)
 {
@@ -476,12 +516,12 @@ function remove_token(id, uid)
 }
 function clean_tokens(uid)
 {
-  let reminders = document.getElementById("remainerLayer").getElementsByClassName("reminder");
+  let reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
   for (i = reminders.length - 1; i != -1; --i)
   {
     if (reminders[i].getAttribute("uid").substring(0, UID_LENGTH) == uid)
     {
-      document.getElementById("remainerLayer").removeChild(reminders[i]);
+      document.getElementById("reminder_layer").removeChild(reminders[i]);
     }
   }
 }
@@ -618,13 +658,15 @@ function dragPipLayerSpawn(type, left, top, stacked)
   img.id = type + "_" + uid + "_img";
   div.appendChild(img);
   makeDraggable(div);
-  document.getElementById("dragPipLayer").prepend(div);
-  if (!loading) { save_game_state(); }
+  // document.getElementById("dragPipLayer").prepend(div);
+  // if (!loading) { save_game_state(); }
+  return div;
 }
 function dragPipLayerSpawnDefault(type)
 {
   const ref = { "good": "90px", "evil": "175px", "reminder_pip": "260px" }
-  dragPipLayerSpawn(type, "5px", ref[type], "true");
+  const div = dragPipLayerSpawn(type, "5px", ref[type], "true");
+  document.getElementById("dragPipLayer").prepend(div);
 }
 function prompt_delete_reminder(id)
 {
@@ -640,21 +682,27 @@ function delete_reminder(id)
 }
 function unprompt_reminders()
 {
-  tokens = document.getElementById("dragPipLayer").children;
-  for (var i = 0; i < tokens.length; i++)
+  const specialReminders = document.getElementById("dragPipLayer").children;
+  for (const reminder of specialReminders)
   {
-    var element = tokens[i];
-    document.getElementById(element.id + "_img").style.display = "none";
-    element.setAttribute("onclick", null);
-    element.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + element.id + "')");
+    document.getElementById(reminder.id + "_img").style.display = "none";
+    reminder.setAttribute("onclick", null);
+    reminder.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + reminder.id + "')");
   }
-  tokens = document.getElementById("remainerLayer").children;
-  for (var i = 0; i < tokens.length; i++)
+
+  const looseRoleReminders = document.getElementById("reminder_layer").children;
+  for (const reminder of looseRoleReminders)
   {
-    var element = tokens[i];
-    document.getElementById(element.id + "_img").style.display = "none";
-    element.setAttribute("onclick", null);
-    element.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + element.id + "')");
+    document.getElementById(reminder.id + "_img").style.display = "none";
+    reminder.setAttribute("onclick", null);
+    reminder.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + reminder.id + "')");
+  }
+  const attachedRoleReminders = document.getElementsByClassName("reminder drag");
+  for (const reminder of attachedRoleReminders)
+  {
+    document.getElementById(reminder.id + "_img").style.display = "none";
+    reminder.setAttribute("onclick", null);
+    reminder.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + reminder.id + "')");
   }
 }
 
@@ -662,11 +710,15 @@ function unprompt_reminders()
 //menu functions
 function open_menu()
 {
-  document.getElementById("menu_main").style.transform = "translateX(0px)";
+  if(document.getElementById("body_actual").getAttribute("night") == "false"){
+    document.getElementById("menu_main").style.transform = "translateX(0px)";
+  }
 }
 function close_menu()
 {
-  document.getElementById("menu_main").style.transform = "translateX(-300px)";
+  if(document.getElementById("body_actual").getAttribute("night") == "false"){
+    document.getElementById("menu_main").style.transform = "translateX(-300px)";
+  }
 }
 async function load_scripts()
 {
@@ -767,7 +819,6 @@ async function populate_script(script)
         landing.appendChild(outer_div)
       }
     }
-    //edit by @The-ai123
     //Add button to add offscreen of each category
     var outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
@@ -1222,9 +1273,12 @@ function spawnReminder(roleName, reminder, uid, left, top)
   trash.id = roleName + "_" + uid + "_img";
   div.appendChild(trash);
 
-  document.getElementById("remainerLayer").appendChild(div);
-  makeDraggable(div);
+  document.getElementById("reminder_layer").appendChild(div);
+  makeDraggable(div)
+
+  attachTokenToToken(div);//Make new reminder tokens check to see if they should be attach to a character token
   if (!loading) { save_game_state(); }
+  return div;
 }
 
 function spawnFabledReminder(roleName, reminder)
@@ -1504,6 +1558,19 @@ function makeDraggable(element) {
  */
 function dragStart(e) {
   const token = getActualDragged(e.target);
+  if(e.target.parentNode.getAttribute("class")=="role_token drag"){
+    tokenlayer = document.getElementById("reminder_layer");
+    tokenlayer.appendChild(e.target);
+    e.target.style.position = 'absolute';
+    let elementPos = e;
+    if (e.type == "touchstart") {
+      elementPos = e.touches[0];
+    }
+    e.target.style.left = elementPos.clientX-37.5
+    e.target.style.top = elementPos.clientY-37.5
+    token.style.position = 'absolute';
+
+  }
   if (!draggingEnabledFor(token)) {
     return;
   }
@@ -1519,12 +1586,49 @@ function dragStart(e) {
   }
 }
 
+//Attatches a token to another token
+//Intended to be reminder tokens, but adjusting to allow for character tokens shouldn't be that complicated
+function attachTokenToToken(div){
+  if (document.getElementById("attach_toggle").style.backgroundColor != "green") return;
+  if(div.getAttribute("class") == "reminder drag"){
+    const players = document.getElementById("token_layer").getElementsByClassName("role_token");
+    const left = parseInt(getComputedStyle(div).getPropertyValue('left'))
+    const top =  parseInt(getComputedStyle(div).getPropertyValue('top'))
+    for (const player in players) {
+      if(!isNaN(parseInt(player))){
+        try {
+          playerstyle = getComputedStyle(players[player]);
+          
+          diffx = parseInt(playerstyle.getPropertyValue('left'))+37.5 - left;
+          diffy = parseInt(playerstyle.getPropertyValue('top'))+37.5 - top;
+          if(Math.sqrt(diffx*diffx + diffy * diffy) < 75){
+            players[player].appendChild(div);
+            div.style.position = 'relative'
+            div.style.left = '-50px'
+            div.style.top = '0px'
+            //update night order
+            populate_night_order()
+            return true;
+          }
+        } catch (error) {console.error(error)}      
+      }     
+    }
+  }
+  return false;
+}
+
 /**
  * Finalize the dragging of an element. 
  * @param {Event} e The event that triggered this function.
  */
 function dragEnd(e) {
   if (active == null) return; // Can happen if you release click over a token
+  //if a reminder token is touching a role token it 'attaches' itself to the role token
+  if(active.getAttribute("class")=="reminder drag"){
+    if (attachTokenToToken(active)) {
+      e.preventDefault();
+    }
+  }
   // The good, evil, and generic reminder tokens.
   if (active.getAttribute("disposable-reminder"))
   {
@@ -1533,7 +1637,6 @@ function dragEnd(e) {
       dragPipLayerSpawnDefault(active.getAttribute("alignment"));
     }
     active.setAttribute("stacked", false);
-    active.setAttribute("onmouseup", "javascript:prompt_delete_reminder('" + active.id + "')");
     active.style.cursor = "pointer";
   }
   
@@ -1754,7 +1857,59 @@ function gen_night_order_tab_role(token_JSON, night, dead)
   div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , " + color + ")";
   span = document.createElement("span");
   span.classList = "night_order_span"
-  span.innerHTML = token_JSON[night.substring(0, 5) + "NightReminder"];
+  //implement dynamic night order
+  let desc = token_JSON[night.substring(0, 5) + "NightReminder"];
+  const start = desc.indexOf('{') + 1;
+  let tempNightText = ""
+  if(start != 0){
+    while (desc.includes('{') && desc.includes('}')) {
+      tempNightText += desc.split('{')[0]; // Text before first '{'
+      const afterFirstBrace = desc.slice(desc.indexOf('{') + 1);
+      const content = afterFirstBrace.split('}')[0]; // Content inside first '{...}'
+      desc = afterFirstBrace.slice(afterFirstBrace.indexOf('}') + 1); // Text after first '}'
+      const [reminder, defaultText] = content.split('='); // Split inside content
+      reminderExists = false
+      players = document.getElementById("token_layer").getElementsByClassName("role_token");
+      for (const player in players) {
+        if(!isNaN(parseInt(player))){
+          try {
+            childTokens = players[player].getElementsByClassName("reminder drag");
+            for(childtoken = 0; childtoken < childTokens.length; childtoken++){
+              if(childTokens[childtoken].getAttribute("role") == token_JSON.id){
+                remindertext = childTokens[childtoken].getElementsByClassName("reminder_text")[0].textContent
+                if(remindertext==reminder){
+                  
+                  playerName = players[player].getElementsByClassName("token_text")[0].textContent;
+                  if(playerName != ""){
+                    if(reminderExists){
+                      tempNightText += " and "
+                    }
+                    reminderExists = true;
+                    tempNightText += playerName
+                  }else{
+                    if(reminderExists){
+                      tempNightText += " and "
+                    }
+                    reminderExists = true;
+                    tempNightText += " the "
+                    tempNightText += tokens_ref[players[player].getAttribute("role")].name;
+                  }
+                }
+              }            
+            }
+          } catch (error) {console.error(error)}      
+        }     
+      }
+      if(!reminderExists){
+        tempNightText += defaultText;
+      }
+    }
+    
+    tempNightText += desc
+    span.innerHTML = tempNightText;
+  }else{
+    span.innerHTML = desc;
+  }
   span.id = token_JSON.id + "_night_order_tab_span";
   div.appendChild(span);
   img = document.createElement("img");
@@ -1943,9 +2098,7 @@ function gen_fabled_tab(token_JSON, inPlay)
   div.setAttribute("onclick", "javascript:expand_night_order_tab('" + token_JSON.id + "_night_order_tab')");
   div.appendChild(img);
 }
-//generates an html page that can be printed to a pdf from currently loaded script (WIP)
-//this is almost entirely written by chatGPT
-//Author @The-ai123
+//generates an html page that can be printed to a pdf from currently loaded script
 async function generateHTMLDocument() {
   update_current_script()
 
@@ -2203,7 +2356,6 @@ async function generateHTMLDocument() {
 }
 
 //Downloads the script of onscreen tokens in a .json file
-//author @The-ai123
 function download_current_script()
 {
   update_current_script()
@@ -2217,13 +2369,11 @@ function download_current_script()
 }
 
 //Updates the current script name to reflect the inputted name
-//author @The-ai123
 function update_current_script_name(){
   CURRENT_SCRIPT[0].name = document.getElementById("script_upload_feedback").textContent;
 }
 
 //updates the current to script to on screen tokens
-//author @The-ai123
 function update_current_script(){
   //clear current script
   CURRENT_SCRIPT = CURRENT_SCRIPT.filter(element => element.id == CURRENT_SCRIPT[0].id);
@@ -2241,7 +2391,6 @@ function update_current_script(){
 
 //Opens a mutate menu of all tokens of a set class
 //And when selected the token will be spawned on the board
-//Author: @The-ai123
 function add_offscript_character(token_class){ 
   document.getElementById("mutate_menu_all").innerHTML = "";
   let allTokens = [];
@@ -2262,3 +2411,12 @@ function add_offscript_character(token_class){
   }
   document.getElementById("mutate_menu_all_main").style.display = "inherit";
 }
+
+//open and close menu with m key
+//could be expanded to allow for more keybinds
+document.addEventListener('keydown', function(event) {
+  const keyPressed = event.key; // Get the key that was pressed
+  if(event.key == 'm'){
+    document.getElementById("menu_main").style.transform == "translateX(0px)" ? close_menu() : open_menu();   
+  }
+});
