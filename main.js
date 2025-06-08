@@ -1,7 +1,3 @@
-
-
-var night_order_ref;
-
 // ? TODO better scripts menu
 // TODO fullscreeen settings menu
 // TODO better fabled tokens
@@ -10,45 +6,36 @@ var night_order_ref;
 // * TODO fancify night widget
 // * TODO higher player limit to include travellers
 
-//Attatches a token to another token
-//Intended to be reminder tokens, but adjusting to allow for character tokens shouldn't be that complicated
-function attachTokenToToken(div){
-  if (document.getElementById("attach_toggle").style.backgroundColor != "green") return;
-  if(div.getAttribute("class") == "reminder drag"){
-    const players = document.getElementById("token_layer").getElementsByClassName("role_token");
-    const left = parseInt(getComputedStyle(div).getPropertyValue('left'))
-    const top =  parseInt(getComputedStyle(div).getPropertyValue('top'))
-    for (const player in players) {
-      if(!isNaN(parseInt(player))){
-        try {
-          playerstyle = getComputedStyle(players[player]);
-          
-          diffx = parseInt(playerstyle.getPropertyValue('left'))+37.5 - left;
-          diffy = parseInt(playerstyle.getPropertyValue('top'))+37.5 - top;
-          if(Math.sqrt(diffx*diffx + diffy * diffy) < 75){
-            players[player].appendChild(div);
-            div.style.position = 'relative'
-            div.style.left = '-50px'
-            div.style.top = '0px'
-            //update night order
-            populate_night_order()
-            return true;
-          }
-        } catch (error) {console.error(error)}      
-      }     
-    }
-  }
-  return false;
+/**
+ * Whether the application is loading. Set to true for the first few seconds
+ * of application loading as data is synced from the server, or when loading
+ * an uploaded gamestate from the grimoire. Saving is not possible while
+ * loading is occuring.
+ */
+var loading = false;
+
+
+
+/**
+ * Load all non-JS files into the application to finish initialization.
+ * This function is called as soon as the HTML is loaded.
+ */
+async function loaded()
+{
+  loading = true;
+  roles = await get_JSON("tokens.json");
+  dragPipLayerSpawnDefault("good");
+  dragPipLayerSpawnDefault("evil");
+  dragPipLayerSpawnDefault("reminder_pip");
+  load_scripts().then(() =>
+  {
+    load_game_state_json(localStorage.getItem("state"))
+  })
+  setTimeout(function ()
+  {
+    loading = false;
+    player_count_change();
+  }, 2000)
+  document.getElementById("body_actual").setAttribute("orientation", getOrientation())
+  window.onresize = resized;
 }
-
-//night order and jinx
-
-
-//open and close menu with m key
-//could be expanded to allow for more keybinds
-document.addEventListener('keydown', function(event) {
-  const keyPressed = event.key; // Get the key that was pressed
-  if(event.key == 'm'){
-    document.getElementById("menu_main").style.transform == "translateX(0px)" ? close_menu() : open_menu();   
-  }
-});

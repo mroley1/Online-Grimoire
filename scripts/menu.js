@@ -218,3 +218,13 @@ function clean_board() {
     clear_night_order();
     save_game_state();
 }
+
+/**
+ * Open the side menu.
+ */
+document.addEventListener('keydown', function (event) {
+    const keyPressed = event.key; // Get the key that was pressed
+    if (event.key == 'm') {
+        document.getElementById("menu_main").style.transform == "translateX(0px)" ? close_menu() : open_menu();
+    }
+});

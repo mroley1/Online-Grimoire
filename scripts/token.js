@@ -264,3 +264,40 @@ function generateSampleToken(id, el) {
 
     return el;
 }
+
+/**
+ * Attempt to attach this token to some other token on the grimoire. 
+ * Currently, this attaches reminder tokens to actual tokens. 
+ * This can be leveraged to attach any two tokens.
+ * @param {HTMLElement} div The token that will be attached to something else.
+ * @returns if an attachment was made.
+ */
+function attachTokenToToken(div) {
+    if (document.getElementById("attach_toggle").style.backgroundColor != "green") return false;
+    if (div.getAttribute("class") == "reminder drag") {
+        const players = document.getElementById("token_layer").getElementsByClassName("role_token");
+        const left = parseInt(getComputedStyle(div).getPropertyValue('left'))
+        const top = parseInt(getComputedStyle(div).getPropertyValue('top'))
+        for (const player in players) {
+            if (!isNaN(parseInt(player))) {
+                try {
+                    playerstyle = getComputedStyle(players[player]);
+
+                    diffx = parseInt(playerstyle.getPropertyValue('left')) + 37.5 - left;
+                    diffy = parseInt(playerstyle.getPropertyValue('top')) + 37.5 - top;
+                    if (Math.sqrt(diffx * diffx + diffy * diffy) < 75) {
+                        players[player].appendChild(div);
+                        div.style.position = 'relative'
+                        div.style.left = '-50px'
+                        div.style.top = '0px'
+                        //update night order
+                        populate_night_order()
+                        return true;
+                    }
+                } catch (error) { console.error(error) }
+            }
+        }
+    }
+    return false;
+}
+
