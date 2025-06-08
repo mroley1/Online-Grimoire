@@ -368,7 +368,7 @@ function gen_fabled_tab(token_JSON, inPlay) {
     token_landing.classList = "night_order_fabled_token_container"
     token_landing.id = "night_order_" + token_JSON.id;
     token_JSON["reminders"].forEach((token) => {
-        var uid = new Date().getTime()
+        var uid = makeUid()
         var token_perm = generateReminderBacking(token_JSON.id, token, uid)
         token_perm.id = `${token_JSON.id}_${token}`;
         token_perm.setAttribute("onclick", `javascript:spawnFabledReminder("${token_JSON.id}", "${token}")`)

@@ -188,9 +188,7 @@ function getTokenImageLink(id) {
  * @param {String} cat The role type that this role is.
  */
 function spawnTokenDefault(id, visibility, cat, hide_face) {
-    var time = new Date();
-    var uid = time.getTime()
-    spawnToken(id, uid, visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width / 2) - 75) + "px", "calc(50% - 75px)", "", []);
+    spawnToken(id, makeUid(), visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width / 2) - 75) + "px", "calc(50% - 75px)", "", []);
 }
 
 /**
