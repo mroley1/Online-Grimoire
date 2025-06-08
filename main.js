@@ -1,71 +1,11 @@
 
 const UID_LENGTH = 13
 const DEFAULT_FABLED = new Set(["doomsayer", "angel", "buddhist", "hellslibrarian", "revolutionary", "fiddler", "toymaker"]);
-var tokens_ref;
+var roles;
 var loading = false;
 var CURRENT_SCRIPT;
 var night_order_ref;
-class NightCounter
-{
-  constructor()
-  {
-    this.gameplace = 1;
-  }
-  isNight()
-  {
-    return this.gameplace % 2 == 0;
-  }
-  isSetup()
-  {
-    return this.gameplace == 1;
-  }
-  nextNight()
-  {
-    this.gameplace++;
-  }
-  prevNight()
-  {
-    if (this.gameplace > 1)
-    {
-      this.gameplace--;
-    }
-  }
-  getRot()
-  {
-    return this.gameplace * 180;
-  }
-  getcurrText()
-  {
-    if (this.isSetup())
-    {
-      return "";
-    } else
-    {
-      if (this.isNight())
-      {
-        return "night";
-      } else
-      {
-        return "day"
-      }
-    }
-  }
-  getCurrNumber()
-  {
-    if (this.isSetup())
-    {
-      return "setup";
-    } else
-    {
-      return Math.floor(this.gameplace / 2);
-    }
-  }
-  toString()
-  {
-    return "gameplace: " + this.gameplace + ", " + this.getcurrText() + " " + this.getCurrNumber();
-  }
-}
-var counter = new NightCounter();
+
 // ? TODO better scripts menu
 // TODO fullscreeen settings menu
 // TODO better fabled tokens
@@ -193,62 +133,10 @@ async function get_JSON(path)
   return await (await fetch("./data/" + path)).json();
 }
 
-function background_image_change(file_name)
-{
-  document.getElementById("body_actual").style.setProperty("--BG-IMG", "url('assets/backgrounds/" + file_name + ".webp')");
-  if (!loading) { save_game_state(); }
-}
-
-function getOrientation()
-{
-  if (window.innerHeight > window.innerWidth)
-  {
-    return "portrait";
-  } else
-  {
-    return "landscape";
-  }
-}
-function resized()
-{
-  if (document.getElementById("body_actual").getAttribute("orientation") != getOrientation())
-  {
-    orientationChange();
-  }
-  document.getElementById("body_actual").setAttribute("orientation", getOrientation());
-}
-function swapObjectOrientation(HTMLobj)
-{
-  tmp = HTMLobj.style.top;
-  HTMLobj.style.top = HTMLobj.style.left;
-  HTMLobj.style.left = tmp;
-}
-function orientationChange()
-{
-  players = document.getElementById("token_layer").getElementsByClassName("role_token");
-  for (i = 0; i < players.length; i++)
-  {
-    swapObjectOrientation(players[i]);
-  }
-  reminders = document.getElementById("reminder_layer").getElementsByClassName("reminder");
-  for (i = 0; i < reminders.length; i++)
-  {
-    swapObjectOrientation(reminders[i]);
-  }
-  pips = document.getElementById("interactivePlane").getElementsByClassName("reminder");
-  for (i = 0; i < pips.length; i++)
-  {
-    if (pips[i].getAttribute("stacked") == "false")
-    {
-      swapObjectOrientation(pips[i]);
-    }
-  }
-}
-
 async function loaded()
 {
   loading = true;
-  tokens_ref = await get_JSON("tokens.json");
+  roles = await get_JSON("tokens.json");
   dragPipLayerSpawnDefault("good");
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
@@ -263,99 +151,6 @@ async function loaded()
   }, 2000)
   document.getElementById("body_actual").setAttribute("orientation", getOrientation())
   window.onresize = resized;
-}
-
-// corner toggles and night functions
-function visibility_toggle()
-{
-  tokens = document.getElementById("token_layer").getElementsByClassName("role_token");
-  if (document.getElementById("body_actual").getAttribute("night") == "false")
-  { // ! nighttime
-    document.getElementById("body_actual").setAttribute("night", "true");
-    for (i = 0; i < tokens.length; i++)
-    {
-      var id = tokens[i].getAttribute("role");
-      var uid = tokens[i].getAttribute("uid");
-      tokens[i].style.backgroundImage = "";
-      tokens[i].setAttribute("onclick", "javascript:deathCycle('" + id + "', " + uid + ")");
-    }
-  } else
-  {                                                                     // ! daytime
-    document.getElementById("body_actual").setAttribute("night", "false");
-    for (i = 0; i < tokens.length; i++)
-    {
-      var id = tokens[i].getAttribute("role");
-      var uid = tokens[i].getAttribute("uid");
-      tokens[i].style.backgroundImage = "url('assets/token.png')"
-      tokens[i].setAttribute("onclick", "javascript:infoCall('" + id + "', " + uid + ")");
-    }
-  }
-  clear_night_order();
-}
-function deathCycle(id, uid)
-{
-  let token = document.getElementById(id + "_token_" + uid);
-  switch (token.getAttribute("viability"))
-  {
-    case "alive": //toDeadVote
-      token.setAttribute("viability", "dead_vote");
-      break;
-    case "dead_vote": //toDead
-      token.setAttribute("viability", "dead");
-      break;
-    case "dead": // toAlive
-      token.setAttribute("viability", "alive");
-      break;
-    default: token.setAttribute("viability", "alive");
-  }
-  populate_night_order();
-  if (!loading) { save_game_state(); }
-}
-function move_toggle()
-{
-  var self = document.getElementById("move_toggle")
-  if (self.style.backgroundColor == "green")
-  {
-    self.style.backgroundColor = "rgb(66, 66, 66)";
-  } else
-  {
-    self.style.backgroundColor = "green";
-  }
-}
-function attach_toggle()
-{
-  var self = document.getElementById("attach_toggle")
-  if (self.style.backgroundColor == "green")
-  {
-    self.style.backgroundColor = "rgb(66, 66, 66)";
-  } else
-  {
-    self.style.backgroundColor = "green";
-  }
-}
-function night_wedge_next_day()
-{
-  counter.nextNight();
-  document.getElementById("night_wedge_rotate").style.transform = "rotate(" + counter.getRot() + "deg)";
-  update_night_wedge_text();
-}
-function night_wedge_prev_day()
-{
-  counter.prevNight();
-  document.getElementById("night_wedge_rotate").style.transform = "rotate(" + counter.getRot() + "deg)";
-  update_night_wedge_text();
-}
-function update_night_wedge_text()
-{
-  if (counter.isNight())
-  {
-    document.getElementById("night_wedge_night_text_pre").innerHTML = counter.getcurrText();
-    document.getElementById("night_wedge_night_text_num").innerHTML = counter.getCurrNumber();
-  } else
-  {
-    document.getElementById("night_wedge_day_text_pre").innerHTML = counter.getcurrText();
-    document.getElementById("night_wedge_day_text_num").innerHTML = counter.getCurrNumber();
-  }
 }
 
 //token functions
@@ -478,7 +273,7 @@ function createRoleNameElement(id, uid)
   textPath.setAttribute("style", "fill: black; font-family: Dumbledor; font-size: 24px;");
   textPath.classList.add("js--character--name");
   textPath.id = `${id}_${uid}_name_text`;
-  textPath.textContent = tokens_ref[id]["name"]; // Use textContent for dynamic text
+  textPath.textContent = roles[id]["name"]; // Use textContent for dynamic text
   
   // Append textPath to text, and text to svg
   text.appendChild(textPath);
@@ -488,7 +283,7 @@ function createRoleNameElement(id, uid)
 }
 
 function getTokenImageLink(id) {
-  const image = tokens_ref[id]["image"];
+  const image = roles[id]["image"];
   if (typeof image === "object") {
     // in the BOTC schema, the "image" object can be either a single link,
     // or an array of links. 
@@ -524,119 +319,6 @@ function clean_tokens(uid)
       document.getElementById("reminder_layer").removeChild(reminders[i]);
     }
   }
-}
-function mutate_menu(id, uid)
-{
-  var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
-  for (i = 0; i < townsfolk.length; i++)
-  {
-    townsfolk[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var outsiders = document.getElementById("mutate_menu_outsider").children;
-  for (i = 0; i < outsiders.length; i++)
-  {
-    outsiders[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var minions = document.getElementById("mutate_menu_minion").children;
-  for (i = 0; i < minions.length; i++)
-  {
-    minions[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var demons = document.getElementById("mutate_menu_demon").children;
-  for (i = 0; i < demons.length; i++)
-  {
-    demons[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  var travellers = document.getElementById("mutate_menu_traveller").children;
-  for (i = 0; i < travellers.length; i++)
-  {
-    travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
-  }
-  document.getElementById("mutate_menu_main").style.display = "inherit";
-}
-function close_mutate_menu()
-{
-  document.getElementById("mutate_menu_main").style.display = "none";
-  document.getElementById("mutate_menu_all_main").style.display = "none";
-}
-
-function mutate_token(idFrom, uid, idTo)
-{
-  let new_json = tokens_ref[idTo];
-
-  let subject = document.getElementById(idFrom + "_token_" + uid);
-
-  subject.setAttribute("cat", new_json["team"]);
-  if (new_json["team"] == "traveller") { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = `url(${getTokenImageLink(idTo)})` }
-  else { subject.getElementsByClassName("token_outsider_betray")[0].style.backgroundImage = "" }
-
-  subject.setAttribute("show_face", !new_json["hide_face"]);
-  subject.setAttribute("role", new_json["id"]);
-  subject.style.backgroundImage = "url('assets/token.png')";
-  subject.setAttribute("onclick", "javascript:infoCall('" + idTo + "', " + uid + ")");
-  subject.id = idTo + "_token_" + uid;
-
-  const image = document.getElementById(`${idFrom}_${uid}_image`);
-  image.id = `${idTo}_${uid}_image`;
-  image.src = getTokenImageLink(idTo);
-
-  document.getElementById(idFrom + "_" + uid + "_death").id = idTo + "_" + uid + "_death";
-  document.getElementById(idFrom + "_" + uid + "_visibility_pip").id = idTo + "_" + uid + "_visibility_pip";
-  document.getElementById(idFrom + "_" + uid + "_vote").id = idTo + "_" + uid + "_vote";
-  document.getElementById(idFrom + "_name_" + uid).id = idTo + "_name_" + uid;
-
-  const name_text = document.getElementById(`${idFrom}_${uid}_name_text`);
-  name_text.id = `${idTo}_${uid}_name_text`;
-  name_text.textContent = new_json["name"];
-
-  clean_tokens(uid);
-  if (document.getElementById("info_box").style.display == "inherit") { infoCall(idTo, uid); }
-  if (!loading) { save_game_state(); }
-}
-function shuffle_roles()
-{
-  if (document.getElementById("body_actual").getAttribute("night") == "true") { visibility_toggle() }
-  function shuffle(a)
-  {
-    for (let i = a.length - 1; i > 0; i--)
-    {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    hideInfo();
-  }
-  let tokens = document.getElementById("token_layer").children;
-  var ids = [];
-  for (i = 0, j = 0; i < tokens.length; i++)
-  {
-    if (tokens[i].getAttribute("visibility") == "show")
-    {
-      ids[j++] = tokens[i].id.match(/.*(?=_token_)/)[0];
-    }
-  }
-  shuffle(ids);
-  var offset = 0
-  for (let i = 0, j = 0; i < tokens.length; i++)
-  {
-    if (tokens[i].getAttribute("visibility") == "show")
-    {
-      mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
-    }
-  }
-}
-function populate_mutate_menu(tokens)
-{
-  tokens.forEach((element) =>
-  {
-    var div = document.createElement("div");
-    div.id = "mutate_menu_" + element["id"];
-    generateSampleToken(element["id"], div);
-    div.classList = "background_image mutate_menu_token";
-    if (element["team"] != "fabled")
-    {
-      document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
-    }
-  })
 }
 
 
@@ -708,18 +390,6 @@ function unprompt_reminders()
 
 
 //menu functions
-function open_menu()
-{
-  if(document.getElementById("body_actual").getAttribute("night") == "false"){
-    document.getElementById("menu_main").style.transform = "translateX(0px)";
-  }
-}
-function close_menu()
-{
-  if(document.getElementById("body_actual").getAttribute("night") == "false"){
-    document.getElementById("menu_main").style.transform = "translateX(-300px)";
-  }
-}
 async function load_scripts()
 {
   var scripts = await get_JSON("scripts/scripts.json")
@@ -843,7 +513,7 @@ async function populate_script(script)
   {
     if (element.id.substring(0, 1) != "_")
     {
-      try { scriptTokens.push(tokens_ref[element.id]) } catch { }
+      try { scriptTokens.push(roles[element.id]) } catch { }
     }
   })
 
@@ -870,193 +540,6 @@ async function populate_script(script)
   if (!loading) { save_game_state(); }
   return Promise.resolve()
 }
-function increment_player_count(x)
-{
-  document.getElementById("player_count").value = parseInt(document.getElementById("player_count").value) + parseInt(x);
-  player_count_change()
-}
-function player_count_change()
-{
-  var player_count_tmp = document.getElementById("player_count").value;
-  tableIndex = 0;
-  if (player_count_tmp < 5)
-  {
-    document.getElementById("player_count").value = 5;
-    player_count_tmp = 5
-  }
-  let player_count = player_count_tmp;
-  if (player_count_tmp > 15)
-  {
-    player_count_tmp = 15
-  }
-  tableIndex = parseInt(player_count_tmp) - 5;
-  var table = [[3, 0, 1, 1], [3, 1, 1, 1], [5, 0, 1, 1], [5, 1, 1, 1], [5, 2, 1, 1], [7, 0, 2, 1], [7, 1, 2, 1], [7, 2, 2, 1], [9, 0, 3, 1], [9, 1, 3, 1], [9, 2, 3, 1], [10, 2, 3, 1], [11, 2, 3, 1], [11, 3, 3, 1]]
-  var counts = [0, 0, 0, 0, 0];
-  tokens = document.getElementsByClassName("role_token");
-  if (!loading)
-  { //dont try to update player counts before menu is loaded
-    var expected = new Object();
-    // [hard modifier, soft positive modifier, soft negative modifier, locked?]
-    expected.townsfolk = [table[tableIndex][0], 0, 0, false];
-    expected.out = [table[tableIndex][1], 0, 0, false];
-    expected.min = [table[tableIndex][2], 0, 0, false];
-    expected.dem = [table[tableIndex][3], 0, 0, false];
-    expected.trav = [0, 0, 0, false];
-    async function makeupMod(id)
-    {
-      try
-      {
-        let lambdas = {
-          "HARD": ((cat, mod) => { expected[cat][0] += mod }),
-          "SOFTPOS": ((cat, mod) => { expected[cat][1] += mod }),
-          "SOFTNEG": ((cat, mod) => { expected[cat][2] += mod }),
-          "REQ": ((cat, val) => { }),
-          "LOCK": ((cat, val) =>
-          {
-            if (val == -1)
-            {
-              expected[cat][0] = player_count;
-            } else
-            {
-              expected[cat][0] = val;
-            }
-            expected[cat][3] = true;
-            expected[cat][1] = 0;
-            expected[cat][2] = 0;
-          })
-        }
-        let json = tokens_ref[id];
-        json["change_makeup"].forEach(element =>
-        {
-          let changeKey = Object.keys(element)[0];
-          if (!expected[element[changeKey][0]][3])
-          {
-            lambdas[changeKey](element[changeKey][0], element[changeKey][1]);
-          }
-        });
-      } catch { }
-      return Promise.resolve();
-    }
-    for (i = 0; i < tokens.length; i++)
-    {
-      let visibility = tokens[i].getAttribute("visibility");
-      switch (tokens[i].getAttribute("cat"))
-      {
-        case "townsfolk":
-          if (visibility == "show") { counts[0]++; }
-          break;
-        case "outsider":
-          if (visibility == "show") { counts[1]++; }
-          break;
-        case "minion":
-          if (visibility == "show") { counts[2]++; }
-          break;
-        case "demon":
-          if (visibility == "show") { counts[3]++; }
-          break;
-        case "traveller":
-          if (visibility == "show") { counts[4]++; }
-          break;
-      }
-    }
-    for (i = 0; i < tokens.length; i++)
-    {
-      makeupMod(tokens[i].id.match(/.*(?=_token_)/)[0])
-    }
-    function genSoftModString(pos, neg)
-    {
-      var string = " "
-      var combined = 0;
-      while (pos > 0 && neg > 0)
-      {
-        combined++;
-        pos--;
-        neg--;
-      }
-      if (combined > 0)
-      {
-        string += String.fromCharCode(177) + combined;
-      }
-      if (pos > 0)
-      {
-        string += " +" + pos;
-      }
-      if (neg > 0)
-      {
-        string += " -" + neg;
-      }
-      return string;
-    }
-    document.getElementById("ratio_townsfolk").innerHTML = counts[0] + "/" + expected["townsfolk"][0] + genSoftModString(expected["townsfolk"][1], expected["townsfolk"][2]);
-    document.getElementById("ratio_outsider").innerHTML = counts[1] + "/" + expected["out"][0] + genSoftModString(expected["out"][1], expected["out"][2]);
-    document.getElementById("ratio_minion").innerHTML = counts[2] + "/" + expected["min"][0] + genSoftModString(expected["min"][1], expected["min"][2]);
-    document.getElementById("ratio_demon").innerHTML = counts[3] + "/" + expected["dem"][0] + genSoftModString(expected["dem"][1], expected["dem"][2]);
-    if (player_count > 15 && !expected["trav"][3]) { expected["trav"][0] += player_count - 15 }
-    document.getElementById("ratio_traveller").innerHTML = counts[4] + "/" + expected["trav"][0] + genSoftModString(expected["trav"][1], expected["trav"][2]);
-  }
-}
-function update_role_counts()
-{
-  var counts = document.getElementsByClassName("menu_token_count");
-  for (let i = 0; i < counts.length; i++)
-  {
-    counts[i].innerHTML = 0;
-  }
-  var tokens = document.getElementsByClassName("role_token");
-  for (let i = 0; i < tokens.length; i++)
-  {
-    id = tokens[i].getAttribute("id").match(/.*(?=_token)/)[0];
-    try
-    {
-      if (tokens[i].getAttribute("visibility") == "show")
-      {
-        document.getElementById(id + "_count").innerHTML = parseInt(document.getElementById(id + "_count").innerHTML) + 1;
-      }
-    }
-    catch (e) { }
-
-  }
-
-}
-function clear_mutate_menu()
-{
-  document.getElementById("mutate_menu_townsfolk").innerHTML = "";
-  document.getElementById("mutate_menu_outsider").innerHTML = "";
-  document.getElementById("mutate_menu_minion").innerHTML = "";
-  document.getElementById("mutate_menu_demon").innerHTML = "";
-  document.getElementById("mutate_menu_traveller").innerHTML = "";
-}
-function toggle_menu_collapse()
-{
-  const dropdown = document.getElementById("menu_settings_dropdown");
-  if (dropdown.getAttribute("expand") == "true")
-  {
-    dropdown.setAttribute("expand", "false");
-    dropdown.style.height = "40px";
-  } else
-  {
-    dropdown.setAttribute("expand", "true");
-    dropdown.style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
-  }
-}
-function clean_board()
-{
-  const tokens = document.getElementById("token_layer").children;
-  for (let it = tokens.length - 1; it >= 0; it--)
-  {
-    remove_token(tokens[it].id.match(/.*(?=_token_)/)[0], tokens[it].getAttribute("uid"))
-  }
-  const pips = document.getElementById("dragPipLayer").children;
-  for (let it = pips.length - 1; it >= 0; it--)
-  {
-    if (pips[it].getAttribute("stacked") == "false")
-    {
-      delete_reminder(pips[it].id);
-    }
-  }
-  clear_night_order();
-  save_game_state();
-}
 async function game_state_upload()
 {
   let json = await document.getElementById("game_state_upload").files[0].text();
@@ -1075,53 +558,8 @@ function download_game_state()
   element.click();
   document.body.removeChild(element);
 }
-function change_background_menu()
-{
-  document.getElementById("background_select_menu").style.display = "inherit";
-}
-function change_background_menu_hide()
-{
-  document.getElementById("background_select_menu").style.display = "none";
-}
 
 //info functions
-async function infoCall(id, uid)
-{
-  close_menu();
-  let data_token = document.getElementById(id + "_token_" + uid);
-  generateSampleToken(id,  document.getElementById("info_img"));
-  var roleJSON = tokens_ref[id];
-  document.getElementById("info_title_field").innerHTML = roleJSON["name"];
-  document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-  document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-  document.getElementById("info_desc_field").innerHTML = roleJSON["ability"];
-  document.getElementById("info_list").setAttribute("current_player", id);
-  document.getElementById("info_token_landing").innerHTML = "";
-  document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('" + id + "', '" + uid + "')");
-  document.getElementById("info_kill_cycle").setAttribute("onclick", "javascript:info_death_cycle_trigger('" + id + "', '" + uid + "')");
-  document.getElementById("info_visibility_toggle").setAttribute("onclick", "javascript:cycle_token_visibility_toggle('" + id + "', '" + uid + "')");
-  document.getElementById("info_edit_role").setAttribute("onclick", "javascript:mutate_menu('" + id + "', '" + uid + "')");
-  document.getElementById("info_box").setAttribute("hidden", data_token.getAttribute("visibility"));
-  document.getElementById("info_name_input").value = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-  document.getElementById("info_name_input").setAttribute("onchange", "javascript:nameIn('" + id + "', " + uid + ")");
-  document.getElementById("info_box").style.display = "inherit";
-  document.getElementById("info_token_dragbox").innerHTML = "";
-
-  update_info_death_cycle(id, uid);
-
-  const landing = document.getElementById("info_token_landing");
-  for (var i = 0; i < roleJSON["reminders"].length; i++)
-  {
-    const backing = generateReminderBacking(id, roleJSON["reminders"][i], uid);
-    // div.setAttribute("reminderId", i);
-    document.getElementById("info_token_landing").appendChild(backing);
-
-    const x = backing.getBoundingClientRect().x - landing.getBoundingClientRect().x;
-    const y = backing.getBoundingClientRect().y - landing.getBoundingClientRect().y;
-    // x, y, roleName, reminder info, id
-    spawnReminderGhost(x, y, id, roleJSON["reminders"][i], backing.id);
-  }
-}
 
 function generateSampleToken(id, el) {
   el.textContent = "";
@@ -1161,7 +599,7 @@ function generateSampleToken(id, el) {
   textPath.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#curve");
   textPath.setAttribute("style", "fill: black; font-family: Dumbledor; font-size: 24px;");
   textPath.classList.add("js--character--name");
-  textPath.textContent = tokens_ref[id]["name"]; 
+  textPath.textContent = roles[id]["name"]; 
   
   text.appendChild(textPath);
   roleName.appendChild(text);
@@ -1286,90 +724,6 @@ function spawnFabledReminder(roleName, reminder)
   var time = new Date();
   var uid = time.getTime();
   spawnReminder(roleName, reminder, uid, 'calc(50% - 40px)', 'calc(50% - 40px)')
-}
-
-function hideInfo()
-{
-  document.getElementById("info_box").style.display = "none";
-}
-
-function nameIn(id, uid)
-{
-  let value = document.getElementById("info_name_input").value;
-  document.getElementById(id + "_name_" + uid).innerHTML = value;
-  document.getElementById("info_name_field").innerHTML = value;
-  document.getElementById("info_img_name").innerHTML = value;
-}
-
-function cycle_token_visibility_toggle(id, uid)
-{
-  switch (document.getElementById(id + "_token_" + uid).getAttribute("visibility"))
-  {
-    case "show":
-      document.getElementById(id + "_token_" + uid).setAttribute("visibility", "bluff");
-      document.getElementById("info_box").setAttribute("hidden", "bluff");
-      break;
-    case "bluff":
-      document.getElementById(id + "_token_" + uid).setAttribute("visibility", "hide");
-      document.getElementById("info_box").setAttribute("hidden", "hide");
-      break;
-    case "hide":
-      document.getElementById(id + "_token_" + uid).setAttribute("visibility", "show");
-      document.getElementById("info_box").setAttribute("hidden", "show");
-      break;
-  }
-  update_role_counts();
-  player_count_change();
-  populate_night_order();
-  if (!loading) { save_game_state(); }
-}
-
-function expand_info_tab(tab)
-{
-  document.getElementById("info_desc").setAttribute("focus", "false");
-  document.getElementById("info_list").setAttribute("focus", "false");
-  document.getElementById("info_rmnd").setAttribute("focus", "false");
-  document.getElementById("info_powr").setAttribute("focus", "false");
-  document.getElementById("info_rmnd").style.overflow = "hidden";
-  switch (tab)
-  {
-    case 'desc':
-      document.getElementById("info_desc").setAttribute("focus", "true");
-      break;
-    case 'list':
-      document.getElementById("info_list").setAttribute("focus", "true");
-      break;
-    case 'rmnd':
-      document.getElementById("info_rmnd").setAttribute("focus", "true");
-      setTimeout((() => { document.getElementById("info_rmnd").style.overflow = "visible"; }), 200) // because overflow needs to be visible/ delays until after animation
-      break;
-    case 'powr':
-      document.getElementById("info_powr").setAttribute("focus", "true");
-      break;
-  }
-}
-
-function info_death_cycle_trigger(id, uid)
-{
-  deathCycle(id, uid);
-  update_info_death_cycle(id, uid);
-
-}
-
-function update_info_death_cycle(id, uid)
-{
-  switch (document.getElementById(id + "_token_" + uid).getAttribute("viability"))
-  {
-    case "alive":
-      document.getElementById("info_kill_cycle").style.backgroundImage = "url('assets/tombstone.png')"
-      break;
-    case "dead_vote":
-      document.getElementById("info_kill_cycle").style.backgroundImage = "url('assets/vote.png')"
-      break;
-    case "dead":
-      document.getElementById("info_kill_cycle").style.backgroundImage = "url('assets/revive.png')"
-      break;
-  }
 }
 
 /** 
@@ -1530,62 +884,6 @@ function close_playerinfo_shroud()
 }
 
 
-//drag functions
-/** The element that is currently being dragged. */
-var active = null;
-/** The X offset between the cursor and a dragged element */
-var xOffset = 0;
-/** The Y offset between the cursor and a dragged element */
-var yOffset = 0;
-
-/**
- * Make an element draggable.
- * @param {HTMLElement} element An element to give the drag callbacks to.
- */
-function makeDraggable(element) {
-  element.addEventListener("touchstart", dragStart, false);
-  element.addEventListener("touchend", dragEnd, false);
-  element.addEventListener("touchmove", drag, false);
-
-  element.addEventListener("mousedown", dragStart, false);
-  element.addEventListener("mouseup", dragEnd, false);
-  element.addEventListener("mousemove", drag, false);
-}
-
-/**
- * Initialize the logic for dragging an element.
- * @param {Event} e The event that triggered this function.
- */
-function dragStart(e) {
-  const token = getActualDragged(e.target);
-  if(e.target.parentNode.getAttribute("class")=="role_token drag"){
-    tokenlayer = document.getElementById("reminder_layer");
-    tokenlayer.appendChild(e.target);
-    e.target.style.position = 'absolute';
-    let elementPos = e;
-    if (e.type == "touchstart") {
-      elementPos = e.touches[0];
-    }
-    e.target.style.left = elementPos.clientX-37.5
-    e.target.style.top = elementPos.clientY-37.5
-    token.style.position = 'absolute';
-
-  }
-  if (!draggingEnabledFor(token)) {
-    return;
-  }
-  active = token;
-  active.style.zIndex = 1;
-  var pos = getComputedStyle(token);
-  if (e.type === "touchstart") {
-    xOffset = e.touches[0].clientX - pos.getPropertyValue('left').match(/\d+/)[0];
-    yOffset = e.touches[0].clientY - pos.getPropertyValue('top').match(/\d+/)[0];
-  } else {
-    xOffset = e.clientX - pos.getPropertyValue('left').match(/\d+/)[0];
-    yOffset = e.clientY - pos.getPropertyValue('top').match(/\d+/)[0];
-  }
-}
-
 //Attatches a token to another token
 //Intended to be reminder tokens, but adjusting to allow for character tokens shouldn't be that complicated
 function attachTokenToToken(div){
@@ -1616,143 +914,6 @@ function attachTokenToToken(div){
   }
   return false;
 }
-
-/**
- * Finalize the dragging of an element. 
- * @param {Event} e The event that triggered this function.
- */
-function dragEnd(e) {
-  if (active == null) return; // Can happen if you release click over a token
-  //if a reminder token is touching a role token it 'attaches' itself to the role token
-  if(active.getAttribute("class")=="reminder drag"){
-    if (attachTokenToToken(active)) {
-      e.preventDefault();
-    }
-  }
-  // The good, evil, and generic reminder tokens.
-  if (active.getAttribute("disposable-reminder"))
-  {
-    if (active.getAttribute("stacked") == "true")
-    {
-      dragPipLayerSpawnDefault(active.getAttribute("alignment"));
-    }
-    active.setAttribute("stacked", false);
-    active.style.cursor = "pointer";
-  }
-  
-  // If a new reminder token is to be instantiated.
-  if (active.getAttribute("ghost") == "true")
-  {
-    const role = active.getAttribute("role");
-    const reminder = active.children[2].innerText;
-    spawnReminder(
-        role,
-        reminder,
-        active.id.substring(e.target.id.length - (2 * UID_LENGTH) - 1, e.target.id.length), 
-        active.getBoundingClientRect().left + 12.5, 
-        e.target.getBoundingClientRect().top + 12.5
-    );
-    if (e.target.getAttribute("token_from") == "info")
-    {
-      let x = document.getElementById(active.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().x - document.getElementById("info_token_landing").getBoundingClientRect().x;
-      let y = document.getElementById(active.id.substring(0, e.target.id.length - UID_LENGTH - 1)).getBoundingClientRect().y - document.getElementById("info_token_landing").getBoundingClientRect().y;
-      // SCUFFED AF
-      spawnReminderGhost(
-          x, 
-          y, 
-          role,
-          reminder,
-          e.target.id.substring(0, e.target.id.length - UID_LENGTH - 1)
-      );
-    }
-    e.target.parentNode.removeChild(e.target);
-  }
-
-  active.style.zIndex = ""; // The default, for some reason
-  const container = active.parentElement;
-  if (container != null) {
-    container.removeChild(active);
-    container.appendChild(active);
-  }
-
-  active = null;
-  if (!loading) { 
-    save_game_state();
-  }
-}
-
-/**
- * Drag a token for a single frame. 
- * @param {Event} e The event that triggered this.
- */
-function drag(e) {
-  if (active == null) return;
-  e.preventDefault();
-  let moved = active;
-
-  while (moved.localName != "html" && moved.localName != "div") {
-    moved = moved.parentElement;
-  }
-  //if (!moved.classList.contains("role_token")) return;
-
-  if (e.type === "touchmove")
-  {
-    currentX = e.touches[0].clientX - xOffset;
-    currentY = e.touches[0].clientY - yOffset;
-  } else
-  {
-    currentX = e.clientX - xOffset;
-    currentY = e.clientY - yOffset;
-  }
-
-  setTranslate(currentX, currentY);
-}
-
-function setTranslate(xPos, yPos)
-{
-  active.style.left = xPos + "px"
-  active.style.top = yPos + "px"
-}
-
-function getActualDragged(el) {
-  let root = el;
-  while (root.localName != "body") {
-    if (root.classList.contains("role_token")) return root;
-    root = root.parentElement;
-  }
-  return el;
-}
-
-function isRoleToken(el) {
-  while (el.localName != "body") {
-    if (el.classList.contains("role_token")) return true;
-    el = el.parentElement;
-  }
-  return false;
-}
-
-/**
- * Determine if the clicked item is actually draggable.
- * @param {EventTarget} target The item that is being clicked.
- * @returns 
- */
-function draggingEnabledFor(target) {
-  if (document.getElementById("move_toggle").style.backgroundColor != "green" && isRoleToken(target)) {
-    return false;
-  }
-  return target.classList.contains("drag");
-}
-
-
-//if you click on black space
-function neutralClick()
-{
-  active = null;
-  hideInfo()
-  close_menu()
-  unprompt_reminders()
-}
-
 
 //night order and jinx
 function toggle_night_order_buttons(type)
@@ -1816,7 +977,7 @@ async function populate_night_order()
   {
     if (inPlay.has(order[i]))
     {
-      gen_night_order_tab_role(tokens_ref[order[i]], night, (alive.has(order[i])) ? false : true)
+      gen_night_order_tab_role(roles[order[i]], night, (alive.has(order[i])) ? false : true)
     }
     if (order[i].toUpperCase() == order[i])
     {
@@ -2044,7 +1205,7 @@ function populate_fabled()
   {
     if (entry.id != "_meta")
     {
-      var token = tokens_ref[entry.id];
+      var token = roles[entry.id];
       if (token["team"] == "fabled")
       {
         fabled.add(entry.id);
@@ -2054,7 +1215,7 @@ function populate_fabled()
   })
   fabled.forEach((fable) =>
   {
-    var json = tokens_ref[fable];
+    var json = roles[fable];
     gen_fabled_tab(json, true);
     return Promise.resolve();
   })
@@ -2098,320 +1259,6 @@ function gen_fabled_tab(token_JSON, inPlay)
   div.setAttribute("onclick", "javascript:expand_night_order_tab('" + token_JSON.id + "_night_order_tab')");
   div.appendChild(img);
 }
-//generates an html page that can be printed to a pdf from currently loaded script
-async function generateHTMLDocument() {
-  update_current_script()
-
-  // Start the HTML structure
-    let html = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${CURRENT_SCRIPT[0].name}</title>
-    <style>
-      @font-face {
-        font-family: PiratesBay;
-        src: url(sansation_light.woff);
-      }
-      body {
-        margin: 10px;
-        font-family: PiratesBay;
-        font-size:x-small;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0;
-        padding: 0;
-        
-      }
-      td {
-        vertical-align: top;
-        padding: 3px;
-        font-size:15px
-      }
-      img {
-        max-width: 100%;
-        height: auto;
-      }
-      h1 {
-       font-size:30px
-      }
-       h2 {
-       font-size:20px
-      }
-    </style>
-    <script>
-      alert("Print page to pdf");
-    </script>
-  </head>
-  <body>
-  <h1>${CURRENT_SCRIPT[0].name}</h1>
-  <h2>Townsfolk<h2>
-  <table>`;
-
-    // Generate rows from the provided arrays for townsfolk
-    for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'townsfolk'){
-        html += `
-      <tr>
-        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-        <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
-      </tr>`;
-      }
-    }
-
-  html += `
-  </table>
-
-  <h2>Outsiders<h2>
-  <table>`;
-
-    // Generate rows from the provided arrays for OUTsiders
-    for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'outsider'){
-        html += `
-      <tr>
-        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-        <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
-      </tr>`;
-      }
-    }
-    html += `
-  </table>
-
-  <h2>Minions<h2>
-  <table>`;
-
-    // Generate rows from the provided arrays for minions
-    for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-      if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'minion'){
-        html += `
-      <tr>
-        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-        <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
-      </tr>`;
-      }
-    }
-    html += `
-  </table>
-
-  <h2>Demons<h2>
-  <table>`;
-
-  // Generate rows from the provided arrays for Demons
-  for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-    if(tokens_ref[CURRENT_SCRIPT[i].id].team == 'demon'){
-      html += `
-    <tr>
-      <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-      <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
-    </tr>`;
-    }
-  }
-  //close table
-  html += `
-  </table>`;
-  //Night Order
-  var order = await get_JSON("nightsheet.json");
-  let first_night = [];
-  let other_night = [];
-  for(i = 0; i < order["firstnight"].length; i++){
-    id = order["firstnight"][i]
-    for(j=0; j < CURRENT_SCRIPT.length; j++){
-      if(CURRENT_SCRIPT[j].id === id  && tokens_ref[id].team != "traveller"){first_night.push(id)}
-    }
-  }
-  for(i = 0; i < order["othernight"].length; i++){
-    id = order["othernight"][i]
-    for(j=0; j < CURRENT_SCRIPT.length; j++){
-      if(CURRENT_SCRIPT[j].id === id && tokens_ref[id].team != "traveller"){other_night.push(id)}
-    }
-  }
-  //fill night order table
-  html +=`
-  <table>
-        <tr>
-            <th><h2>First Night</h2></th>
-            <th><h2>Other Nights</h2></th>
-        </tr>`
-  for(i = 0; i < (other_night.length < first_night.length ? first_night.length : other_night.length); i++){
-    let first_id = first_night[i];
-    let other_id = other_night[i];
-    html+=`
-    <tr>`
-    if(tokens_ref[first_id]){
-      html+=`
-      <td><img style="width: 7.5%" src="${getTokenImageLink(first_id)}" alt="${tokens_ref[first_id].name}"> <b>${tokens_ref[first_id].name}</b></td>`
-    }else{
-      html+=`
-      <td></td>`
-    };
-    if(tokens_ref[other_id]){
-      html+=`
-        <td><img style="width: 7.5%" src="${getTokenImageLink(other_id)}" alt="${tokens_ref[other_id].name}"> <b>${tokens_ref[other_id].name}</b></td>`
-    }else{
-      html+=`
-      <td></td>`
-    };
-    html+=`
-    </tr>`
-  }
-  //end table
-  html+=`      
-    </table>`
-  //Print jinxes
-  
-  jinxes = await get_JSON("jinx.json");
-  anyjinx = false
-  for(i = 0; i <  jinxes.length; i++){
-    for(j = 0; j < CURRENT_SCRIPT.length; j++){
-      //if the first role in the pair is in the current script
-      if(jinxes[i].id == CURRENT_SCRIPT[j].id){
-        for(k = 0; k < jinxes[i].jinx.length; k++){
-          jinx = jinxes[i].jinx[k];         
-          for(l = 0; l < CURRENT_SCRIPT.length; l++){
-            //if the second role in the pair is in the current script
-            if(jinx.id == CURRENT_SCRIPT[l].id){
-              if(!anyjinx){               
-                html +=`
-                <h2>Jinxes<h2>
-                <table>`;
-                anyjinx = true
-              }
-              html += `
-              <tr>
-                <td style="width: 7.5%;"><img src="${getTokenImageLink(jinxes[i].id)}" alt="${tokens_ref[jinxes[i].id].name}"></td>
-                <td style="width: 15%; font-weight: bold;">${tokens_ref[jinxes[i].id].name}</td>
-                <td style="width: 7.5%;"><img src="${getTokenImageLink(jinx.id)}" alt="${tokens_ref[jinx.id].name}"></td>
-                <td style="width: 15%; font-weight: bold;">${tokens_ref[jinx.id].name}</td>
-                <td style="width: 70%;">${jinx.reason}</td>
-              </tr>`;
-            }
-          }          
-        }
-      }
-    }  
-  }
-  if(anyjinx){
-    //end table
-    html+=`      
-    </table>`
-  }
-  
-
-  //Print travelers and fables
-  html +=`
-  <h2>Travelers<h2>
-  <table>`;
-
-  // Generate rows For travelers
-  for (element in tokens_ref) {
-    if(tokens_ref[element].team == 'traveller'){
-      html += `
-    <tr>
-      <td style="width: 7.5%;"><img src="${getTokenImageLink(tokens_ref[element].id)}" alt="${tokens_ref[element].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${tokens_ref[element].name}</td>
-      <td style="width: 75%;">${tokens_ref[element].ability}</td>
-    </tr>`;
-    }
-  }
-  //close table
-  html += `
-  </table>`;
-
-  // Generate rows For fables
-  html +=`
-  <h2>Fables<h2>
-  <table>`;
-  for (element in tokens_ref) {
-    if(tokens_ref[element].team == 'fabled'){
-      html += `
-    <tr>
-      <td style="width: 7.5%;"><img src="${getTokenImageLink(tokens_ref[element].id)}" alt="${tokens_ref[element].name}"></td>
-      <td style="width: 15%; font-weight: bold;">${tokens_ref[element].name}</td>
-      <td style="width: 75%;">${tokens_ref[element].ability}</td>
-    </tr>`;
-    }
-  }
-  //close table
-  html += `
-  </table>`;
-
-  // Close the HTML structure
-  html +=`
-  </body>
-  </html>`;
-
-  // Optional: Automatically open the generated HTML in a new window
-  const newWindow = window.open();
-  newWindow.document.write(html);
-  newWindow.document.close();
-}
-
-//Downloads the script of onscreen tokens in a .json file
-function download_current_script()
-{
-  update_current_script()
-  var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(CURRENT_SCRIPT)));
-  element.setAttribute('download', CURRENT_SCRIPT[0].name + ".json");
-  element.style.display = 'none';
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
-}
-
-//Updates the current script name to reflect the inputted name
-function update_current_script_name(){
-  CURRENT_SCRIPT[0].name = document.getElementById("script_upload_feedback").textContent;
-}
-
-//updates the current to script to on screen tokens
-function update_current_script(){
-  //clear current script
-  CURRENT_SCRIPT = CURRENT_SCRIPT.filter(element => element.id == CURRENT_SCRIPT[0].id);
-  //repopulated based on tokens currently on screen(and not hidden or dead)
-  onscreen_tokens = document.getElementById("token_layer").getElementsByClassName("role_token");
-  for (i = 0; i < onscreen_tokens.length; i++) {
-    if(onscreen_tokens[i].getAttribute("visibility")=="show" && onscreen_tokens[i].getAttribute("viability") == "alive"){
-      let newElement = {"id":onscreen_tokens[i].role}
-      if (!CURRENT_SCRIPT.some(element => element.id == newElement.id)) {
-        CURRENT_SCRIPT.push(newElement); // Add the element only if it doesn't exist
-      }
-    }   
-  }
-}
-
-//Opens a mutate menu of all tokens of a set class
-//And when selected the token will be spawned on the board
-function add_offscript_character(token_class){ 
-  document.getElementById("mutate_menu_all").innerHTML = "";
-  let allTokens = [];
-  for(let element in tokens_ref)
-  {
-    element = tokens_ref[element]
-    if (element.team == token_class)
-    {      
-      try {
-        var div = document.createElement("div");
-        div.id = "mutate_menu_all";
-        generateSampleToken(element["id"], div);
-        div.classList = "background_image mutate_menu_token";
-        div.setAttribute("onclick","spawnTokenDefault('" + element["id"] + "', 'show', '"+ token_class + "', 'alive')")
-        document.getElementById("mutate_menu_all").appendChild(div);
-        } catch { }
-    }
-  }
-  document.getElementById("mutate_menu_all_main").style.display = "inherit";
-}
-
 //open and close menu with m key
 //could be expanded to allow for more keybinds
 document.addEventListener('keydown', function(event) {
