@@ -3,6 +3,34 @@
  */
 const DEFAULT_FABLED = new Set(["doomsayer", "angel", "buddhist", "hellslibrarian", "revolutionary", "fiddler", "toymaker"]);
 
+// TODO: ensure these remain updated as new characters are added.
+const DEFAULT_INFO = [
+    {
+        "id": "DUSK",
+        "firstNight": -1,
+        "firstNightReminder": "Confirm all players have eyes closed. Wait approximately 10 seconds",
+        "otherNight": -1,
+        "otherNightReminder": "Confirm all players have eyes closed. Wait approximately 10 seconds",
+    },
+    {
+        "id": "MINION_INFO",
+        "firstNight": 14,
+        "firstNightReminder": "If this game does not have 7 or more players skip this.\nIf more than one Minion, they all make eye contact with each other. Show the \"This is the Demon\" card. Point to the Demon.",
+    },
+    {
+        "id": "DEMON_INFO",
+        "firstNight": 18,
+        "firstNightReminder": "If this game does not have 7 or more players skip this.\nShow the \"These are your minions\" card. Point to each Minion. Show the \"These characters are not in play\" card. Show 3 character tokens of good characters not in play.",
+    },
+    {
+        "id": "DAWN",
+        "firstNight": 72,
+        "firstNightReminder": "Wait approximately 10 seconds. Call for eyes open; immediately announce which players (if anyone) died",
+        "otherNight": 90,
+        "otherNightReminder": "Wait approximately 10 seconds. Call for eyes open; immediately announce which players (if anyone) died",
+    },
+]
+
 /**
  * Open the tab assosciated withthe selected Night Order button.
  * Only one tab can be open at any time.
@@ -23,12 +51,12 @@ function toggle_night_order_buttons(type) {
                 document.getElementById("nightorder_button_container").setAttribute("nightOrder", "jinx");
                 populate_jinx();
                 break;
-            case "firstnight":
-                document.getElementById("nightorder_button_container").setAttribute("nightOrder", "firstnight");
+            case "firstNight":
+                document.getElementById("nightorder_button_container").setAttribute("nightOrder", "firstNight");
                 populate_night_order();
                 break;
-            case "othernight":
-                document.getElementById("nightorder_button_container").setAttribute("nightOrder", "othernight");
+            case "otherNight":
+                document.getElementById("nightorder_button_container").setAttribute("nightOrder", "otherNight");
                 populate_night_order();
                 break;
         }
@@ -57,24 +85,37 @@ async function populate_night_order() {
     }
     clean_night_order();
     if (night == "none") { return; }
-    // TODO: deprecate the nightsheet. Its data is built into the tokens, and there are errors (Acrobat) that make it unsuitable.
-    var order = await get_JSON("nightsheet.json")
-    order = order[night];
-    tokens = document.getElementById("token_layer").children;
-    var inPlay = new Set();
-    var alive = new Set();
-    for (i = 0; i < tokens.length; i++) {
-        var id = tokens[i].getAttribute("role");
-        if (tokens[i].getAttribute("viability") == "alive" && tokens[i].getAttribute("visibility") != "bluff") { alive.add(id); }
-        if (tokens[i].getAttribute("visibility") != "bluff") { inPlay.add(id); }
+
+    const tokens = [...document.getElementById("token_layer").children];
+    const inPlayRoles = [...new Set(tokens
+        .filter(token => token.getAttribute("visibility") != "bluff")
+        .map(token => token.getAttribute("role"))
+        .filter(roleId => roles[roleId] != null && roles[roleId][night] != 0)
+    )];
+    const aliveRoles = new Set(tokens
+        .filter(token => token.getAttribute("visibility") != "bluff")
+        .filter(token => token.getAttribute("viability") == "alive")
+        .map(token => token.getAttribute("role"))
+    );
+
+    inPlayRoles.sort((a, b) => roles[a][night] - roles[b][night]);
+
+    let defaultIndex = 0
+    for (const roleId of inPlayRoles) {
+        while (defaultIndex < DEFAULT_INFO.length && roles[roleId][night] > DEFAULT_INFO[defaultIndex][night]) {
+            if (DEFAULT_INFO[defaultIndex][night] != null) {
+                gen_night_order_tab_info(DEFAULT_INFO[defaultIndex], night+"Reminder");
+            }
+            defaultIndex++;
+        }
+
+        gen_night_order_tab_role(roles[roleId], night, !aliveRoles.has(roleId));
     }
-    for (i = 0; i < order.length; i++) {
-        if (inPlay.has(order[i])) {
-            gen_night_order_tab_role(roles[order[i]], night, (alive.has(order[i])) ? false : true)
+    while (defaultIndex < DEFAULT_INFO.length) {
+        if (DEFAULT_INFO[defaultIndex][night] != null) {
+            gen_night_order_tab_info(DEFAULT_INFO[defaultIndex], night+"Reminder");
         }
-        if (order[i].toUpperCase() == order[i]) {
-            gen_night_order_tab_info(order[i])
-        }
+        defaultIndex++;
     }
 }
 
@@ -191,31 +232,27 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
 
 /**
  * Add universal information to the nightOrder tab.
- * @param {String} info The ID for the type of info to add to the tab.
+ * @param {String} info The info object to add to the tab.
+ * @param {String} reminder The index into the object to get the reminder string.
  */
-function gen_night_order_tab_info(info) {
-    var default_info = {
-        "MINION_INFO": "If this game does not have 7 or more players skip this.\nIf more than one Minion, they all make eye contact with each other. Show the \"This is the Demon\" card. Point to the Demon.",
-        "DEMON_INFO": "If this game does not have 7 or more players skip this.\nShow the \"These are your minions\" card. Point to each Minion. Show the \"These characters are not in play\" card. Show 3 character tokens of good characters not in play.",
-        "DAWN": "Wait approximately 10 seconds. Call for eyes open; immediately announce which players (if anyone) died",
-        "DUSK": "Confirm all players have eyes closed. Wait approximately 10 seconds"
-    }
+function gen_night_order_tab_info(info, reminder) {
+    console.log(info)
     div = document.createElement("div");
     div.classList = "night_order_tab";
     img = document.createElement("img");
     img.classList = "night_order_img";
-    img.src = "assets/" + info + ".png"
+    img.src = "assets/" + info.id + ".png"
     div.appendChild(img);
-    div.id = info + "_night_order_tab";
+    div.id = info.id + "_night_order_tab";
     div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , #999999)";
     div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
     div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
     div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
     div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
-    div.setAttribute("onclick", "javascript:expand_night_order_tab('" + info + "_night_order_tab')");
+    div.setAttribute("onclick", "javascript:expand_night_order_tab('" + info.id + "_night_order_tab')");
     span = document.createElement("span");
     span.classList = "night_order_span"
-    span.innerHTML = default_info[info];
+    span.innerHTML = info[reminder];
     span.id = info + "_night_order_tab_span";
     div.appendChild(span);
     document.getElementById("night_order_tab_landing").appendChild(div);

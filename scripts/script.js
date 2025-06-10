@@ -309,14 +309,14 @@ async function generateHTMLDocument() {
     var order = await get_JSON("nightsheet.json");
     let first_night = [];
     let other_night = [];
-    for (i = 0; i < order["firstnight"].length; i++) {
-        id = order["firstnight"][i]
+    for (i = 0; i < order["firstNight"].length; i++) {
+        id = order["firstNight"][i]
         for (j = 0; j < CURRENT_SCRIPT.length; j++) {
             if (CURRENT_SCRIPT[j].id === id && tokens_ref[id].team != "traveller") { first_night.push(id) }
         }
     }
-    for (i = 0; i < order["othernight"].length; i++) {
-        id = order["othernight"][i]
+    for (i = 0; i < order["otherNight"].length; i++) {
+        id = order["otherNight"][i]
         for (j = 0; j < CURRENT_SCRIPT.length; j++) {
             if (CURRENT_SCRIPT[j].id === id && tokens_ref[id].team != "traveller") { other_night.push(id) }
         }
