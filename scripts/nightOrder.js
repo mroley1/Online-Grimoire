@@ -198,7 +198,7 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
                                         }
                                         reminderExists = true;
                                         tempNightText += " the "
-                                        tempNightText += tokens_ref[players[player].getAttribute("role")].name;
+                                        tempNightText += roles[players[player].getAttribute("role")].name;
                                     }
                                 }
                             }

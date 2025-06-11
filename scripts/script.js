@@ -272,12 +272,12 @@ async function generateHTMLDocument() {
 
     // Generate rows from the provided arrays for townsfolk
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-        if (tokens_ref[CURRENT_SCRIPT[i].id].team == 'townsfolk') {
+        if (roles[CURRENT_SCRIPT[i].id].team == 'townsfolk') {
             html += `
         <tr>
-          <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-          <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-          <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
+          <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
+          <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
+          <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
         </tr>`;
         }
     }
@@ -290,12 +290,12 @@ async function generateHTMLDocument() {
 
     // Generate rows from the provided arrays for OUTsiders
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-        if (tokens_ref[CURRENT_SCRIPT[i].id].team == 'outsider') {
+        if (roles[CURRENT_SCRIPT[i].id].team == 'outsider') {
             html += `
         <tr>
-          <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-          <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-          <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
+          <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
+          <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
+          <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
         </tr>`;
         }
     }
@@ -307,12 +307,12 @@ async function generateHTMLDocument() {
 
     // Generate rows from the provided arrays for minions
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-        if (tokens_ref[CURRENT_SCRIPT[i].id].team == 'minion') {
+        if (roles[CURRENT_SCRIPT[i].id].team == 'minion') {
             html += `
         <tr>
-          <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-          <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-          <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
+          <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
+          <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
+          <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
         </tr>`;
         }
     }
@@ -324,12 +324,12 @@ async function generateHTMLDocument() {
 
     // Generate rows from the provided arrays for Demons
     for (let i = 1; i < CURRENT_SCRIPT.length; i++) {
-        if (tokens_ref[CURRENT_SCRIPT[i].id].team == 'demon') {
+        if (roles[CURRENT_SCRIPT[i].id].team == 'demon') {
             html += `
       <tr>
-        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${tokens_ref[CURRENT_SCRIPT[i].id].name}"></td>
-        <td style="width: 15%; font-weight: bold;">${tokens_ref[CURRENT_SCRIPT[i].id].name}</td>
-        <td style="width: 75%;">${tokens_ref[CURRENT_SCRIPT[i].id].ability}</td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(CURRENT_SCRIPT[i].id)}" alt="${roles[CURRENT_SCRIPT[i].id].name}"></td>
+        <td style="width: 15%; font-weight: bold;">${roles[CURRENT_SCRIPT[i].id].name}</td>
+        <td style="width: 75%;">${roles[CURRENT_SCRIPT[i].id].ability}</td>
       </tr>`;
         }
     }
@@ -343,13 +343,13 @@ async function generateHTMLDocument() {
     for (i = 0; i < order["firstNight"].length; i++) {
         id = order["firstNight"][i]
         for (j = 0; j < CURRENT_SCRIPT.length; j++) {
-            if (CURRENT_SCRIPT[j].id === id && tokens_ref[id].team != "traveller") { first_night.push(id) }
+            if (CURRENT_SCRIPT[j].id === id && roles[id].team != "traveller") { first_night.push(id) }
         }
     }
     for (i = 0; i < order["otherNight"].length; i++) {
         id = order["otherNight"][i]
         for (j = 0; j < CURRENT_SCRIPT.length; j++) {
-            if (CURRENT_SCRIPT[j].id === id && tokens_ref[id].team != "traveller") { other_night.push(id) }
+            if (CURRENT_SCRIPT[j].id === id && roles[id].team != "traveller") { other_night.push(id) }
         }
     }
     //fill night order table
@@ -364,16 +364,16 @@ async function generateHTMLDocument() {
         let other_id = other_night[i];
         html += `
       <tr>`
-        if (tokens_ref[first_id]) {
+        if (roles[first_id]) {
             html += `
-        <td><img style="width: 7.5%" src="${getTokenImageLink(first_id)}" alt="${tokens_ref[first_id].name}"> <b>${tokens_ref[first_id].name}</b></td>`
+        <td><img style="width: 7.5%" src="${getTokenImageLink(first_id)}" alt="${roles[first_id].name}"> <b>${roles[first_id].name}</b></td>`
         } else {
             html += `
         <td></td>`
         };
-        if (tokens_ref[other_id]) {
+        if (roles[other_id]) {
             html += `
-          <td><img style="width: 7.5%" src="${getTokenImageLink(other_id)}" alt="${tokens_ref[other_id].name}"> <b>${tokens_ref[other_id].name}</b></td>`
+          <td><img style="width: 7.5%" src="${getTokenImageLink(other_id)}" alt="${roles[other_id].name}"> <b>${roles[other_id].name}</b></td>`
         } else {
             html += `
         <td></td>`
@@ -405,10 +405,10 @@ async function generateHTMLDocument() {
                             }
                             html += `
                 <tr>
-                  <td style="width: 7.5%;"><img src="${getTokenImageLink(jinxes[i].id)}" alt="${tokens_ref[jinxes[i].id].name}"></td>
-                  <td style="width: 15%; font-weight: bold;">${tokens_ref[jinxes[i].id].name}</td>
-                  <td style="width: 7.5%;"><img src="${getTokenImageLink(jinx.id)}" alt="${tokens_ref[jinx.id].name}"></td>
-                  <td style="width: 15%; font-weight: bold;">${tokens_ref[jinx.id].name}</td>
+                  <td style="width: 7.5%;"><img src="${getTokenImageLink(jinxes[i].id)}" alt="${roles[jinxes[i].id].name}"></td>
+                  <td style="width: 15%; font-weight: bold;">${roles[jinxes[i].id].name}</td>
+                  <td style="width: 7.5%;"><img src="${getTokenImageLink(jinx.id)}" alt="${roles[jinx.id].name}"></td>
+                  <td style="width: 15%; font-weight: bold;">${roles[jinx.id].name}</td>
                   <td style="width: 70%;">${jinx.reason}</td>
                 </tr>`;
                         }
@@ -430,13 +430,13 @@ async function generateHTMLDocument() {
     <table>`;
 
     // Generate rows For travelers
-    for (element in tokens_ref) {
-        if (tokens_ref[element].team == 'traveller') {
+    for (element in roles) {
+        if (roles[element].team == 'traveller') {
             html += `
       <tr>
-        <td style="width: 7.5%;"><img src="${getTokenImageLink(tokens_ref[element].id)}" alt="${tokens_ref[element].name}"></td>
-        <td style="width: 15%; font-weight: bold;">${tokens_ref[element].name}</td>
-        <td style="width: 75%;">${tokens_ref[element].ability}</td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(roles[element].id)}" alt="${roles[element].name}"></td>
+        <td style="width: 15%; font-weight: bold;">${roles[element].name}</td>
+        <td style="width: 75%;">${roles[element].ability}</td>
       </tr>`;
         }
     }
@@ -448,13 +448,13 @@ async function generateHTMLDocument() {
     html += `
     <h2>Fables<h2>
     <table>`;
-    for (element in tokens_ref) {
-        if (tokens_ref[element].team == 'fabled') {
+    for (element in roles) {
+        if (roles[element].team == 'fabled') {
             html += `
       <tr>
-        <td style="width: 7.5%;"><img src="${getTokenImageLink(tokens_ref[element].id)}" alt="${tokens_ref[element].name}"></td>
-        <td style="width: 15%; font-weight: bold;">${tokens_ref[element].name}</td>
-        <td style="width: 75%;">${tokens_ref[element].ability}</td>
+        <td style="width: 7.5%;"><img src="${getTokenImageLink(roles[element].id)}" alt="${roles[element].name}"></td>
+        <td style="width: 15%; font-weight: bold;">${roles[element].name}</td>
+        <td style="width: 75%;">${roles[element].ability}</td>
       </tr>`;
         }
     }
