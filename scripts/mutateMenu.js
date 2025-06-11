@@ -121,7 +121,7 @@ function add_offscript_character(token_class) {
                 div.id = "mutate_menu_all";
                 generateSampleToken(element["id"], div);
                 div.classList = "background_image mutate_menu_token";
-                div.setAttribute("onclick", "spawnTokenDefault('" + element["id"] + "', 'show', '" + token_class + "', 'alive')")
+                div.setAttribute("onclick", "spawnTokenDefault('" + element["id"] + "', '" + token_class + "', 'alive')")
                 document.getElementById("mutate_menu_all").appendChild(div);
             } catch { }
         }

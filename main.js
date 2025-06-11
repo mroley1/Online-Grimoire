@@ -23,10 +23,14 @@ var loading = false;
 async function loaded()
 {
   loading = true;
-  roles = await get_JSON("tokens.json");
+
+  base_roles = await get_JSON("tokens.json");
+  roles = JSON.parse(JSON.stringify(base_roles));
+
   dragPipLayerSpawnDefault("good");
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
+  
   load_scripts().then(() =>
   {
     load_game_state_json(localStorage.getItem("state"))

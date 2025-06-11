@@ -184,11 +184,11 @@ function getTokenImageLink(id) {
  * information.
  * See {@link spawnToken} for more details.
  * @param {String} id The role ID to spawn as a token.
- * @param {"show"|"hide"|"bluff"} visibility How the token appears.
  * @param {String} cat The role type that this role is.
+ * @param {null|"true"|"false"} hide_face Whether to show or hide the face. 
  */
-function spawnTokenDefault(id, visibility, cat, hide_face) {
-    spawnToken(id, makeUid(), visibility, cat, hide_face, "alive", (parseInt(window.visualViewport.width / 2) - 75) + "px", "calc(50% - 75px)", "", []);
+function spawnTokenDefault(id, cat, hide_face) {
+    spawnToken(id, makeUid(), "show", cat, hide_face, "alive", (parseInt(window.visualViewport.width / 2) - 75) + "px", "calc(50% - 75px)", "", []);
 }
 
 /**
