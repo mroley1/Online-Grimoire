@@ -1,3 +1,34 @@
+/**
+ * The teams that appear in the side menu when selecting a character.
+ * Only characters in these teams (ie: not Fabled) may be assigned to players.
+ */
+const ASSIGNABLE_TEAMS = {
+    "townsfolk": {
+        "id": "townsfolk",
+        "header": "Townsfolk",
+        "color": "#0033cc",
+    },
+    "outsider": {
+        "id": "outsider",
+        "header": "Outsiders",
+        "color": "#1a53ff",
+    },
+    "minion": {
+        "id": "minion",
+        "header": "Minions",
+        "color": "#b30000",
+    },
+    "demon": {
+        "id": "demon",
+        "header": "Demons",
+        "color": "#e60000",
+    },
+    "traveller": {
+        "id": "traveller",
+        "header": "Travellers",
+        "color": "#6600ff",
+    },
+}
 
 /**
  * Get a JSON file from the server.
@@ -75,21 +106,6 @@ async function script_upload() {
 async function populate_script(script) {
     CURRENT_SCRIPT = script;
     document.getElementById("script_upload_feedback").innerHTML = script[0]["name"];
-    function reset(text, landing_name, color) {
-        var div = document.createElement("div");
-        div.innerHTML = text;
-        div.style.color = color;
-        div.classList = "menu_header"
-        landing = document.getElementById(landing_name)
-        landing.innerHTML = "";
-        landing.appendChild(div);
-        var ratio = document.createElement("div");
-        ratio.classList = "menu_ratio";
-        ratio.innerHTML = "0/0";
-        ratio.id = "ratio_" + landing_name
-        landing.appendChild(ratio);
-        landing.insertAdjacentHTML("beforeend", "<hr style='margin-block-end: 0em;'>");
-    }
     const rolesOnScript = [];
     script.forEach(element => {
         if (element.id.startsWith("_")) return;
@@ -99,16 +115,29 @@ async function populate_script(script) {
         rolesOnScript.push(roles[element.id]);
     })
 
-    reset("Townsfolk", "townsfolk", "#0033cc")
-    reset("Outsiders", "outsider", "#1a53ff")
-    reset("Minions", "minion", "#b30000")
-    reset("Demons", "demon", "#e60000")
-    reset("Travellers", "traveller", "#6600ff")
+    //const ASSIGNABLE_TEAMS = ["townsfolk", "outsider", "minion", "demon", "traveller"];
+    
+    for (const team of Object.values(ASSIGNABLE_TEAMS)) {
+        const landing = document.getElementById(team.id)
+        landing.innerHTML = "";
 
-    const ASSIGNABLE_TEAMS = ["townsfolk", "outsider", "minion", "demon", "traveller"];
+        var div = document.createElement("div");
+        div.innerHTML = team.header;
+        div.style.color = team.color;
+        div.classList = "menu_header"
+        landing.appendChild(div);
+
+        var ratio = document.createElement("div");
+        ratio.classList = "menu_ratio";
+        ratio.innerHTML = "0/0";
+        ratio.id = "ratio_" + team.id
+        landing.appendChild(ratio);
+
+        landing.insertAdjacentHTML("beforeend", "<hr style='margin-block-end: 0em;'>");
+    }
 
     for (const role of rolesOnScript) {
-        if (!ASSIGNABLE_TEAMS.includes(role.team)) continue;
+        if (!(role.team in ASSIGNABLE_TEAMS)) continue;
         const landing = document.getElementById(role.team);
 
         const outer_div = document.createElement("div");
@@ -134,6 +163,29 @@ async function populate_script(script) {
         
         landing.appendChild(outer_div)
     }
+
+    for (const team of Object.values(ASSIGNABLE_TEAMS)) {
+        //Add button to add offscreen of each category
+        const outer_div = document.createElement("div");
+        outer_div.classList = "menu_list_div";
+        outer_div.title = title="Add offscript " + team.header;
+        outer_div.setAttribute("onclick", "add_offscript_character('"+ team.id +"')");
+
+        const label = document.createElement("label");
+        label.classList = "menu_list";
+        label.innerHTML = "Add Offscript " + team.header;
+        outer_div.appendChild(label);
+        outer_div.insertAdjacentHTML("beforeend", "&nbsp;");
+
+        const hr = document.createElement("hr");
+        hr.style.marginBlockEnd = "0em";
+        outer_div.appendChild(hr);
+
+        const landing = document.getElementById(team.id);
+        landing.appendChild(outer_div)
+    }
+   
+
 
     player_count_change();
     update_role_counts();
