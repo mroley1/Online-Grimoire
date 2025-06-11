@@ -94,7 +94,7 @@ async function populate_script(script) {
     script.forEach(element => {
         if (element.id.startsWith("_")) return;
         if (!(element.id in roles)) {
-            roles[element.id] = element;
+            addHomebrewRole(element);
         } 
         rolesOnScript.push(roles[element.id]);
     })
@@ -142,6 +142,18 @@ async function populate_script(script) {
 
     if (!loading) { save_game_state(); }
     return Promise.resolve()
+}
+
+/**
+ * Add a homebrew role to the list of known roles. 
+ * Performs changes to fit our grimoire.
+ * @param {Object} role The role being added. 
+ */
+function addHomebrewRole(role) {
+    const allReminders = new Set(role.reminders).union(new Set(role.globalReminders))
+    role.reminders = [...allReminders];
+
+    roles[role.id] = role;
 }
 
 /**

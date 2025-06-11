@@ -7,11 +7,11 @@ async function infoCall(id, uid) {
     close_menu();
     let data_token = document.getElementById(id + "_token_" + uid);
     generateSampleToken(id, document.getElementById("info_img"));
-    var roleJSON = roles[id];
-    document.getElementById("info_title_field").innerHTML = roleJSON["name"];
+    const role = roles[id];
+    document.getElementById("info_title_field").innerHTML = role["name"];
     document.getElementById("info_name_field").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
     document.getElementById("info_img_name").innerHTML = data_token.children.namedItem(id + "_name_" + uid).innerHTML;
-    document.getElementById("info_desc_field").innerHTML = roleJSON["ability"];
+    document.getElementById("info_desc_field").innerHTML = role["ability"];
     document.getElementById("info_list").setAttribute("current_player", id);
     document.getElementById("info_token_landing").innerHTML = "";
     document.getElementById("info_remove_player").setAttribute("onclick", "javascript:remove_token('" + id + "', '" + uid + "')");
@@ -26,16 +26,19 @@ async function infoCall(id, uid) {
 
     update_info_death_cycle(id, uid);
 
+    if (role.reminders == undefined) return;
+
     const landing = document.getElementById("info_token_landing");
-    for (var i = 0; i < roleJSON["reminders"].length; i++) {
-        const backing = generateReminderBacking(id, roleJSON["reminders"][i], uid);
+
+    for (const reminder of role.reminders) {
+        const backing = generateReminderBacking(id, reminder, uid);
         // div.setAttribute("reminderId", i);
         document.getElementById("info_token_landing").appendChild(backing);
 
         const x = backing.getBoundingClientRect().x - landing.getBoundingClientRect().x;
         const y = backing.getBoundingClientRect().y - landing.getBoundingClientRect().y;
         // x, y, roleName, reminder info, id
-        spawnReminderGhost(x, y, id, roleJSON["reminders"][i], backing.id);
+        spawnReminderGhost(x, y, id, reminder, backing.id);
     }
 }
 
