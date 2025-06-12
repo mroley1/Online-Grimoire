@@ -198,12 +198,20 @@ async function populate_script(script) {
 
 /**
  * Add a homebrew role to the list of known roles. 
- * Performs changes to fit our grimoire.
+ * Performs changes to fit our grimoire role spec.
  * @param {Object} role The role being added. 
  */
 function addHomebrewRole(role) {
+    // There are two types of reminders: character-related, and global. 
+    // We don't care about the distinction. 
+    // Additionally, all reminders must be distinct. 
     const allReminders = new Set(role.reminders).union(new Set(role.globalReminders))
     role.reminders = [...allReminders];
+
+    if (role.team == "traveler") {
+        // Really annyoing error made by a number of scripts.
+        role.team = "traveller";
+    }
 
     roles[role.id] = role;
 }

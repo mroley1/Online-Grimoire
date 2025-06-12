@@ -47,7 +47,7 @@ function populate_mutate_menu(tokens) {
         div.id = "mutate_menu_" + element["id"];
         generateSampleToken(element["id"], div);
         div.classList = "background_image mutate_menu_token";
-        if (element["team"] != "fabled") {
+        if (element["team"] in ASSIGNABLE_TEAMS) {
             document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
         }
     })
