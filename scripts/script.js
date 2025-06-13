@@ -475,7 +475,9 @@ async function generateHTMLDocument() {
     </body>
     </html>`;
 
-    // Optional: Automatically open the generated HTML in a new window
+    console.log(html)
+
+    // Automatically open the generated HTML in a new window
     const newWindow = window.open();
     newWindow.document.write(html);
     newWindow.document.close();
@@ -514,13 +516,14 @@ function update_current_script_name() {
  * @author The-ai123
  */
 function update_current_script() {
+    const availableTokens = document.getElementById("token_layer").getElementsByClassName("role_token");
+    if (availableTokens.length == 0) return;
     //clear current script
-    CURRENT_SCRIPT = CURRENT_SCRIPT.filter(element => element.id == CURRENT_SCRIPT[0].id);
+    CURRENT_SCRIPT = [ CURRENT_SCRIPT[0] ]
     //repopulated based on tokens currently on screen(and not hidden or dead)
-    onscreen_tokens = document.getElementById("token_layer").getElementsByClassName("role_token");
-    for (i = 0; i < onscreen_tokens.length; i++) {
-        if (onscreen_tokens[i].getAttribute("visibility") == "show" && onscreen_tokens[i].getAttribute("viability") == "alive") {
-            let newElement = { "id": onscreen_tokens[i].role }
+    for (const token of availableTokens) {
+        if (token.getAttribute("visibility") == "show" && token.getAttribute("viability") == "alive") {
+            const newElement = { "id": token.role }
             if (!CURRENT_SCRIPT.some(element => element.id == newElement.id)) {
                 CURRENT_SCRIPT.push(newElement); // Add the element only if it doesn't exist
             }
