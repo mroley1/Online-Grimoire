@@ -90,7 +90,7 @@ async function populate_night_order() {
     const inPlayRoles = [...new Set(tokens
         .filter(token => token.getAttribute("visibility") != "bluff")
         .map(token => token.getAttribute("role"))
-        .filter(roleId => roles[roleId] != null && roles[roleId][night] != 0)
+        .filter(roleId => roles[roleId] != null && roles[roleId][night] > 0)
     )];
     const aliveRoles = new Set(tokens
         .filter(token => token.getAttribute("visibility") != "bluff")

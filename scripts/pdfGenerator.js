@@ -84,7 +84,6 @@ async function generateHTMLDocument() {
 
     html += generateJinxesTable();
 
-
     html += `<h2>Travellers<h2>\n`;
     html += generateTableForTeam("traveller");
     html += `<h2>Fabled<h2>\n`;
@@ -92,8 +91,6 @@ async function generateHTMLDocument() {
 
     html += "</body>\n";
     html += "</html>";
-
-    console.log(html)
 
     // Automatically open the generated HTML in a new window
     const newWindow = window.open();
@@ -292,7 +289,6 @@ function generateJinxesTable() {
 
     for (const role of CURRENT_SCRIPT.slice(1)) {
         const jinxes = roles[role.id].jinx;
-        console.log(jinxes)
         if (!jinxes) continue;
 
         for (const jinx of jinxes) {
