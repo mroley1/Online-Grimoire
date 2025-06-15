@@ -92,12 +92,15 @@ async function populate_night_order() {
         .map(token => token.getAttribute("role"))
         .filter(roleId => roles[roleId] != null && roles[roleId][night] > 0)
     )];
+    inPlayRoles.push(...CURRENT_SCRIPT.filter(role => role.team == "fabled" && role[night] > 0).map(role => role.id))
     const aliveRoles = new Set(tokens
         .filter(token => token.getAttribute("visibility") != "bluff")
         .filter(token => token.getAttribute("viability") == "alive")
         .map(token => token.getAttribute("role"))
     );
+    CURRENT_SCRIPT.filter(role => role.team == "fabled").forEach(role => aliveRoles.add(role.id))
 
+    console.log(aliveRoles)
     inPlayRoles.sort((a, b) => roles[a][night] - roles[b][night]);
 
     let defaultIndex = 0
@@ -155,6 +158,7 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
         case "minion": color = "#e62e00"; break;
         case "demon": color = "#cc0000"; break;
         case "traveller": color = "#6600ff"; break;
+        case "fabled": color = "#b3b300"; break;
     }
     if (dead) { color = "#000000"; }
     div = document.createElement("div");
