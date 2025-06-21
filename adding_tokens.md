@@ -47,8 +47,6 @@
         ],
         // Does nothing, leave false.
         "hide_token": false,
-        // If the face should be shown when in townsfolk Square mode. false for travellers. 
-        "hide_face": true
     },
 ```
 - add role to `data/scripts/Gang's All Here.json` or `data/scripts/Unreleased Experimental.json`, based on type.

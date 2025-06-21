@@ -47,7 +47,7 @@ function populate_mutate_menu(tokens) {
         div.id = "mutate_menu_" + element["id"];
         generateSampleToken(element["id"], div);
         div.classList = "background_image mutate_menu_token";
-        if (element["team"] != "fabled") {
+        if (element["team"] in ASSIGNABLE_TEAMS) {
             document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
         }
     })
@@ -112,19 +112,16 @@ function mutate_token(idFrom, uid, idTo) {
  */
 function add_offscript_character(token_class) {
     document.getElementById("mutate_menu_all").innerHTML = "";
-    let allTokens = [];
-    for (let element in tokens_ref) {
-        element = tokens_ref[element]
-        if (element.team == token_class) {
-            try {
-                var div = document.createElement("div");
-                div.id = "mutate_menu_all";
-                generateSampleToken(element["id"], div);
-                div.classList = "background_image mutate_menu_token";
-                div.setAttribute("onclick", "spawnTokenDefault('" + element["id"] + "', 'show', '" + token_class + "', 'alive')")
-                document.getElementById("mutate_menu_all").appendChild(div);
-            } catch { }
-        }
+    for (const element of Object.values(roles)) {
+        if (element.team != token_class) continue
+        try {
+            var div = document.createElement("div");
+            div.id = "mutate_menu_all";
+            generateSampleToken(element["id"], div);
+            div.classList = "background_image mutate_menu_token";
+            div.setAttribute("onclick", "spawnTokenDefault('" + element["id"] + "', '" + token_class + "', 'alive')")
+            document.getElementById("mutate_menu_all").appendChild(div);
+        } catch { }
     }
     document.getElementById("mutate_menu_all_main").style.display = "inherit";
 }

@@ -41,7 +41,7 @@ def sync_ability(entry):
     # \n
     # <p> "Each night, something bad happens."\n</p>
     # This gets the text and trims the quotes.
-    summary_element = summary_header.parent.nextSibling.nextSibling
+    summary_element = summary_header.parent.next_sibling.next_sibling
     summary = summary_element.text[1:-2]
 
     # Step 3: determine if an update is necessary.
