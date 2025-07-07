@@ -20,26 +20,21 @@ var loading = false;
  * Load all non-JS files into the application to finish initialization.
  * This function is called as soon as the HTML is loaded.
  */
-async function loaded()
-{
-  loading = true;
+async function loaded() {
+    loading = true;
 
-  base_roles = await get_JSON("tokens.json");
-  roles = JSON.parse(JSON.stringify(base_roles));
+    base_roles = await get_JSON("tokens.json");
+    roles = JSON.parse(JSON.stringify(base_roles));
 
-  dragPipLayerSpawnDefault("good");
-  dragPipLayerSpawnDefault("evil");
-  dragPipLayerSpawnDefault("reminder_pip");
-  
-  load_scripts().then(() =>
-  {
-    load_game_state_json(localStorage.getItem("state"))
-  })
-  setTimeout(function ()
-  {
-    loading = false;
-    player_count_change();
-  }, 2000)
-  document.getElementById("body_actual").setAttribute("orientation", getOrientation())
-  window.onresize = resized;
+    resetDragPipLayer();
+
+    load_scripts().then(() => {
+        load_game_state_json(localStorage.getItem("state"))
+    })
+    setTimeout(function () {
+        loading = false;
+        player_count_change();
+    }, 2000)
+    document.getElementById("body_actual").setAttribute("orientation", getOrientation())
+    window.onresize = resized;
 }
