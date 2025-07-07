@@ -107,6 +107,9 @@
 		"id": "damsel"
 	},
 	{
+		"id": "deusexfiasco"
+	},
+	{
 		"id": "deviant"
 	},
 	{
@@ -216,6 +219,9 @@
 	},
 	{
 		"id": "heretic"
+	},
+	{
+		"id": "hermit"
 	},
 	{
 		"id": "highpriestess"
@@ -359,6 +365,9 @@
 		"id": "preacher"
 	},
 	{
+		"id": "princess"
+	},
+	{
 		"id": "professor"
 	},
 	{
@@ -489,6 +498,9 @@
 	},
 	{
 		"id": "wizard"
+	},
+	{
+		"id": "wraith"
 	},
 	{
 		"id": "xaan"

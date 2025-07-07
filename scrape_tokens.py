@@ -1,10 +1,12 @@
 import concurrent.futures as cf
 import json
 import os
-import requests
-from bs4 import BeautifulSoup
+import sys
 from functools import cache
 from requests.exceptions import HTTPError
+
+import requests
+from bs4 import BeautifulSoup
 
 WIKI_URL = "https://wiki.bloodontheclocktower.com"
 NIGHTSHEET_JSON = json.loads(requests.get("https://script.bloodontheclocktower.com/data/nightsheet.json", timeout=10).content)
@@ -212,32 +214,37 @@ def main():
         data: dict = json.loads(f.read())
 
     official_keys = sorted(data.keys())
+    
+    relevant_keys = official_keys
+    if len(sys.argv) > 1:
+        start = sys.argv[1]
+        relevant_keys = [x for x in relevant_keys if x.startswith(start)]
 
     print("CACHING WIKI PAGES...")
     with cf.ThreadPoolExecutor(max_workers=16) as executor:
-        cacher = [executor.submit(get_soup_by_name, v) for v in official_keys]
+        cacher = [executor.submit(get_soup_by_name, v) for v in relevant_keys]
 
     data = {k: force_compatibility(v) for k, v in data.items()}
 
     with cf.ThreadPoolExecutor(max_workers=16) as executor:
         print("SYNCING IMAGES...")
-        downloader_threader = [executor.submit(sync_image_url, data[k]) for k in official_keys]
+        downloader_threader = [executor.submit(sync_image_url, data[k]) for k in relevant_keys]
         cf.wait(downloader_threader)
 
         print("SYNCING DESCRIPTION...")
-        desc_threader = [executor.submit(sync_ability, data[k]) for k in official_keys]
+        desc_threader = [executor.submit(sync_ability, data[k]) for k in relevant_keys]
         cf.wait(desc_threader)
 
         print("SYNCING FLAVOR...")
-        flavor_threader = [executor.submit(sync_flavor, data[k]) for k in official_keys]
+        flavor_threader = [executor.submit(sync_flavor, data[k]) for k in relevant_keys]
         cf.wait(flavor_threader)
 
         print("SYNCING NGIHT ORDER...")
-        order_threader = [executor.submit(sync_nightorder, data[k]) for k in official_keys]
+        order_threader = [executor.submit(sync_nightorder, data[k]) for k in relevant_keys]
         cf.wait(order_threader)
 
         print("SYNCING JINXES...")
-        jinx_threader = [executor.submit(sync_jinxes, data[k]) for k in official_keys]
+        jinx_threader = [executor.submit(sync_jinxes, data[k]) for k in relevant_keys]
         cf.wait(jinx_threader)
 
     print("FINALIZING...")
