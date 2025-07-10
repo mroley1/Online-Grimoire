@@ -3,37 +3,127 @@
 
 /** 
  * Shroud-specific data for what card to show for given IDs. 
+ * 
+ * This object has the following parameters:
+ * title - Optional: The text that appears at the top of the shroud when displayed.
+ * players
  * The title is what's shown at the top of the shroud. 
  * The players is the number of characters shown, by default, on the shroud.
  */
 const CARDS = {
-    0: { "title": "Use Your Ability?", "players": 0 },
-    1: { "title": "Choose a Player", "players": 0 },
-    2: { "title": "These Characters are Not In Play", "players": 3 },
-    3: { "title": "This Is Your Demon", "players": 0 },
-    4: { "title": "These Are Your Minions", "players": 0 },
-    5: { "title": "You Are", "players": 1 },
-    6: { "title": "This Player Is", "players": 1 },
-    7: { "title": "Character Selected You", "players": 1 },
-    8: { "title": "Did You Vote Today?", "players": 0 },
-    9: { "title": "Did You Nominate Today?", "players": 0 },
-    10: { "title": "Info", "players": 0 },
-    11: { "title": "Make your Choice", "players": 1 },
+    "CUSTOM_INFO": { 
+        "cardTitle": "General Info", 
+        "cardColor": "green",
+        "title": "Info", 
+        "icons": 0
+    },
+    "USE_ABILITY": { 
+        "cardTitle": "Use Your Ability?",
+        "cardColor": "brown",
+        "title": "Use Your Ability?", 
+        "icons": 0
+    },
+    "CHOOSE_SOMEONE": {
+        "cardTitle": "Choose Player(s)",
+        "cardColor": "brown",
+        "title": "Choose a Player", 
+        "icons": 0
+    },
+    "CUSTOM_CHOICE": {
+        "cardTitle": "Choose Character(s)",
+        "cardColor": "brown",
+        "title": "Choose a Character", 
+        "icons": 1
+    },
+    "BLUFFS": {
+        "cardTitle": "Demon Bluffs",
+        "cardColor": "blue",
+        "title": "These Characters are Not In Play", 
+        "icons": 3
+    },
+    "MINIONS": { 
+        "cardTitle": "This is Your Demon",
+        "cardColor": "red",
+        "title": "This Is Your Demon", 
+        "icons": 0,
+        "players_fixed": true
+    },
+    "DEMONS": {
+        "cardTitle": "These Are Your Minions",
+        "cardColor": "red",
+        "title": "These Are Your Minions",
+        "icons": 0,
+        "players_fixed": true
+    },
+    "YOU_ARE": { 
+        "cardTitle": "You Are", 
+        "cardColor": "purple",
+        "title": "You Are", 
+        "icons": 1,
+        "player_notes": ["SELF"]
+    },
+    "THIS_PLAYER_IS": {
+        "cardTitle": "This Player Is", 
+        "cardColor": "purple",
+        "title": "This Player Is",
+        "icons": 1,
+        "player_notes": ["SELF"]
+    },
+    "CHOSEN_BY": {
+        "cardTitle": "Character Selected You", 
+        "cardColor": "green",
+        "title": "Character Selected You", 
+        "icons": 1,
+        "player_notes": ["SELF"]
+    },
+    "DID_YOU_VOTE": {
+        "cardTitle": "Did you Vote Today?", 
+        "cardColor": "orange",
+        "title": "Did You Vote Today?", 
+        "icons": 0,
+        "players_fixed": true
+    },
+    "DID_YOU_NOMINATE": {
+        "cardTitle": "Did You Nominate Today?", 
+        "cardColor": "orange",
+        "title": "Did You Nominate Today?",
+        "icons": 0,
+        "players_fixed": true
+    },
+}
+
+function populate_info_list() {
+    const list = document.getElementById("info_list_scroll");
+    for (const cardId in CARDS) {
+        const card = CARDS[cardId];
+        const color = card["cardColor"] || "green"
+
+        const div = document.createElement("div");
+        div.classList.add("background-image", "info_list_scroll_option");
+        div.onclick = () => load_playerinfo_shroud(cardId);
+        div.style.backgroundImage = `url(assets/cards/card-${color}.png)`
+
+        const span = document.createElement("span");
+        span.innerText = card["cardTitle"];
+        div.appendChild(span);
+
+        list.appendChild(div);
+    }
 }
 
 /**
  * Depending on the shroud being shown, prefill special information into the
  * shroud for Storyteller convenience.
- * @param {Number} typeId The ID of the shroud being shown.
+ * @param {String} typeId The ID of the shroud being shown.
  */
 function mapped_specials(typeId) {
-    if (typeId == 8 || typeId == 9) {
+    if (typeId == "DID_YOU_VOTE" || typeId == "DID_YOU_NOMINATE") {
         document.getElementById("playerinfo_extra_button").style.display = "none";
     } else {
         document.getElementById("playerinfo_extra_button").style.display = "inline-block";
     }
     switch (typeId) {
-        case 2:
+        case "BLUFFS":
             var bluffs = [];
             var tokens = document.getElementById("token_layer").children;
             for (i = 0; i < tokens.length; i++) {
@@ -48,12 +138,12 @@ function mapped_specials(typeId) {
                 }
             }
             break;
-        case 5:
-        case 6:
-        case 7:
+        case "YOU ARE":
+        case "THIS_PLAYER_IS":
+        case "CHOSEN_BY":
             select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
             break;
-        case 10:
+        case "CUSTOM_INFO":
             var input = document.createElement("textarea");
             function recalcHeight() {
                 document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
@@ -68,14 +158,14 @@ function mapped_specials(typeId) {
 
 /**
  * Show a particular shroud (information display screen), to show to a player.
- * @param {Number} typeId The ID of the shroud to show the player.
+ * @param {String} typeId The ID of the shroud to show the player.
  */
 function load_playerinfo_shroud(typeId) {
     const card = CARDS[typeId];
     document.getElementById("playerinfo_shoud").style.display = "inherit";
     document.getElementById("playerinfo_title").innerHTML = card["title"];
     document.getElementById("playerinfo_character_landing").innerHTML = "";
-    for (i = 0; i < card["players"]; i++) {
+    for (i = 0; i < card["icons"]; i++) {
         add_playerinfo_character_box()
     }
     mapped_specials(typeId);
