@@ -5,10 +5,14 @@
  * Shroud-specific data for what card to show for given IDs. 
  * 
  * This object has the following parameters:
- * title - Optional: The text that appears at the top of the shroud when displayed.
- * players
- * The title is what's shown at the top of the shroud. 
- * The players is the number of characters shown, by default, on the shroud.
+ * cardTitle: The text put in the info box to distinguish the shrouds.
+ * cardColor: the color of the card in the info box. 
+ * title: The text shown on the shroud itself.
+ * icons: the default number of slots available to add characters to.
+ * iconsFixed: if the number of slots available should be unchangable.
+ * autofill: if the first slot should be filled with the role used. 
+ * 
+ * Properties after icons are optional. 
  */
 const CARDS = {
     "GENERAL_INFO": { 
@@ -79,16 +83,30 @@ const CARDS = {
         "cardColor": "orange",
         "title": "Did You Vote Today?", 
         "icons": 0,
-        "icons_fixed": true
+        "iconsFixed": true
     }
 }
 
+/**
+ * Roles for the current token selected in the info box. 
+ */
 let roleCards = {}
 
+/**
+ * Get the card info for a given card id. This can be either from the CARDS
+ * object, of a custom user-defined card in the role object. 
+ * @param {String} cardId The ID of the card. 
+ * @returns An object containing the card info for this id. 
+ */
 function getCard(cardId) {
     return roleCards[cardId] || CARDS[cardId];
 }
 
+/**
+ * Repopulate the shroud list (the info_list) with all relevant shrouds. 
+ * @param {String} roleId The ID of the role being displayed. This determines
+ *                        if extra shrouds should be added. 
+ */
 function repopulate_info_list(roleId) {
     roleCards = roles[roleId]["shrouds"] || {};
 
@@ -163,7 +181,7 @@ function load_playerinfo_shroud(typeId) {
     }
     mapped_specials(typeId);
 
-    if (card["icons_fixed"] === true) {
+    if (card["iconsFixed"] === true) {
         document.getElementById("playerinfo_extra_button").style.visibility = "hidden";
     } else {
         document.getElementById("playerinfo_extra_button").style.visibility = "visible";
