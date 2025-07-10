@@ -30,8 +30,6 @@ async function loaded()
   dragPipLayerSpawnDefault("good");
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
-
-  populate_info_list();
   
   load_scripts().then(() =>
   {

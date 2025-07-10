@@ -26,6 +26,8 @@ async function infoCall(id, uid) {
 
     update_info_death_cycle(id, uid);
 
+    repopulate_info_list(id);
+
     if (role.reminders == undefined) return;
 
     const landing = document.getElementById("info_token_landing");

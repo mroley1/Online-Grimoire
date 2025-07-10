@@ -11,7 +11,7 @@
  * The players is the number of characters shown, by default, on the shroud.
  */
 const CARDS = {
-    "CUSTOM_INFO": { 
+    "GENERAL_INFO": { 
         "cardTitle": "General Info", 
         "cardColor": "green",
         "title": "Info", 
@@ -29,11 +29,23 @@ const CARDS = {
         "title": "Choose a Player", 
         "icons": 0
     },
-    "CUSTOM_CHOICE": {
+    "CHOOSE_CHARACTER": {
         "cardTitle": "Choose Character(s)",
         "cardColor": "brown",
         "title": "Choose a Character", 
         "icons": 1
+    },
+    "MINIONS": { 
+        "cardTitle": "This is Your Demon",
+        "cardColor": "red",
+        "title": "This Is Your Demon", 
+        "icons": 0,
+    },
+    "DEMONS": {
+        "cardTitle": "These Are Your Minions",
+        "cardColor": "red",
+        "title": "These Are Your Minions",
+        "icons": 0,
     },
     "BLUFFS": {
         "cardTitle": "Demon Bluffs",
@@ -41,61 +53,52 @@ const CARDS = {
         "title": "These Characters are Not In Play", 
         "icons": 3
     },
-    "MINIONS": { 
-        "cardTitle": "This is Your Demon",
-        "cardColor": "red",
-        "title": "This Is Your Demon", 
-        "icons": 0,
-        "players_fixed": true
-    },
-    "DEMONS": {
-        "cardTitle": "These Are Your Minions",
-        "cardColor": "red",
-        "title": "These Are Your Minions",
-        "icons": 0,
-        "players_fixed": true
+    "CHOSEN_BY": {
+        "cardTitle": "You Were Chosen By", 
+        "cardColor": "blue",
+        "title": "You Have Been Chosen By", 
+        "icons": 1,
+        "autofill": true
     },
     "YOU_ARE": { 
         "cardTitle": "You Are", 
         "cardColor": "purple",
         "title": "You Are", 
         "icons": 1,
-        "player_notes": ["SELF"]
+        "autofill": true
     },
     "THIS_PLAYER_IS": {
         "cardTitle": "This Player Is", 
         "cardColor": "purple",
         "title": "This Player Is",
         "icons": 1,
-        "player_notes": ["SELF"]
-    },
-    "CHOSEN_BY": {
-        "cardTitle": "Character Selected You", 
-        "cardColor": "green",
-        "title": "Character Selected You", 
-        "icons": 1,
-        "player_notes": ["SELF"]
+        "autofill": true
     },
     "DID_YOU_VOTE": {
         "cardTitle": "Did you Vote Today?", 
         "cardColor": "orange",
         "title": "Did You Vote Today?", 
         "icons": 0,
-        "players_fixed": true
-    },
-    "DID_YOU_NOMINATE": {
-        "cardTitle": "Did You Nominate Today?", 
-        "cardColor": "orange",
-        "title": "Did You Nominate Today?",
-        "icons": 0,
-        "players_fixed": true
-    },
+        "icons_fixed": true
+    }
 }
 
-function populate_info_list() {
+let roleCards = {}
+
+function getCard(cardId) {
+    return roleCards[cardId] || CARDS[cardId];
+}
+
+function repopulate_info_list(roleId) {
+    roleCards = roles[roleId]["shrouds"] || {};
+
     const list = document.getElementById("info_list_scroll");
-    for (const cardId in CARDS) {
-        const card = CARDS[cardId];
+    list.innerHTML = "";
+
+    let allCards = {...roleCards, ...CARDS}
+
+    for (const cardId in allCards) {
+        const card = allCards[cardId];
         const color = card["cardColor"] || "green"
 
         const div = document.createElement("div");
@@ -117,11 +120,6 @@ function populate_info_list() {
  * @param {String} typeId The ID of the shroud being shown.
  */
 function mapped_specials(typeId) {
-    if (typeId == "DID_YOU_VOTE" || typeId == "DID_YOU_NOMINATE") {
-        document.getElementById("playerinfo_extra_button").style.display = "none";
-    } else {
-        document.getElementById("playerinfo_extra_button").style.display = "inline-block";
-    }
     switch (typeId) {
         case "BLUFFS":
             var bluffs = [];
@@ -138,12 +136,7 @@ function mapped_specials(typeId) {
                 }
             }
             break;
-        case "YOU ARE":
-        case "THIS_PLAYER_IS":
-        case "CHOSEN_BY":
-            select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
-            break;
-        case "CUSTOM_INFO":
+        case "GENERAL_INFO":
             var input = document.createElement("textarea");
             function recalcHeight() {
                 document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
@@ -161,7 +154,7 @@ function mapped_specials(typeId) {
  * @param {String} typeId The ID of the shroud to show the player.
  */
 function load_playerinfo_shroud(typeId) {
-    const card = CARDS[typeId];
+    const card = getCard(typeId);
     document.getElementById("playerinfo_shoud").style.display = "inherit";
     document.getElementById("playerinfo_title").innerHTML = card["title"];
     document.getElementById("playerinfo_character_landing").innerHTML = "";
@@ -169,6 +162,17 @@ function load_playerinfo_shroud(typeId) {
         add_playerinfo_character_box()
     }
     mapped_specials(typeId);
+
+    if (card["icons_fixed"] === true) {
+        document.getElementById("playerinfo_extra_button").style.visibility = "hidden";
+    } else {
+        document.getElementById("playerinfo_extra_button").style.visibility = "visible";
+    }
+
+    if (card["autofill"] === true) {
+        select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
+    }
+
     // For displays without any character boxes
     document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
 }
