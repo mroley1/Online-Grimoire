@@ -77,13 +77,6 @@ const CARDS = {
         "title": "This Player Is",
         "icons": 1,
         "autofill": true
-    },
-    "DID_YOU_VOTE": {
-        "cardTitle": "Did you Vote Today?", 
-        "cardColor": "orange",
-        "title": "Did You Vote Today?", 
-        "icons": 0,
-        "iconsFixed": true
     }
 }
 
@@ -182,13 +175,20 @@ function load_playerinfo_shroud(typeId) {
     mapped_specials(typeId);
 
     if (card["iconsFixed"] === true) {
-        document.getElementById("playerinfo_extra_button").style.visibility = "hidden";
+        document.getElementById("playerinfo_extra_button").style.display = "none";
     } else {
-        document.getElementById("playerinfo_extra_button").style.visibility = "visible";
+        document.getElementById("playerinfo_extra_button").style.display = "inline-block";
     }
 
     if (card["autofill"] === true) {
         select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
+    }
+
+    if (card["epilog"] != undefined) {
+        document.getElementById("playerinfo_epilog").style.display = "inline-block";
+        document.getElementById("playerinfo_epilog").innerText = card["epilog"];
+    } else {
+        document.getElementById("playerinfo_epilog").style.display = "none";
     }
 
     // For displays without any character boxes

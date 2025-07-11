@@ -452,6 +452,18 @@ svg {pointer-events: none; user-select: none;}
 .background_select_scroll_body {display: inline-flex; width: 70%; height: calc(100% - 100px); pointer-events: all; padding: 50px; overflow-y: scroll; scrollbar-width: none; display: inline-flex; flex-flow: wrap; justify-content: center;}
 .background_select_scroll_body::-webkit-scrollbar {display: none;}
 
+#playerinfo_title {
+    color: white;
+    font-family: PiratesBay;
+    font-size: 60pt;
+}
+
+#playerinfo_epilog {
+    color: #AAA; 
+    font-family: Dumbledor;
+    font-size: 20pt;
+}
+
 #playerinfo_close {
     position: absolute; 
     top: 5px; 
