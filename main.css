@@ -453,9 +453,14 @@ svg {pointer-events: none; user-select: none;}
 .background_select_scroll_body::-webkit-scrollbar {display: none;}
 
 #playerinfo_title {
+    background-color: #00000000;
+    border: none;
     color: white;
     font-family: PiratesBay;
     font-size: 60pt;
+    min-height: 1em;
+    resize: none; /* prevent manual resizing */
+    overflow: hidden; /* hide scrollbars */
 }
 
 #playerinfo_epilog {
@@ -506,7 +511,17 @@ svg {pointer-events: none; user-select: none;}
     background-size: auto 80%; 
     background-repeat: no-repeat;
 }
-#playerinfo_input {height: 70px; width: 65%; font-size: 40pt; text-align: center;}
+#playerinfo_input {
+    width: 65%; 
+    background-color: #00000000;
+    border: none;
+    color: white;
+    font-family: PiratesBay;
+    font-size: 60pt; 
+    resize: none;
+    text-align: center;
+    vertical-align:bottom;
+}
 #playerinfo_body {pointer-events: none;}
 
 .alignment_token {position: static; display: inline-block; margin: 5px; width: 75px; height: 75px;}

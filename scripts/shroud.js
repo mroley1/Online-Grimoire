@@ -18,7 +18,7 @@ const CARDS = {
     "GENERAL_INFO": { 
         "cardTitle": "General Info", 
         "cardColor": "green",
-        "title": "Info", 
+        "title": "", // Becomes the entry field. 
         "icons": 0
     },
     "USE_ABILITY": { 
@@ -153,9 +153,19 @@ function mapped_specials(typeId) {
                 document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
             }
             new ResizeObserver(recalcHeight).observe(input);
+            const resizeTextarea = () => {
+                // There's no easy way to make text fields auto-resize. 
+                // This kludge forces it to every time it updates.
+                input.style.height = 'auto';
+                input.style.height = input.scrollHeight + 'px';
+            }
             input.id = "playerinfo_input"
+            input.textContent = "You Learn..."
+            input.rows = 1;
+            input.addEventListener("input", resizeTextarea);
             document.getElementById("playerinfo_character_landing").prepend(document.createElement("br"));
             document.getElementById("playerinfo_character_landing").prepend(input);
+            resizeTextarea();
             break;
     }
 }
