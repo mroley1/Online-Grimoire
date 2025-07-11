@@ -18,7 +18,7 @@ const CARDS = {
     "GENERAL_INFO": { 
         "cardTitle": "General Info", 
         "cardColor": "green",
-        "title": "", // Becomes the entry field. 
+        "title": "You Learn...",
         "icons": 0
     },
     "USE_ABILITY": { 
@@ -95,6 +95,27 @@ function getCard(cardId) {
     return roleCards[cardId] || CARDS[cardId];
 }
 
+function initShroudTitle() {
+    const input = document.getElementById("playerinfo_title");
+
+
+    const recalcHeight = () => {
+        document.getElementById("playerinfo_body").style.top = `calc(50% - ${document.getElementById("playerinfo_body").clientHeight / 2}px)`;
+    }
+    new ResizeObserver(recalcHeight).observe(input);
+    input.addEventListener("input", () => resizeInput(input));
+    input.rows = 1;
+    input.placeholder = "Info";
+}
+
+
+function resizeInput(el) {
+    // There's no easy way to make text fields auto-resize. 
+    // This kludge forces it to every time it updates.
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
+
 /**
  * Repopulate the shroud list (the info_list) with all relevant shrouds. 
  * @param {String} roleId The ID of the role being displayed. This determines
@@ -147,26 +168,6 @@ function mapped_specials(typeId) {
                 }
             }
             break;
-        case "GENERAL_INFO":
-            var input = document.createElement("textarea");
-            function recalcHeight() {
-                document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
-            }
-            new ResizeObserver(recalcHeight).observe(input);
-            const resizeTextarea = () => {
-                // There's no easy way to make text fields auto-resize. 
-                // This kludge forces it to every time it updates.
-                input.style.height = 'auto';
-                input.style.height = input.scrollHeight + 'px';
-            }
-            input.id = "playerinfo_input"
-            input.textContent = "You Learn..."
-            input.rows = 1;
-            input.addEventListener("input", resizeTextarea);
-            document.getElementById("playerinfo_character_landing").prepend(document.createElement("br"));
-            document.getElementById("playerinfo_character_landing").prepend(input);
-            resizeTextarea();
-            break;
     }
 }
 
@@ -176,12 +177,16 @@ function mapped_specials(typeId) {
  */
 function load_playerinfo_shroud(typeId) {
     const card = getCard(typeId);
+
     document.getElementById("playerinfo_shoud").style.display = "inherit";
-    document.getElementById("playerinfo_title").innerHTML = card["title"];
+    document.getElementById("playerinfo_title").value = card["title"];
+    resizeInput(document.getElementById("playerinfo_title"));
     document.getElementById("playerinfo_character_landing").innerHTML = "";
+
     for (i = 0; i < card["icons"]; i++) {
         add_playerinfo_character_box()
     }
+
     mapped_specials(typeId);
 
     if (card["iconsFixed"] === true) {

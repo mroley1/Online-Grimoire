@@ -31,6 +31,8 @@ async function loaded()
   dragPipLayerSpawnDefault("evil");
   dragPipLayerSpawnDefault("reminder_pip");
   
+  initShroudTitle();
+
   load_scripts().then(() =>
   {
     load_game_state_json(localStorage.getItem("state"))
