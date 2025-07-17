@@ -14,7 +14,7 @@
  * 
  * Properties after icons are optional. 
  */
-const CARDS = {
+const DEFAULT_CARDS = {
     "GENERAL_INFO": { 
         "cardTitle": "General Info", 
         "cardColor": "green",
@@ -86,15 +86,10 @@ const CARDS = {
 let roleCards = {}
 
 /**
- * Get the card info for a given card id. This can be either from the CARDS
- * object, of a custom user-defined card in the role object. 
- * @param {String} cardId The ID of the card. 
- * @returns An object containing the card info for this id. 
+ * Perform initialization steps for the shroud header. Due to its dual nature
+ * as both a string set by shrouds and a text field editable by users, the
+ * editable nature needs to be configured after page load.
  */
-function getCard(cardId) {
-    return roleCards[cardId] || CARDS[cardId];
-}
-
 function initShroudTitle() {
     const input = document.getElementById("playerinfo_title");
 
@@ -117,6 +112,61 @@ function resizeInput(el) {
 }
 
 /**
+ * Add a card to the Info list (list of shrouds). Duplicate entries are ignored.
+ * @param {String} cardId The ID of a card. Should be unique. 
+ * @param {*} card The shroud data.
+ */
+function addCardToInfoList(cardId, card) {
+    if (cardId in roleCards) {
+        return;
+    }
+
+    roleCards[cardId] = card;
+    const list = document.getElementById("info_list_scroll");
+
+    const color = card["cardColor"] || "green"
+
+    const div = document.createElement("div");
+    div.classList.add("background-image", "info_list_scroll_option");
+    div.onclick = () => load_playerinfo_shroud(cardId);
+    div.style.backgroundImage = `url(assets/cards/card-${color}.png)`
+
+    const span = document.createElement("span");
+    span.innerText = card["cardTitle"];
+    div.appendChild(span);
+
+    list.appendChild(div);
+}
+
+/**
+ * Reset the info card list (second tab in infobox) to only contain the default
+ * cards. 
+ */
+function resetInfoList() {
+    roleCards = {};
+    document.getElementById("info_list_scroll").innerHTML = "";
+
+    for (const cardId in DEFAULT_CARDS) {
+        addCardToInfoList(cardId, DEFAULT_CARDS[cardId]);
+    }
+}
+
+/**
+ * Append all additional shroud info to the infobox card list, if any.
+ * @param {Object} role The role to check for shroud info. 
+ */
+function appendCardsToInfoList(role) {
+    if (role.shrouds == undefined) {
+        return;
+    }
+
+    for (const i in role.shrouds) {
+        const cardId = `${role.id}_${i}`;
+        addCardToInfoList(cardId, role.shrouds[i]);
+    }
+}
+
+/**
  * Repopulate the shroud list (the info_list) with all relevant shrouds. 
  * @param {String} roleId The ID of the role being displayed. This determines
  *                        if extra shrouds should be added. 
@@ -127,7 +177,7 @@ function repopulate_info_list(roleId) {
     const list = document.getElementById("info_list_scroll");
     list.innerHTML = "";
 
-    let allCards = {...roleCards, ...CARDS}
+    let allCards = {...roleCards, ...DEFAULT_CARDS}
 
     for (const cardId in allCards) {
         const card = allCards[cardId];
@@ -176,7 +226,7 @@ function mapped_specials(typeId) {
  * @param {String} typeId The ID of the shroud to show the player.
  */
 function load_playerinfo_shroud(typeId) {
-    const card = getCard(typeId);
+    const card = roleCards[typeId];
 
     document.getElementById("playerinfo_shoud").style.display = "inherit";
     document.getElementById("playerinfo_title").value = card["title"];

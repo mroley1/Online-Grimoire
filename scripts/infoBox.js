@@ -25,8 +25,8 @@ async function infoCall(id, uid) {
     document.getElementById("info_token_dragbox").innerHTML = "";
 
     update_info_death_cycle(id, uid);
-
-    repopulate_info_list(id);
+    
+    appendCardsToInfoList(role);
 
     if (role.reminders == undefined) return;
 

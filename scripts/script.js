@@ -115,6 +115,8 @@ async function populate_script(script) {
         rolesOnScript.push(roles[element.id]);
     })
 
+    rolesOnScript.sort((a,b) => a.id > b.id)
+
     //const ASSIGNABLE_TEAMS = ["townsfolk", "outsider", "minion", "demon", "traveller"];
     
     for (const team of Object.values(ASSIGNABLE_TEAMS)) {
@@ -184,11 +186,15 @@ async function populate_script(script) {
         const landing = document.getElementById(team.id);
         landing.appendChild(outer_div)
     }
-   
-
 
     player_count_change();
     update_role_counts();
+
+    resetInfoList();
+    for (const role of rolesOnScript) {
+        appendCardsToInfoList(role);
+    }
+
     clear_mutate_menu();
     populate_mutate_menu(rolesOnScript);
 
