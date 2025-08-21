@@ -454,6 +454,7 @@ svg {pointer-events: none; user-select: none;}
 
 #playerinfo_title {
     width: 65%; 
+    overflow-x:hidden;
 
     background-color: #00000000;
     border: none;

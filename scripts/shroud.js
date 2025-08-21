@@ -71,6 +71,13 @@ const DEFAULT_CARDS = {
         "icons": 1,
         "autofill": true
     },
+    "YOUR_ABILITY": { 
+        "cardTitle": "Your Ability Text", 
+        "cardColor": "purple",
+        "title": "Your ability is: ", 
+        "icons": 1,
+        "autofill": true
+    },
     "THIS_PLAYER_IS": {
         "cardTitle": "This Player Is", 
         "cardColor": "purple",
@@ -217,6 +224,12 @@ function mapped_specials(typeId) {
                     select_playerinfo_character(i, bluffs.pop())
                 }
             }
+            break;
+        case "YOUR_ABILITY":
+            const abilityText = document.getElementById("info_desc_field").innerText;
+            const titleBox = document.getElementById("playerinfo_title");
+            titleBox.value += "\n" + '"' + abilityText + '"';
+            resizeInput(titleBox);
             break;
     }
 }
