@@ -71,7 +71,6 @@ async function load_scripts() {
  * Initialize the selected script from the script_options dropdown.
  */
 async function script_select() {
-    console.log("SELECTION!")
     const scriptIndex = parseInt(document.getElementById("script_options").options.selectedIndex);
     let script;
     if (scriptIndex < KNOWN_SCRIPTS.length) {
@@ -130,8 +129,6 @@ async function script_upload() {
  * @param {Object} script a container with all of the characters in the script
  */
 async function populate_script(script) {
-    console.log(script)
-    console.trace();
     CURRENT_SCRIPT = script;
     document.getElementById("script_upload_feedback").innerHTML = script[0]["name"] || "Untitled Script";
     const rolesOnScript = [];
@@ -142,6 +139,8 @@ async function populate_script(script) {
         } 
         rolesOnScript.push(roles[element.id]);
     })
+
+    rolesOnScript.sort((a,b) => a.id > b.id)
 
     //const ASSIGNABLE_TEAMS = ["townsfolk", "outsider", "minion", "demon", "traveller"];
     
@@ -212,11 +211,15 @@ async function populate_script(script) {
         const landing = document.getElementById(team.id);
         landing.appendChild(outer_div)
     }
-   
-
 
     player_count_change();
     update_role_counts();
+
+    resetInfoList();
+    for (const role of rolesOnScript) {
+        appendCardsToInfoList(role);
+    }
+
     clear_mutate_menu();
     populate_mutate_menu(rolesOnScript);
 

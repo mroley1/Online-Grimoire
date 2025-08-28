@@ -3,37 +3,214 @@
 
 /** 
  * Shroud-specific data for what card to show for given IDs. 
- * The title is what's shown at the top of the shroud. 
- * The players is the number of characters shown, by default, on the shroud.
+ * 
+ * This object has the following parameters:
+ * cardTitle: The text put in the info box to distinguish the shrouds.
+ * cardColor: the color of the card in the info box. 
+ * title: The text shown on the shroud itself.
+ * icons: the default number of slots available to add characters to.
+ * iconsFixed: if the number of slots available should be unchangable.
+ * autofill: if the first slot should be filled with the role used. 
+ * 
+ * Properties after icons are optional. 
  */
-const CARDS = {
-    0: { "title": "Use Your Ability?", "players": 0 },
-    1: { "title": "Choose a Player", "players": 0 },
-    2: { "title": "These Characters are Not In Play", "players": 3 },
-    3: { "title": "This Is Your Demon", "players": 0 },
-    4: { "title": "These Are Your Minions", "players": 0 },
-    5: { "title": "You Are", "players": 1 },
-    6: { "title": "This Player Is", "players": 1 },
-    7: { "title": "Character Selected You", "players": 1 },
-    8: { "title": "Did You Vote Today?", "players": 0 },
-    9: { "title": "Did You Nominate Today?", "players": 0 },
-    10: { "title": "Info", "players": 0 },
-    11: { "title": "Make your Choice", "players": 1 },
+const DEFAULT_CARDS = {
+    "GENERAL_INFO": { 
+        "cardTitle": "General Info", 
+        "cardColor": "green",
+        "title": "You Learn...",
+        "icons": 0
+    },
+    "USE_ABILITY": { 
+        "cardTitle": "Use Your Ability?",
+        "cardColor": "brown",
+        "title": "Use Your Ability?", 
+        "icons": 0
+    },
+    "CHOOSE_SOMEONE": {
+        "cardTitle": "Choose Player(s)",
+        "cardColor": "brown",
+        "title": "Choose a Player", 
+        "icons": 0
+    },
+    "CHOOSE_CHARACTER": {
+        "cardTitle": "Choose Character(s)",
+        "cardColor": "brown",
+        "title": "Choose a Character", 
+        "icons": 1
+    },
+    "MINIONS": { 
+        "cardTitle": "This is Your Demon",
+        "cardColor": "red",
+        "title": "This Is Your Demon", 
+        "icons": 0,
+    },
+    "DEMONS": {
+        "cardTitle": "These Are Your Minions",
+        "cardColor": "red",
+        "title": "These Are Your Minions",
+        "icons": 0,
+    },
+    "BLUFFS": {
+        "cardTitle": "Demon Bluffs",
+        "cardColor": "blue",
+        "title": "These Characters are Not In Play", 
+        "icons": 3
+    },
+    "CHOSEN_BY": {
+        "cardTitle": "You Were Chosen By", 
+        "cardColor": "blue",
+        "title": "You Have Been Chosen By", 
+        "icons": 1,
+        "autofill": true
+    },
+    "YOU_ARE": { 
+        "cardTitle": "You Are", 
+        "cardColor": "purple",
+        "title": "You Are", 
+        "icons": 1,
+        "autofill": true
+    },
+    "YOUR_ABILITY": { 
+        "cardTitle": "Your Ability Text", 
+        "cardColor": "purple",
+        "title": "Your ability is: ", 
+        "icons": 1,
+        "autofill": true
+    },
+    "THIS_PLAYER_IS": {
+        "cardTitle": "This Player Is", 
+        "cardColor": "purple",
+        "title": "This Player Is",
+        "icons": 1,
+        "autofill": true
+    }
+}
+
+/**
+ * Roles for the current token selected in the info box. 
+ */
+let roleCards = {}
+
+/**
+ * Perform initialization steps for the shroud header. Due to its dual nature
+ * as both a string set by shrouds and a text field editable by users, the
+ * editable nature needs to be configured after page load.
+ */
+function initShroudTitle() {
+    const input = document.getElementById("playerinfo_title");
+
+
+    const recalcHeight = () => {
+        document.getElementById("playerinfo_body").style.top = `calc(50% - ${document.getElementById("playerinfo_body").clientHeight / 2}px)`;
+    }
+    new ResizeObserver(recalcHeight).observe(input);
+    input.addEventListener("input", () => resizeInput(input));
+    input.rows = 1;
+    input.placeholder = "Info";
+}
+
+
+function resizeInput(el) {
+    // There's no easy way to make text fields auto-resize. 
+    // This kludge forces it to every time it updates.
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
+
+/**
+ * Add a card to the Info list (list of shrouds). Duplicate entries are ignored.
+ * @param {String} cardId The ID of a card. Should be unique. 
+ * @param {*} card The shroud data.
+ */
+function addCardToInfoList(cardId, card) {
+    if (cardId in roleCards) {
+        return;
+    }
+
+    roleCards[cardId] = card;
+    const list = document.getElementById("info_list_scroll");
+
+    const color = card["cardColor"] || "green"
+
+    const div = document.createElement("div");
+    div.classList.add("background-image", "info_list_scroll_option");
+    div.onclick = () => load_playerinfo_shroud(cardId);
+    div.style.backgroundImage = `url(assets/cards/card-${color}.png)`
+
+    const span = document.createElement("span");
+    span.innerText = card["cardTitle"];
+    div.appendChild(span);
+
+    list.appendChild(div);
+}
+
+/**
+ * Reset the info card list (second tab in infobox) to only contain the default
+ * cards. 
+ */
+function resetInfoList() {
+    roleCards = {};
+    document.getElementById("info_list_scroll").innerHTML = "";
+
+    for (const cardId in DEFAULT_CARDS) {
+        addCardToInfoList(cardId, DEFAULT_CARDS[cardId]);
+    }
+}
+
+/**
+ * Append all additional shroud info to the infobox card list, if any.
+ * @param {Object} role The role to check for shroud info. 
+ */
+function appendCardsToInfoList(role) {
+    if (role.shrouds == undefined) {
+        return;
+    }
+
+    for (const i in role.shrouds) {
+        const cardId = `${role.id}_${i}`;
+        addCardToInfoList(cardId, role.shrouds[i]);
+    }
+}
+
+/**
+ * Repopulate the shroud list (the info_list) with all relevant shrouds. 
+ * @param {String} roleId The ID of the role being displayed. This determines
+ *                        if extra shrouds should be added. 
+ */
+function repopulate_info_list(roleId) {
+    roleCards = roles[roleId]["shrouds"] || {};
+
+    const list = document.getElementById("info_list_scroll");
+    list.innerHTML = "";
+
+    let allCards = {...roleCards, ...DEFAULT_CARDS}
+
+    for (const cardId in allCards) {
+        const card = allCards[cardId];
+        const color = card["cardColor"] || "green"
+
+        const div = document.createElement("div");
+        div.classList.add("background-image", "info_list_scroll_option");
+        div.onclick = () => load_playerinfo_shroud(cardId);
+        div.style.backgroundImage = `url(assets/cards/card-${color}.png)`
+
+        const span = document.createElement("span");
+        span.innerText = card["cardTitle"];
+        div.appendChild(span);
+
+        list.appendChild(div);
+    }
 }
 
 /**
  * Depending on the shroud being shown, prefill special information into the
  * shroud for Storyteller convenience.
- * @param {Number} typeId The ID of the shroud being shown.
+ * @param {String} typeId The ID of the shroud being shown.
  */
 function mapped_specials(typeId) {
-    if (typeId == 8 || typeId == 9) {
-        document.getElementById("playerinfo_extra_button").style.display = "none";
-    } else {
-        document.getElementById("playerinfo_extra_button").style.display = "inline-block";
-    }
     switch (typeId) {
-        case 2:
+        case "BLUFFS":
             var bluffs = [];
             var tokens = document.getElementById("token_layer").children;
             for (i = 0; i < tokens.length; i++) {
@@ -48,37 +225,50 @@ function mapped_specials(typeId) {
                 }
             }
             break;
-        case 5:
-        case 6:
-        case 7:
-            select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
-            break;
-        case 10:
-            var input = document.createElement("textarea");
-            function recalcHeight() {
-                document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
-            }
-            new ResizeObserver(recalcHeight).observe(input);
-            input.id = "playerinfo_input"
-            document.getElementById("playerinfo_character_landing").prepend(document.createElement("br"));
-            document.getElementById("playerinfo_character_landing").prepend(input);
+        case "YOUR_ABILITY":
+            const abilityText = document.getElementById("info_desc_field").innerText;
+            const titleBox = document.getElementById("playerinfo_title");
+            titleBox.value += "\n" + '"' + abilityText + '"';
+            resizeInput(titleBox);
             break;
     }
 }
 
 /**
  * Show a particular shroud (information display screen), to show to a player.
- * @param {Number} typeId The ID of the shroud to show the player.
+ * @param {String} typeId The ID of the shroud to show the player.
  */
 function load_playerinfo_shroud(typeId) {
-    const card = CARDS[typeId];
+    const card = roleCards[typeId];
+
     document.getElementById("playerinfo_shoud").style.display = "inherit";
-    document.getElementById("playerinfo_title").innerHTML = card["title"];
+    document.getElementById("playerinfo_title").value = card["title"];
+    resizeInput(document.getElementById("playerinfo_title"));
     document.getElementById("playerinfo_character_landing").innerHTML = "";
-    for (i = 0; i < card["players"]; i++) {
+
+    for (i = 0; i < card["icons"]; i++) {
         add_playerinfo_character_box()
     }
+
     mapped_specials(typeId);
+
+    if (card["iconsFixed"] === true) {
+        document.getElementById("playerinfo_extra_button").style.display = "none";
+    } else {
+        document.getElementById("playerinfo_extra_button").style.display = "inline-block";
+    }
+
+    if (card["autofill"] === true) {
+        select_playerinfo_character(0, document.getElementById("info_list").getAttribute("current_player"));
+    }
+
+    if (card["epilog"] != undefined) {
+        document.getElementById("playerinfo_epilog").style.display = "inline-block";
+        document.getElementById("playerinfo_epilog").innerText = card["epilog"];
+    } else {
+        document.getElementById("playerinfo_epilog").style.display = "none";
+    }
+
     // For displays without any character boxes
     document.getElementById("playerinfo_body").style.top = "calc(50% - " + document.getElementById("playerinfo_body").clientHeight / 2 + "px)";
 }

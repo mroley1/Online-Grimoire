@@ -28,7 +28,7 @@
         "otherNightReminder": "",
         // If the character affects setup, it does so here. 
         "change_makeup": [
-            // Each entry is an object with one elemnet. For some reason.
+            // Each entry is an object with one element.
             {
                 // HARD, SOFTPOS, SOFTNEG, LOCK, or REQ.
                 "HARD": [
@@ -47,6 +47,24 @@
         ],
         // Does nothing, leave false.
         "hide_token": false,
+        // Custom shrouds that this character should have. 
+        "shrouds": [
+            // Each shroud entry is its own entry in this array. 
+            {
+                // The card title in the info box.
+                "cardTitle": "A short title", 
+                // The color of the card in the info box.
+                "cardColor": "red",
+                // The title shown to the player.
+                "title": "Hello player! Text shown to players goes here.",
+                // The number of user-pickable role icons. 
+                "icons": 1,
+                // If the number of these icons cannot be changed. Default false.
+                "iconsFixed": true,
+                // If the first icon should be of this character. Default false.
+                "autofill": true
+            }
+        ]
     },
 ```
 - add role to `data/scripts/Gang's All Here.json` or `data/scripts/Unreleased Experimental.json`, based on type.

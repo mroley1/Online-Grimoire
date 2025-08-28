@@ -26,15 +26,21 @@ async function loaded() {
     base_roles = await get_JSON("tokens.json");
     roles = JSON.parse(JSON.stringify(base_roles));
 
-    resetDragPipLayer();
+  dragPipLayerSpawnDefault("good");
+  dragPipLayerSpawnDefault("evil");
+  dragPipLayerSpawnDefault("reminder_pip");
+  
+  initShroudTitle();
 
-    load_scripts().then(() => {
-        load_game_state_json(localStorage.getItem("state"))
-    })
-    setTimeout(function () {
-        loading = false;
-        player_count_change();
-    }, 2000)
-    document.getElementById("body_actual").setAttribute("orientation", getOrientation())
-    window.onresize = resized;
+  load_scripts().then(() =>
+  {
+    load_game_state_json(localStorage.getItem("state"))
+  })
+  setTimeout(function ()
+  {
+    loading = false;
+    player_count_change();
+  }, 2000)
+  document.getElementById("body_actual").setAttribute("orientation", getOrientation())
+  window.onresize = resized;
 }

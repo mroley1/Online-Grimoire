@@ -464,6 +464,35 @@ svg {pointer-events: none; user-select: none;}
 .background_select_scroll_body {display: inline-flex; width: 70%; height: calc(100% - 100px); pointer-events: all; padding: 50px; overflow-y: scroll; scrollbar-width: none; display: inline-flex; flex-flow: wrap; justify-content: center;}
 .background_select_scroll_body::-webkit-scrollbar {display: none;}
 
+#playerinfo_title {
+    width: 65%; 
+    overflow-x:hidden;
+
+    background-color: #00000000;
+    border: none;
+    color: white;
+    font-family: PiratesBay;
+    font-size: 60pt; 
+    pointer-events:all;
+    resize: none;
+    text-align: center;
+    vertical-align:bottom;
+}
+
+#playerinfo_title::selection {
+    background: #888;
+}
+
+#playerinfo_title:focus {
+    outline: 1px #666 groove;
+}
+
+#playerinfo_epilog {
+    color: #AAA; 
+    font-family: Dumbledor;
+    font-size: 20pt;
+}
+
 #playerinfo_close {
     position: absolute; 
     top: 5px; 
@@ -506,7 +535,7 @@ svg {pointer-events: none; user-select: none;}
     background-size: auto 80%; 
     background-repeat: no-repeat;
 }
-#playerinfo_input {height: 70px; width: 65%; font-size: 40pt; text-align: center;}
+
 #playerinfo_body {pointer-events: none;}
 
 .alignment_token {position: static; display: inline-block; margin: 5px; width: 75px; height: 75px;}

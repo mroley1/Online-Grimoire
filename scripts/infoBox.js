@@ -32,6 +32,8 @@ async function infoCall(id, uid) {
     }
 
     update_info_death_cycle(id, uid);
+    
+    appendCardsToInfoList(role);
 
     if (role.reminders == undefined) return;
 
