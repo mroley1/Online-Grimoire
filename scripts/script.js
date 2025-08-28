@@ -30,6 +30,9 @@ const ASSIGNABLE_TEAMS = {
     },
 }
 
+let KNOWN_SCRIPTS = [];
+const uploadedScripts = [];
+
 /**
  * Get a JSON file from the server.
  * @param {String} path A relative path to the file on the server.
@@ -39,20 +42,27 @@ async function get_JSON(path) {
     return await (await fetch("./data/" + path)).json();
 }
 
+function appendScriptToDropdown(name) {
+    const option = document.createElement("option");
+    const optionText = document.createTextNode(name || "Untitled Script");
+    option.appendChild(optionText);
+
+    document.getElementById("script_options").appendChild(option);
+}
+
 /**
  * Load all of the scripts from the server.
  */
 async function load_scripts() {
-    var scripts = await get_JSON("scripts/scripts.json")
-    var initScript;
-    for (i = 0; i < scripts.length; i++) {
-        var element = scripts[i]
-        var script = await get_JSON("scripts/" + element["file"] + ".json");
-        if (i == 0) { initScript = script; }
-        option = document.createElement("option");
-        optionText = document.createTextNode(script[0]["name"]);
-        option.appendChild(optionText);
-        document.getElementById("script_options").appendChild(option);
+    KNOWN_SCRIPTS = await get_JSON("scripts/scripts.json")
+    let initScript;
+
+    for (const element of KNOWN_SCRIPTS) {
+        const script = await get_JSON("scripts/" + element["file"] + ".json");
+        if (initScript == undefined) initScript = script;
+
+        element.name = script[0]["name"];
+        appendScriptToDropdown(script[0]["name"]);
     }
     populate_script(initScript)
 }
@@ -61,8 +71,14 @@ async function load_scripts() {
  * Initialize the selected script from the script_options dropdown.
  */
 async function script_select() {
-    var script_names = await get_JSON("scripts/scripts.json");
-    var script = await get_JSON("scripts/" + script_names[document.getElementById("script_options").options.selectedIndex]["file"] + ".json");
+    console.log("SELECTION!")
+    const scriptIndex = parseInt(document.getElementById("script_options").options.selectedIndex);
+    let script;
+    if (scriptIndex < KNOWN_SCRIPTS.length) {
+        script = await get_JSON("scripts/" + KNOWN_SCRIPTS[document.getElementById("script_options").options.selectedIndex]["file"] + ".json");
+    } else {
+        script = uploadedScripts[scriptIndex - KNOWN_SCRIPTS.length];
+    }
     document.getElementById("script_upload_feedback").setAttribute("used", "select");
     document.getElementById("script_upload").value = "";
     populate_script(script);
@@ -84,16 +100,26 @@ async function script_upload() {
             }
         }
     }
+
+    let success = true;
     try {
         // Sanity check
         json[0]["id"]
         await populate_script(json);
         document.getElementById("script_upload_feedback").setAttribute("used", "upload");
     } catch (e) {
+        success = false;
         console.error(e);
         document.getElementById("script_upload_feedback").innerHTML = "Error Processing File";
         document.getElementById("script_upload_feedback").setAttribute("used", "error");
     }
+
+    if (success) {
+        uploadedScripts.push(json);
+        appendScriptToDropdown(json[0]["name"]);
+        document.getElementById("script_options").selectedIndex = document.getElementById("script_options").options.length - 1;
+    }
+
     document.getElementById("menu_settings_dropdown").style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
     if (!loading) { save_game_state(); }
 }
@@ -104,8 +130,10 @@ async function script_upload() {
  * @param {Object} script a container with all of the characters in the script
  */
 async function populate_script(script) {
+    console.log(script)
+    console.trace();
     CURRENT_SCRIPT = script;
-    document.getElementById("script_upload_feedback").innerHTML = script[0]["name"];
+    document.getElementById("script_upload_feedback").innerHTML = script[0]["name"] || "Untitled Script";
     const rolesOnScript = [];
     script.forEach(element => {
         if (element.id.startsWith("_")) return;

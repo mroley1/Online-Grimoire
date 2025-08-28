@@ -177,6 +177,18 @@ svg {pointer-events: none; user-select: none;}
 #info_title_field {height: 100px; position: absolute; top: 0px; left: 0px; color:rgb(211, 211, 211); font-size: 50pt; font-family: PiratesBay;}
 #info_name_field {position: absolute; top: 70px; left: 30px; color:rgb(192, 72, 72); font-size: 17pt; font-family: PiratesBay;}
 #info_desc_field {position: absolute; width: calc(100vw - 600px); top: 95px; left: 15px; color:darkgrey; font-size: 24pt; font-family: PiratesBay; overflow-wrap: break-word; white-space: normal; text-align: left;}
+#info_flavor_field {
+    position: absolute;
+    width: calc(100vw - 600px);
+    top: 180px;
+    left: 15px;
+    font-size: 12pt;
+    font-style: italic;
+    font-family: PiratesBay;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: left;
+}
 
 #info_list {width: 100px; transition: width ease-in-out 0.2s;}
 #info_list:is([focus="true"]) {width: calc(100% - 465px);}

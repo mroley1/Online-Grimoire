@@ -203,6 +203,13 @@ function dragPipLayerSpawnDefault(type) {
     document.getElementById("dragPipLayer").prepend(div);
 }
 
+function resetDragPipLayer() {
+    document.getElementById("dragPipLayer").innerHTML = "";
+    dragPipLayerSpawnDefault("good");
+    dragPipLayerSpawnDefault("evil");
+    dragPipLayerSpawnDefault("reminder_pip");
+}
+
 /**
  * Prompt the user if they want to delete a reminder.
  * the prompt consists simply of a trash icon appearing over the reminder.
