@@ -6,29 +6,13 @@
  * @param {*} uid A Unique ID for the token to mutate.
  */
 function mutate_menu(id, uid) {
-    var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
-    for (i = 0; i < townsfolk.length; i++) {
-        townsfolk[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var outsiders = document.getElementById("mutate_menu_outsider").children;
-    for (i = 0; i < outsiders.length; i++) {
-        outsiders[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var minions = document.getElementById("mutate_menu_minion").children;
-    for (i = 0; i < minions.length; i++) {
-        minions[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var demons = document.getElementById("mutate_menu_demon").children;
-    for (i = 0; i < demons.length; i++) {
-        demons[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var travellers = document.getElementById("mutate_menu_traveller").children;
-    for (i = 0; i < travellers.length; i++) {
-        travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var travellers = document.getElementById("mutate_menu_fabled").children;
-    for (i = 0; i < travellers.length; i++) {
-        travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
+
+    for (const type in TEAM_TYPES) {
+        console.log(`mutate_menu_${type}`);
+        const tokens = document.getElementById(`mutate_menu_${type}`).children;
+        for (const token of tokens) {
+            token.setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + token.id.match(/(?<=mutate_menu_).*/) + "')")
+        }
     }
     document.getElementById("mutate_menu_main").style.display = "inherit";
 }
