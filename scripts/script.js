@@ -71,7 +71,6 @@ async function load_scripts() {
  * Initialize the selected script from the script_options dropdown.
  */
 async function script_select() {
-    console.log("SELECTION!")
     const scriptIndex = parseInt(document.getElementById("script_options").options.selectedIndex);
     let script;
     if (scriptIndex < KNOWN_SCRIPTS.length) {
@@ -130,8 +129,6 @@ async function script_upload() {
  * @param {Object} script a container with all of the characters in the script
  */
 async function populate_script(script) {
-    console.log(script)
-    console.trace();
     CURRENT_SCRIPT = script;
     document.getElementById("script_upload_feedback").innerHTML = script[0]["name"] || "Untitled Script";
     const rolesOnScript = [];
