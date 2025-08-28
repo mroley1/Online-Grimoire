@@ -100,7 +100,6 @@ async function populate_night_order() {
     );
     CURRENT_SCRIPT.filter(role => role.team == "fabled").forEach(role => aliveRoles.add(role.id))
 
-    console.log(aliveRoles)
     inPlayRoles.sort((a, b) => roles[a][night] - roles[b][night]);
 
     let defaultIndex = 0
@@ -240,7 +239,6 @@ function gen_night_order_tab_role(token_JSON, night, dead) {
  * @param {String} reminder The index into the object to get the reminder string.
  */
 function gen_night_order_tab_info(info, reminder) {
-    console.log(info)
     div = document.createElement("div");
     div.classList = "night_order_tab";
     img = document.createElement("img");

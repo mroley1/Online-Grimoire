@@ -193,7 +193,6 @@ function shuffle_roles() {
         }
     }
     shuffle(ids);
-    var offset = 0
     for (let i = 0, j = 0; i < tokens.length; i++) {
         if (tokens[i].getAttribute("visibility") == "show") {
             mutate_token(tokens[i].id.match(/.*(?=_token_)/)[0], tokens[i].getAttribute("uid"), ids[j++]);
@@ -209,12 +208,10 @@ function clean_board() {
     for (let it = tokens.length - 1; it >= 0; it--) {
         remove_token(tokens[it].id.match(/.*(?=_token_)/)[0], tokens[it].getAttribute("uid"))
     }
-    const pips = document.getElementById("dragPipLayer").children;
-    for (let it = pips.length - 1; it >= 0; it--) {
-        if (pips[it].getAttribute("stacked") == "false") {
-            delete_reminder(pips[it].id);
-        }
-    }
+    document.getElementById("reminder_layer").innerHTML = "";
+    
+    resetDragPipLayer();
+
     clear_night_order();
     save_game_state();
 }
