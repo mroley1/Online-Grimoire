@@ -322,6 +322,10 @@ function trigger_playerinfo_character_select(id) {
     for (i = 0; i < travellers.length; i++) {
         travellers[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
     }
+    var travellers = document.getElementById("mutate_menu_fabled").children;
+    for (i = 0; i < travellers.length; i++) {
+        travellers[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
+    }
     document.getElementById("mutate_menu_main").style.display = "inherit";
 }
 

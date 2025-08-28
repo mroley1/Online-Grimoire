@@ -26,6 +26,10 @@ function mutate_menu(id, uid) {
     for (i = 0; i < travellers.length; i++) {
         travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
     }
+    var travellers = document.getElementById("mutate_menu_fabled").children;
+    for (i = 0; i < travellers.length; i++) {
+        travellers[i].setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
+    }
     document.getElementById("mutate_menu_main").style.display = "inherit";
 }
 
@@ -47,7 +51,7 @@ function populate_mutate_menu(tokens) {
         div.id = "mutate_menu_" + element["id"];
         generateSampleToken(element["id"], div);
         div.classList = "background_image mutate_menu_token";
-        if (element["team"] in ASSIGNABLE_TEAMS) {
+        if (element["team"] in TEAM_TYPES) {
             document.getElementById("mutate_menu_" + element["team"]).appendChild(div);
         }
     })

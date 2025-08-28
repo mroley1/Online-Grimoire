@@ -2,7 +2,7 @@
  * The teams that appear in the side menu when selecting a character.
  * Only characters in these teams (ie: not Fabled) may be assigned to players.
  */
-const ASSIGNABLE_TEAMS = {
+const TEAM_TYPES = {
     "townsfolk": {
         "id": "townsfolk",
         "header": "Townsfolk",
@@ -27,6 +27,11 @@ const ASSIGNABLE_TEAMS = {
         "id": "traveller",
         "header": "Travellers",
         "color": "#6600ff",
+    },
+    "fabled": {
+        "id": "fabled",
+        "header": "Fabled",
+        "color": "#b3b300",
     },
 }
 
@@ -142,9 +147,9 @@ async function populate_script(script) {
 
     rolesOnScript.sort((a,b) => a.id > b.id)
 
-    //const ASSIGNABLE_TEAMS = ["townsfolk", "outsider", "minion", "demon", "traveller"];
+    //const TEAM_TYPES = ["townsfolk", "outsider", "minion", "demon", "traveller"];
     
-    for (const team of Object.values(ASSIGNABLE_TEAMS)) {
+    for (const team of Object.values(TEAM_TYPES)) {
         const landing = document.getElementById(team.id)
         landing.innerHTML = "";
 
@@ -164,7 +169,7 @@ async function populate_script(script) {
     }
 
     for (const role of rolesOnScript) {
-        if (!(role.team in ASSIGNABLE_TEAMS)) continue;
+        if (!(role.team in TEAM_TYPES)) continue;
         const landing = document.getElementById(role.team);
 
         const outer_div = document.createElement("div");
@@ -191,7 +196,7 @@ async function populate_script(script) {
         landing.appendChild(outer_div)
     }
 
-    for (const team of Object.values(ASSIGNABLE_TEAMS)) {
+    for (const team of Object.values(TEAM_TYPES)) {
         //Add button to add offscreen of each category
         const outer_div = document.createElement("div");
         outer_div.classList = "menu_list_div";
