@@ -24,6 +24,13 @@ async function infoCall(id, uid) {
     document.getElementById("info_box").style.display = "inherit";
     document.getElementById("info_token_dragbox").innerHTML = "";
 
+    if (role["flavor"] !== undefined) {
+        document.getElementById("info_flavor_field").innerHTML = `"${(role["flavor"] ?? "").replaceAll(/\n[\t ]*/g, " / ")}"`;
+        document.getElementById("info_flavor_field").style.color = ["minion", "demon"].includes(role.team) ? "rgb(230, 176, 176)" : "rgb(176, 176, 230)"
+    } else {
+        document.getElementById("info_flavor_field").innerHTML = "";
+    }
+
     update_info_death_cycle(id, uid);
 
     if (role.reminders == undefined) return;
