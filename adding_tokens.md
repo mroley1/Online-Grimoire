@@ -28,21 +28,12 @@
         "otherNightReminder": "",
         // If the character affects setup, it does so here. 
         "change_makeup": [
-            // Each entry is an object with one element.
+            // Each entry is a seperate object
             {
-                // HARD, SOFTPOS, SOFTNEG, LOCK, or REQ.
-                "HARD": [
-                    // Character type, and how many to increase/decrease/lock to. 
-                    "out",
-                    2
-                ]
-            },
-            {
-                "REQ": [
-                    // Type of character, and what character must also be added.
-                    "townsfolk",
-                    "atheist"
-                ]
+                // The type of change: FORCED_CHANGE, ALLOWED_INCREASE/ALLOWED_DECREASE, 
+                "type": "FORCED_CHANGE",
+                "team": "outsider",
+                "amount": 1
             }
         ],
         // Does nothing, leave false.

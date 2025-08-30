@@ -39,7 +39,7 @@ async function loaded() {
   setTimeout(function ()
   {
     loading = false;
-    player_count_change();
+    validateSetup();
   }, 2000)
   document.getElementById("body_actual").setAttribute("orientation", getOrientation())
   window.onresize = resized;

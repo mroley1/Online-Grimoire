@@ -94,7 +94,7 @@ function cycle_token_visibility_toggle(id, uid) {
             break;
     }
     update_role_counts();
-    player_count_change();
+    validateSetup();
     populate_night_order();
     if (!loading) { save_game_state(); }
 }

@@ -114,7 +114,7 @@ function spawnToken(id, uid, visibility, cat, hide_face, viability, left, top, n
     }
     // Random admin stuff.
     update_role_counts();
-    player_count_change();
+    validateSetup();
     makeDraggable(div);
     populate_night_order();
 
@@ -201,7 +201,7 @@ function remove_token(id, uid) {
     rm.parentNode.removeChild(rm);
     clean_tokens(uid);
     update_role_counts();
-    player_count_change();
+    validateSetup();
     hideInfo();
     populate_night_order();
 }
