@@ -60,42 +60,110 @@ const ROLE_COUNTS = [
 function validateSetup() {
     if (loading) return;
 
-    // Assess default role distribution from player count.
     let playerCount = parseInt(document.getElementById("player_count").value);
     playerCount = Math.min(Math.max(playerCount, 5), 15);
 
-    const roleCount = ROLE_COUNTS[playerCount - 5];
+    const roleData = calculateRoleAmounts(playerCount);
+    const issues = setupIssues(roleData, playerCount);
+
+    const PLUS_MINUS = String.fromCharCode(177);
+    const AT_LEAST = String.fromCodePoint(0x2265);
+
+    console.log(roleData);
+
+    for (const type in roleData) {
+        const data = roleData[type];
+        let output = "";
+
+        if (data["min"] == data["max"]) {
+            output = `${data["count"]} / ${data["min"]}`;
+        } else {
+            output = `${data["count"]} of [${data["min"]} - ${data["max"]}]`;
+        }
+
+        if (data["offset"] > 0) {
+            output += ` ${PLUS_MINUS} ${data["offset"]}`;
+        }
+
+        if (data["flag"] == "HALF") {
+            output = `${data["count"]} ${AT_LEAST} ${data["min"]}`;
+            valid = (data["count"] >= data["min"]);
+        }
+
+        if (data["flag"] == "ARBITRARY") {
+            output = `${data["count"]} / ???`;
+        }
+
+        if (data["flag"] == "X") {
+            output = `X = ${data["count"]}`;
+        }
+
+        const ratio_text = document.getElementById(`ratio_${type}`)
+
+        ratio_text.innerText = output;
+        if (data["valid"]) {
+            ratio_text.style.color = "";
+        } else {
+            ratio_text.style.color = ASSIGNABLE_TEAMS["demon"]["color"];
+        }
+    }
+
+    const menu_issues = document.getElementById("menu_issues")
+    if (issues.length == 0) {
+        menu_issues.style.color = "rgb(179, 179, 0)"
+        menu_issues.innerText = "Everything looks good!"
+    } else {
+        menu_issues.style.color = "rgb(179, 179, 0)"
+        let text = "Detected the following issues:<ul>"
+        for (const issue of issues) {
+            text += `<li>${issue}</li>`;
+        }
+        text += "</ul>";
+        menu_issues.innerHTML = text;
+    }
+    computeDropdownHeight();
     
+}
+
+function calculateRoleAmounts(playerCount) {
+
+    const roleCount = ROLE_COUNTS[playerCount - 5];
+
     const roleData = {
         "townsfolk": {
             "count": 0,
             "min": roleCount[0],
             "max": roleCount[0],
             "offset": 0, // plus-minus
-            "flag": null
+            "flag": null,
+            "valid": false,
         },
         "outsider": {
             "count": 0,
             "min": roleCount[1],
             "max": roleCount[1],
             "offset": 0,
-            "flag": null
+            "flag": null,
+            "valid": false,
         },
         "minion": {
             "count": 0,
             "min": roleCount[2],
             "max": roleCount[2],
             "offset": 0,
-            "flag": null
+            "flag": null,
+            "valid": false,
         },
         "demon": {
             "count": 0,
             "min": roleCount[3],
             "max": roleCount[3],
             "offset": 0,
-            "flag": null
+            "flag": null,
+            "valid": false,
         },
     };
+
 
     const tokens = document.getElementsByClassName("role_token");
     for (const token of tokens) {
@@ -119,7 +187,6 @@ function validateSetup() {
         
         for (const change of role["change_makeup"]) {
             try {
-                console.log(change)
                 const changeKey = change["type"]
                 const affectedData = roleData[change["team"]];
                 switch (changeKey) {
@@ -206,40 +273,108 @@ function validateSetup() {
         townsfolkData["offset"] += otherData["offset"];
     }
 
+    return roleData;
+}
 
-    const PLUS_MINUS = String.fromCharCode(177);
-    const AT_LEAST = String.fromCodePoint(0x2265);
+function pluralize(team) {
+    if (team == "townsfolk") return team;
+    return team + "s";
+}
 
-    console.log(roleData);
+function setupIssues(roleData, targetPlayerCount) {
+    const Issue = {
+        NONE: 0,
+        EXACT: 1,
+        RANGE: 2,
+        OFFSET_REQUIRED: 3,
+        HALF: 4
+    }
 
+    const issues = []
+    let totalPlayers = 0;
     for (const type in roleData) {
+        let issue = Issue.NONE;
         const data = roleData[type];
-        let output = "";
+
+        totalPlayers += data["count"];
 
         if (data["min"] == data["max"]) {
-            output = `${data["count"]} / ${data["min"]}`;
+            if (data["count"] != data["min"]) {
+                issue = Issue.EXACT;
+            }
         } else {
-            output = `${data["count"]} of [${data["min"]} - ${data["max"]}]`;
+            if (data["count"] < data["min"] || data["count"] > data["max"]) {
+                issue = Issue.RANGE;
+            }
         }
 
         if (data["offset"] > 0) {
-            output += ` ${PLUS_MINUS} ${data["offset"]}`;
+            if (data["min"] == data["max"]) {
+                if (Math.abs(data["count"] - data["min"]) != data["offset"]) {
+                    issue = Issue.OFFSET_REQUIRED;
+                }
+            } else {
+                if (Math.abs(data["min"] - data["count"]) <= data["offset"]) {
+                    issue = Issue.NONE;
+                } else if (Math.abs(data["max"] - data["count"]) <= data["offset"]) {
+                    issue = Issue.NONE;
+                }
+            }
         }
 
         if (data["flag"] == "HALF") {
-            output = `${data["count"]} ${AT_LEAST} ${data["min"]}`;
+            if (data["count"] < data["min"]) {
+                issue = Issue.HALF;
+            } else {
+                issue = Issue.NONE;
+            }
         }
 
         if (data["flag"] == "ARBITRARY") {
-            output = `${data["count"]} / ???`;
+            issue = Issue.NONE;
         }
 
         if (data["flag"] == "X") {
-            output = `X = ${data["count"]}`;
+            issue = Issue.NONE;
         }
 
-        document.getElementById(`ratio_${type}`).innerText = output;
+        const direction = (data["count"] < data["min"] - data["offset"] ? "Not enough" : "Too many"); 
+
+        // console.log(type, data, issue);
+
+        switch (issue) {
+            case Issue.EXACT:
+                issues.push(`${direction} ${pluralize(type)}.<br>There should be ${data["min"]}.`);
+                break;
+            case Issue.RANGE:
+                issues.push(`${direction} ${pluralize(type)}.<br>Should be between ${data["min"] - data["offset"]} and ${data["max"] + data["offset"]}.`);
+                break;
+            case Issue.OFFSET_REQUIRED:
+                const type_plural = (data["offset"] > 1 ? pluralize(type) : type);
+                issues.push(`Cannot have exactly ${data["min"]} ${pluralize(type)}.\nAdd or remove ${data["offset"]} ${type_plural}.`);
+                break;
+            case Issue.HALF:
+                issues.push(`${direction} ${pluralize(type)}.\nMore than ${data["min"]} must be ${pluralize(type)}.`)
+
+            default:
+            case Issue.NONE:
+                data["valid"] = true;
+                break;
+        }
     }
+
+    const tokens = Math.abs(targetPlayerCount - totalPlayers) > 1 ? "tokens" : "token";
+    if (targetPlayerCount < totalPlayers) {
+        issues.push(`Too many tokens for ${targetPlayerCount} players.<br>Remove or hide ${totalPlayers - targetPlayerCount} ${tokens}.`);
+    }
+    if (targetPlayerCount > totalPlayers) {
+        issues.push(`Not enough tokens for ${targetPlayerCount} players. Add ${targetPlayerCount - totalPlayers} more ${tokens}.`)
+    }
+
+    for (const issue of issues) {
+        console.log(issue);
+    }
+    return issues;
 }
 
 /**
@@ -278,8 +413,14 @@ function toggle_menu_collapse() {
         dropdown.style.height = "40px";
     } else {
         dropdown.setAttribute("expand", "true");
-        dropdown.style.height = "calc(" + document.getElementById("menu_settings_dropdown_body").scrollHeight + "px + 68px)";
+        computeDropdownHeight();
     }
+}
+
+function computeDropdownHeight() {
+    const dropdown = document.getElementById("menu_settings_dropdown");
+    if (dropdown.getAttribute("expand") != "true") return;
+    dropdown.style.height = `${document.getElementById("menu_settings_dropdown_body").scrollHeight + 68}px`;
 }
 
 /**
