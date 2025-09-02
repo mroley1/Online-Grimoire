@@ -69,8 +69,6 @@ function validateSetup() {
     const PLUS_MINUS = String.fromCharCode(177);
     const AT_LEAST = String.fromCodePoint(0x2265);
 
-    console.log(roleData);
-
     for (const type in roleData) {
         const data = roleData[type];
         let output = "";
@@ -132,6 +130,13 @@ function calculateRoleAmounts(playerCount) {
     const roleData = {
         "townsfolk": {
             "count": 0,
+            "roles": [],
+            "required": [
+                // { EX:
+                //     "role": "king",
+                //     "requiredFor": "choirboy"
+                // }
+            ],
             "min": roleCount[0],
             "max": roleCount[0],
             "offset": 0, // plus-minus
@@ -140,6 +145,8 @@ function calculateRoleAmounts(playerCount) {
         },
         "outsider": {
             "count": 0,
+            "roles": [],
+            "required": [],
             "min": roleCount[1],
             "max": roleCount[1],
             "offset": 0,
@@ -148,6 +155,8 @@ function calculateRoleAmounts(playerCount) {
         },
         "minion": {
             "count": 0,
+            "roles": [],
+            "required": [],
             "min": roleCount[2],
             "max": roleCount[2],
             "offset": 0,
@@ -156,6 +165,8 @@ function calculateRoleAmounts(playerCount) {
         },
         "demon": {
             "count": 0,
+            "roles": [],
+            "required": [],
             "min": roleCount[3],
             "max": roleCount[3],
             "offset": 0,
@@ -173,6 +184,7 @@ function calculateRoleAmounts(playerCount) {
 
         if (role.team in roleData) {
             roleData[role.team]["count"] += 1;
+            roleData[role.team]["roles"].push(role.id);
         }
 
         if (!("change_makeup" in role)) continue;
@@ -189,6 +201,7 @@ function calculateRoleAmounts(playerCount) {
             try {
                 const changeKey = change["type"]
                 const affectedData = roleData[change["team"]];
+
                 switch (changeKey) {
                     case "FORCED_CHANGE":
                         // Mandatory change to count.
@@ -207,7 +220,7 @@ function calculateRoleAmounts(playerCount) {
                         affectedData["min"] -= change["amount"];
                         break;
                     case "OFFSET":
-                        // Valid and required change in either direction to count.
+                        // Valid and required change in either direction to exact count.
                         if (affectedData["flag"] != null) break;
                         affectedData["offset"] += change["amount"];
                         break;
@@ -240,6 +253,22 @@ function calculateRoleAmounts(playerCount) {
                         affectedData["min"] = 0;
                         affectedData["max"] = 0;
                         break;
+                    case "REQUIRED":
+                        // A specific role must be in play.
+                        const otherRole = roles[change["role"]]
+                        const otherTypeData = roleData[otherRole.team];
+                        
+                        otherTypeData["required"].push({
+                            "role": change["role"],
+                            "requiredFor": role.id
+                        });
+                        
+                        // If the role is not a townsfolk, it may displace a townsfolk. (Damsel)
+                        if (otherRole.team == "townsfolk") break;
+                        if (otherTypeData["flag"] != null) break;
+                        otherTypeData["max"] += 1;
+
+                        break;
                     default:
                         console.error("Unknown/Invalid Setup modifier: " + changeKey);
                         break;
@@ -259,7 +288,8 @@ function calculateRoleAmounts(playerCount) {
         data["offset"] = Math.max(data["offset"], 0);
     }
 
-    // Townsfolk are whatever is left. We'll compute it now.
+    // Townsfolk are whatever is left. 
+    // Since all setup shenanigans are addressed, we compute the leftovers.
     const townsfolkData = roleData["townsfolk"];
     townsfolkData["max"] = playerCount;
     townsfolkData["min"] = playerCount;
@@ -298,6 +328,7 @@ function setupIssues(roleData, targetPlayerCount) {
 
         totalPlayers += data["count"];
 
+        // Ensure the count is correct.
         if (data["min"] == data["max"]) {
             if (data["count"] != data["min"]) {
                 issue = Issue.EXACT;
@@ -308,6 +339,8 @@ function setupIssues(roleData, targetPlayerCount) {
             }
         }
 
+        // Ensure the count is correct, accounting for offset. 
+        // This could make or break certain setups. 
         if (data["offset"] > 0) {
             if (data["min"] == data["max"]) {
                 if (Math.abs(data["count"] - data["min"]) != data["offset"]) {
@@ -316,12 +349,14 @@ function setupIssues(roleData, targetPlayerCount) {
             } else {
                 if (Math.abs(data["min"] - data["count"]) <= data["offset"]) {
                     issue = Issue.NONE;
-                } else if (Math.abs(data["max"] - data["count"]) <= data["offset"]) {
+                }
+                if (Math.abs(data["max"] - data["count"]) <= data["offset"]) {
                     issue = Issue.NONE;
                 }
             }
         }
 
+        // If Legion or similar is in play, ensure half of the town is that role.
         if (data["flag"] == "HALF") {
             if (data["count"] < data["min"]) {
                 issue = Issue.HALF;
@@ -330,6 +365,7 @@ function setupIssues(roleData, targetPlayerCount) {
             }
         }
 
+        // +/-?? and X. 
         if (data["flag"] == "ARBITRARY") {
             issue = Issue.NONE;
         }
@@ -338,9 +374,8 @@ function setupIssues(roleData, targetPlayerCount) {
             issue = Issue.NONE;
         }
 
+        // Actually adding the issues to the report. 
         const direction = (data["count"] < data["min"] - data["offset"] ? "Not enough" : "Too many"); 
-
-        // console.log(type, data, issue);
 
         switch (issue) {
             case Issue.EXACT:
@@ -361,8 +396,43 @@ function setupIssues(roleData, targetPlayerCount) {
                 data["valid"] = true;
                 break;
         }
+
+        for (const requirement of data["required"]) {
+            if (!data["roles"].includes(requirement["role"])) {
+                const requiredName = roles[requirement["role"]].name;
+                const requiringName = roles[requirement["requiredFor"]].name;
+                issues.push(`The ${requiringName} requires a ${requiredName} be in play. Add the ${requiredName} or remove the ${requiringName}.`);
+            }
+        }
+
+        // Checking for duplicate / too many roles.
+        const roleCounts = {};
+        for (const role of data["roles"]) {
+            if (!(role in roleCounts)) {
+                roleCounts[role] = 0;
+            }
+            roleCounts[role]++;
+        }
+
+        for (const role in roleCounts) {
+            const name = roles[role].name;
+            const times = roleCounts[role];
+            const maxCount = roles[role].maxCount
+            if (maxCount === undefined && times > 1) {
+                issues.push(`The ${name} role appears multiple times. Remove duplicate roles.`);
+            } else if (times > maxCount) {
+                issues.push(`The ${name} role appears more than ${maxCount} times. Remove extra roles.`);
+            }
+        }
     }
 
+    // Hardcoded Atheist exception -- ignore everything that may be wrong. The ST probably knows what they're doing.
+    if (roleData["townsfolk"]["roles"].includes("atheist")) {
+        issues.length = 0; // Apparently this deletes the array. Dammit JS
+        issues.push("Atheist game detected. Are you sure whatever you are doing is worth it?");
+    }
+
+    // Player count validation
     const tokens = Math.abs(targetPlayerCount - totalPlayers) > 1 ? "tokens" : "token";
     if (targetPlayerCount < totalPlayers) {
         issues.push(`Too many tokens for ${targetPlayerCount} players.<br>Remove or hide ${totalPlayers - targetPlayerCount} ${tokens}.`);
@@ -371,9 +441,6 @@ function setupIssues(roleData, targetPlayerCount) {
         issues.push(`Not enough tokens for ${targetPlayerCount} players. Add ${targetPlayerCount - totalPlayers} more ${tokens}.`)
     }
 
-    for (const issue of issues) {
-        console.log(issue);
-    }
     return issues;
 }
 
