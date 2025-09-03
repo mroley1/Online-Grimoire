@@ -8,7 +8,6 @@
 function mutate_menu(id, uid) {
 
     for (const type in TEAM_TYPES) {
-        console.log(`mutate_menu_${type}`);
         const tokens = document.getElementById(`mutate_menu_${type}`).children;
         for (const token of tokens) {
             token.setAttribute("onclick", "mutate_token('" + id + "', " + uid + ", '" + token.id.match(/(?<=mutate_menu_).*/) + "')")
@@ -50,6 +49,7 @@ function clear_mutate_menu() {
     document.getElementById("mutate_menu_minion").innerHTML = "";
     document.getElementById("mutate_menu_demon").innerHTML = "";
     document.getElementById("mutate_menu_traveller").innerHTML = "";
+    document.getElementById("mutate_menu_fabled").innerHTML = "";
 }
 
 /**
