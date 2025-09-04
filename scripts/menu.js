@@ -188,7 +188,7 @@ function shuffle_roles() {
     let tokens = document.getElementById("token_layer").children;
     var ids = [];
     for (i = 0, j = 0; i < tokens.length; i++) {
-        if (tokens[i].getAttribute("visibility") == "show") {
+        if (tokens[i].getAttribute("visibility") == "show" && tokens[i].getAttribute("cat") != "fabled") {
             ids[j++] = tokens[i].id.match(/.*(?=_token_)/)[0];
         }
     }
