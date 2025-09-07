@@ -175,7 +175,7 @@ def sync_jinxes(entry):
 def main():
     print("TOKEN SCRAPER")
     print("LOADING DATA...")
-    with open("data/tokens.json", "utf-8", "r") as f:
+    with open("data/tokens.json", "r", encoding="utf-8") as f:
         data: dict = json.loads(f.read())
 
     official_keys = sorted(data.keys())
