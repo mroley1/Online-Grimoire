@@ -64,19 +64,21 @@ function visibility_toggle() {
     tokens = document.getElementById("token_layer").getElementsByClassName("role_token");
     if (document.getElementById("body_actual").getAttribute("night") == "false") { // ! nighttime
         document.getElementById("body_actual").setAttribute("night", "true");
-        for (i = 0; i < tokens.length; i++) {
-            var id = tokens[i].getAttribute("role");
-            var uid = tokens[i].getAttribute("uid");
-            tokens[i].style.backgroundImage = "";
-            tokens[i].setAttribute("onclick", "javascript:deathCycle('" + id + "', " + uid + ")");
+        for (const token of tokens) {
+            if (token.getAttribute("cat") == "fabled") continue;
+            var id = token.getAttribute("role");
+            var uid = token.getAttribute("uid");
+            token.style.backgroundImage = "";
+            token.setAttribute("onclick", "javascript:deathCycle('" + id + "', " + uid + ")");
         }
     } else {                                                                     // ! daytime
         document.getElementById("body_actual").setAttribute("night", "false");
-        for (i = 0; i < tokens.length; i++) {
-            var id = tokens[i].getAttribute("role");
-            var uid = tokens[i].getAttribute("uid");
-            tokens[i].style.backgroundImage = "url('assets/token.png')"
-            tokens[i].setAttribute("onclick", "javascript:infoCall('" + id + "', " + uid + ")");
+        for (const token of tokens) {
+            if (token.getAttribute("cat") == "fabled") continue;
+            var id = token.getAttribute("role");
+            var uid = token.getAttribute("uid");
+            token.style.backgroundImage = "url('assets/token.png')"
+            token.setAttribute("onclick", "javascript:infoCall('" + id + "', " + uid + ")");
         }
     }
     clear_night_order();

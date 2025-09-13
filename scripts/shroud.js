@@ -302,25 +302,12 @@ function add_playerinfo_character_box() {
  * @param {String} id The ID of the entry that would be modified.
  */
 function trigger_playerinfo_character_select(id) {
-    var townsfolk = document.getElementById("mutate_menu_townsfolk").children;
-    for (i = 0; i < townsfolk.length; i++) {
-        townsfolk[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + townsfolk[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var outsiders = document.getElementById("mutate_menu_outsider").children;
-    for (i = 0; i < outsiders.length; i++) {
-        outsiders[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + outsiders[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var minions = document.getElementById("mutate_menu_minion").children;
-    for (i = 0; i < minions.length; i++) {
-        minions[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + minions[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var demons = document.getElementById("mutate_menu_demon").children;
-    for (i = 0; i < demons.length; i++) {
-        demons[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + demons[i].id.match(/(?<=mutate_menu_).*/) + "')")
-    }
-    var travellers = document.getElementById("mutate_menu_traveller").children;
-    for (i = 0; i < travellers.length; i++) {
-        travellers[i].setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + travellers[i].id.match(/(?<=mutate_menu_).*/) + "')")
+
+    for (const type in TEAM_TYPES) {
+        const tokens = document.getElementById(`mutate_menu_${type}`).children;
+        for (const token of tokens) {
+            token.setAttribute("onclick", "select_playerinfo_character('" + id + "', '" + token.id.match(/(?<=mutate_menu_).*/) + "')")
+        }
     }
     document.getElementById("mutate_menu_main").style.display = "inherit";
 }

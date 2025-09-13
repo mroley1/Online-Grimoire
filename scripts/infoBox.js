@@ -26,7 +26,24 @@ async function infoCall(id, uid) {
 
     if (role["flavor"] !== undefined) {
         document.getElementById("info_flavor_field").innerHTML = `"${(role["flavor"] ?? "").replaceAll(/\n[\t ]*/g, " / ")}"`;
-        document.getElementById("info_flavor_field").style.color = ["minion", "demon"].includes(role.team) ? "rgb(230, 176, 176)" : "rgb(176, 176, 230)"
+        let color;
+        switch (role.team) {
+            case "townsfolk":
+            case "outsider":
+            default:
+                color = "rgb(176, 176, 230)";
+                break;
+            case "minion":
+            case "demon":
+                color = "rgb(230, 176, 176)";
+                break;
+            case "fabled":
+                color = "rgb(230, 230, 176)"
+                break;
+            case "traveller":
+                color = "rgb(230, 176, 230)"
+        }
+        document.getElementById("info_flavor_field").style.color = color;
     } else {
         document.getElementById("info_flavor_field").innerHTML = "";
     }

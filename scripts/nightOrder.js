@@ -43,10 +43,10 @@ function toggle_night_order_buttons(type) {
         document.getElementById("nightorder_button_container").setAttribute("nightOrder", "none");
     } else {
         switch (type) {
-            case "fabled":
-                document.getElementById("nightorder_button_container").setAttribute("nightOrder", "fabled");
-                populate_fabled();
-                break;
+            // case "fabled":
+            //     document.getElementById("nightorder_button_container").setAttribute("nightOrder", "fabled");
+            //     populate_fabled();
+            //     break;
             case "jinx":
                 document.getElementById("nightorder_button_container").setAttribute("nightOrder", "jinx");
                 populate_jinx();
@@ -357,71 +357,4 @@ function gen_jinxes_tab(id1, id2, reason) {
     div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
     div.setAttribute("onclick", "javascript:expand_night_order_tab('" + id1 + "_" + id2 + "_jinx_tab" + "')");
     document.getElementById("night_order_tab_landing").appendChild(div);
-}
-
-/**
- * Populate the Fabled tab.
- * Fabled appear if they are either in the DEFAULT_FABLED set,
- * or are explicilty listed in the CURRENT_SCRIPT.
- */
-function populate_fabled() {
-    clean_night_order();
-    var fabled = DEFAULT_FABLED;
-    CURRENT_SCRIPT.forEach((entry) => {
-        if (entry.id != "_meta") {
-            var token = roles[entry.id];
-            if (token["team"] == "fabled") {
-                fabled.add(entry.id);
-            }
-        }
-        return Promise.resolve();
-    })
-    fabled.forEach((fable) => {
-        var json = roles[fable];
-        gen_fabled_tab(json, true);
-        return Promise.resolve();
-    })
-}
-
-/**
- * Generate an entry in the Fabled tab.
- * @param {*} token_JSON The role JSON of the fabled to add.
- * @param {*} inPlay whether the Fabled is in play
- */
-function gen_fabled_tab(token_JSON, inPlay) {
-    var color = "#b3b300";
-    if (!inPlay) { color = "#000000"; }
-    var div = document.createElement("div");
-    div.classList = "night_order_tab";
-    div.id = token_JSON.id + "_night_order_tab";
-    div.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0) , " + color + ")";
-    var span = document.createElement("span");
-    span.classList = "night_order_span"
-    span.innerHTML = token_JSON["ability"];
-    span.id = token_JSON.id + "_night_order_tab_span";
-    div.appendChild(span);
-    var img = document.createElement("img");
-    img.classList = "night_order_img";
-    img.src = getTokenImageLink(token_JSON.id);
-    var token_landing = document.createElement("div");
-    token_landing.classList = "night_order_fabled_token_container"
-    token_landing.id = "night_order_" + token_JSON.id;
-    token_JSON["reminders"].forEach((token) => {
-        var uid = makeUid()
-        var token_perm = generateReminderBacking(token_JSON.id, token, uid)
-        token_perm.id = `${token_JSON.id}_${token}`;
-        token_perm.setAttribute("onclick", `javascript:spawnFabledReminder("${token_JSON.id}", "${token}")`)
-        token_landing.appendChild(token_perm)
-    })
-    div.appendChild(token_landing);
-    var token_drag = document.createElement("div");
-    token_drag.id = "token_drag_" + token_JSON.id + "_night_order_tab";
-    div.appendChild(token_drag);
-    document.getElementById("night_order_tab_landing").appendChild(div);
-    div.setAttribute("ontouchstart", "javascript:nightOrderScroll('true')");
-    div.setAttribute("ontouchend", "javascript:nightOrderScroll('false')");
-    div.setAttribute("onmouseenter", "javascript:nightOrderScroll('true')");
-    div.setAttribute("onmouseleave", "javascript:nightOrderScroll('false')");
-    div.setAttribute("onclick", "javascript:expand_night_order_tab('" + token_JSON.id + "_night_order_tab')");
-    div.appendChild(img);
 }
