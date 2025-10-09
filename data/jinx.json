@@ -273,12 +273,7 @@
   {
     "id": "prisoner",
     "jinx":
-    [
-      {
-        "id": "marionette",
-        "reason": "The Prisoner cannot have the Marionette ability"
-      }
-    ]
+    []
   },
   {
     "id": "scarletwoman",
