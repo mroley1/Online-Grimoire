@@ -1,5 +1,26 @@
 [
   {
+    "id":"alchemist",
+    "jinx": [
+      {
+          "id": "wraith",
+          "reason": "If the Alchemist has the Wraith ability, they do not, and a Wraith is in play. Each day, after the execution phase, the living Alchemist may publicly guess a living player as the Wraith: if correct, the Demon must choose the Wraith tonight."
+      },
+      {
+          "id": "marionette",
+          "reason": "An Alchemist-Marionette has no Marionette ability & the Marionette is in play."
+      },
+      {
+          "id": "mastermind",
+          "reason": "An Alchemist-Mastermind has no Mastermind ability & the Mastermind is not-in-play."
+      },
+      {
+          "id": "organgrinder",
+          "reason": "If the Alchemist has the Organ Grinder ability, the Organ Grinder is in play & if both the Alchemist and Organ Grinder are sober, both are drunk."
+      }
+    ]
+  },
+  {
     "id": "cannibal",
     "jinx": [
       {
@@ -250,6 +271,11 @@
     ]
   },
   {
+    "id": "prisoner",
+    "jinx":
+    []
+  },
+  {
     "id": "scarletwoman",
     "jinx": [
       {
@@ -263,7 +289,7 @@
     "jinx": [
       {
         "id": "alchemist",
-        "reason": "If the Alchemist has the Spy ability, they do not see the Grimoire, and the real Spy cannot register falsely."
+        "reason": "If the Alchemist has the Spy ability, they do not, and a Spy is in play. Each day, after the execution phase, the living Alchemist may publicly guess a living player as the Spy. If correct, the Demon must choose the Spy tonight."
       },
       {
         "id": "damsel",
@@ -398,7 +424,7 @@
     "jinx": [
       {
         "id": "alchemist",
-        "reason": "If the Alchemist has the Widow ability, they do not see the Grimoire."
+        "reason": "If the Alchemist has the Widow ability, they do not, and a Widow is in play. Each day, after the execution phase, the living Alchemist may publicly guess a living player as the Widow. If correct, the Demon must choose the Widow tonight."
       },
       {
         "id": "damsel",
@@ -561,6 +587,10 @@
       {
         "id": "vizier",
         "reason": "The Vizier can die by execution if they are babysitting Lil' Monsta."
+      },
+      {
+          "id": "psychopath",
+          "reason": "If the Psychopath is babysitting Lil' Monsta, they do not play roshambo when executed."
       }
     ]
   },
