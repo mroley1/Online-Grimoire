@@ -185,7 +185,8 @@ def force_compatibility(entry):
         "otherNight",
         "change_makeup", # TODO: depreciate
         "image",
-        "flavor"
+        "flavor",
+        "shrouds", # Custom shroud data
     ])
 
     CHANGE = {
