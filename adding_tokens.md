@@ -64,12 +64,18 @@
                 // If the first icon should be of this character. Default false.
                 "autofill": true
             }
+        ],
+        // Jinxes -- poor interactions that need to be dealt with
+        "jinx": [
+            {
+                "id": "otherCharacterId",
+                "reason": "This breaks the game for some reason, so do this other thing with one of the roles instead"
+            }
         ]
     },
 ```
 - add role to `data/scripts/Gang's All Here.json` or `data/scripts/Unreleased Experimental.json`, based on type.
 - add role to `data/nightsheet.json` if necessary.
-- add and jinxes to `data/jinx.json` if necessary.
 - Test your character locally before submitting a PR. 
 
 The token scraper adds in most details, except for the ID, setup effects, and the reminder tokens. 
