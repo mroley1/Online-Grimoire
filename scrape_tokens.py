@@ -172,45 +172,10 @@ def sync_jinxes(entry):
     entry["jinx"] = jinxes
     print("JINXES " + (entry["name"] + ": ").ljust(20) + str(len(jinxes)) + " jinxes")
 
-def force_compatibility(entry):
-    ALLOWED = set([
-        "id", 
-        "name", 
-        "description", "ability",
-        "team", "class", 
-        "tokens", "reminders", "remindersGlobal", # All the same, for most purposes
-        "first_night_desc", "firstNightReminder",
-        "other_night_desc", "otherNightReminder",
-        "firstNight",
-        "otherNight",
-        "change_makeup", # TODO: depreciate
-        "image",
-        "flavor"
-    ])
-
-    CHANGE = {
-        # OLD --> NEW
-        "class": "team",
-        "description": "ability",
-        "tokens": "reminders",
-        "first_night_desc": "firstNightReminder",
-        "other_night_desc": "otherNightReminder",
-    }
-    
-    new_entry = dict()
-    for key in entry.keys():
-        if key not in ALLOWED: continue
-        if key in CHANGE:
-            new_entry[CHANGE[key]] = entry[key]
-        else:
-            new_entry[key] = entry[key]
-    
-    return new_entry
-
 def main():
     print("TOKEN SCRAPER")
     print("LOADING DATA...")
-    with open("data/tokens.json") as f:
+    with open("data/tokens.json", "r", encoding="utf-8") as f:
         data: dict = json.loads(f.read())
 
     official_keys = sorted(data.keys())
@@ -224,7 +189,7 @@ def main():
     with cf.ThreadPoolExecutor(max_workers=16) as executor:
         cacher = [executor.submit(get_soup_by_name, v) for v in relevant_keys]
 
-    data = {k: force_compatibility(v) for k, v in data.items()}
+    data = {k: v for k, v in data.items()}
 
     with cf.ThreadPoolExecutor(max_workers=16) as executor:
         print("SYNCING IMAGES...")
