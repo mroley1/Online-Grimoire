@@ -161,7 +161,10 @@ async function populate_script(script) {
 
         var ratio = document.createElement("div");
         ratio.classList = "menu_ratio";
-        ratio.innerHTML = "0/0";
+        ratio.innerText = "0 / 0";
+        if (team.id in ["fabled", "traveller"]) {
+            ratio.innerText = "0";
+        }
         ratio.id = "ratio_" + team.id
         landing.appendChild(ratio);
 
@@ -217,7 +220,7 @@ async function populate_script(script) {
         landing.appendChild(outer_div)
     }
 
-    player_count_change();
+    validateSetup();
     update_role_counts();
 
     resetInfoList();

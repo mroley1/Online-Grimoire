@@ -552,6 +552,15 @@ svg {pointer-events: none; user-select: none;}
 .menu_title        {position: fixed; width: 280px; height: 70px; opacity: 1; background-image: url('assets/botc_logo.png'); background-position: center; background-repeat: no-repeat; background-size: contain; margin: 10px;}
 .menu_body         {position: fixed; width: 280px; height: calc(100% - 110px); padding: 10px; top: 90px; overflow-y: scroll; display: block; font-size: 25px; scrollbar-width: none;}
 .menu_body::-webkit-scrollbar {display: none;}
+#menu_issues {
+    font-size: 15px;
+}
+#menu_issues ul {
+    padding-inline-start: 0.001;
+    tab-size: 1;
+    padding-left: 20px;
+    text-align: left;
+}
 .menu_list         {position: absolute; font-size: 20px; color: white; cursor: pointer;}
 .menu_list_div     {position: relative; cursor: pointer; font-size: 20px; width: 100%; padding-top: 10px;}
 .menu_token_count  {position: absolute; right: 10px; height: 20px; color: white;}
